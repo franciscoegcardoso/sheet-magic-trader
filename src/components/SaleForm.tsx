@@ -10,20 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Receipt, User, Package, Truck, CreditCard, DollarSign } from "lucide-react";
-
-const PRODUTOS = [
-  "Marmita Fitness",
-  "Lasanha Bolonhesa",
-  "Frango Grelhado com Legumes",
-  "Strogonoff de Frango",
-  "Feijoada Completa",
-  "Escondidinho de Carne Seca",
-  "Risoto de Camarão",
-  "Espaguete à Carbonara",
-  "Parmegiana de Frango",
-  "Picanha com Fritas",
-];
+import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler } from "lucide-react";
+import { useProducts } from "@/hooks/useProducts";
 
 const EMBALAGENS = [
   "Marmitex P (500ml)",
@@ -48,6 +36,7 @@ const FORMAS_PAGAMENTO = [
 interface SaleData {
   cliente: string;
   produto: string;
+  tamanho: string;
   embalagem: string;
   valorFrete: string;
   formaPagamento: string;
@@ -60,14 +49,18 @@ interface SaleFormProps {
 
 export function SaleForm({ onSubmit }: SaleFormProps) {
   const { toast } = useToast();
+  const { products, isLoading: loadingProducts } = useProducts();
   const [formData, setFormData] = useState<SaleData>({
     cliente: "",
     produto: "",
+    tamanho: "",
     embalagem: "",
     valorFrete: "",
     formaPagamento: "",
     valorVenda: "",
   });
+
+  const selectedProduct = products.find((p) => p.cod === formData.produto);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +90,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
     setFormData({
       cliente: "",
       produto: "",
+      tamanho: "",
       embalagem: "",
       valorFrete: "",
       formaPagamento: "",
@@ -143,21 +137,45 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           </Label>
           <Select
             value={formData.produto}
-            onValueChange={(value) =>
-              setFormData({ ...formData, produto: value })
-            }
+            onValueChange={(value) => {
+              const product = products.find((p) => p.cod === value);
+              setFormData({ 
+                ...formData, 
+                produto: value,
+                tamanho: product?.tamanho || ""
+              });
+            }}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecione o produto" />
+              <SelectValue placeholder={loadingProducts ? "Carregando..." : "Selecione o produto"} />
             </SelectTrigger>
             <SelectContent>
-              {PRODUTOS.map((produto) => (
-                <SelectItem key={produto} value={produto}>
-                  {produto}
-                </SelectItem>
-              ))}
+              {loadingProducts ? (
+                <div className="flex items-center justify-center py-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                </div>
+              ) : (
+                products.map((produto) => (
+                  <SelectItem key={produto.cod} value={produto.cod}>
+                    {produto.nome}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
+        </div>
+
+        <div>
+          <Label className="input-label">
+            <Ruler className="w-4 h-4 inline mr-1.5" />
+            Tamanho
+          </Label>
+          <Input
+            value={selectedProduct?.tamanho || ""}
+            readOnly
+            placeholder="Selecione um produto"
+            className="bg-muted"
+          />
         </div>
 
         <div>
