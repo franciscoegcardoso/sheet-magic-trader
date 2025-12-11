@@ -67,13 +67,9 @@ export default function Index() {
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <img 
-            src={logo} 
-            alt="Vértice Soluções" 
-            className="h-16 md:h-20 mx-auto mb-4"
-            loading="lazy"
-            decoding="async"
-          />
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">
+            Controle Financeiro
+          </h1>
           <p className="text-muted-foreground">
             Gerencie suas compras e vendas com facilidade
           </p>
@@ -125,9 +121,18 @@ export default function Index() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground mt-8">
-          Os dados são enviados para sua planilha quando a integração está ativa
-        </p>
+        <div className="flex flex-col items-center gap-3 mt-8">
+          <p className="text-xs text-muted-foreground">
+            Os dados são enviados para sua planilha quando a integração está ativa
+          </p>
+          <img 
+            src={logo} 
+            alt="Vértice Soluções" 
+            className="h-8 opacity-60"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </div>
     </div>
   );
