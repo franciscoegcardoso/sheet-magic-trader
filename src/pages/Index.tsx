@@ -4,6 +4,7 @@ import { SaleForm } from "@/components/SaleForm";
 import { SheetsConfig } from "@/components/SheetsConfig";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, Receipt, FileSpreadsheet } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 type TabType = "compra" | "venda" | "config";
 
@@ -66,9 +67,13 @@ export default function Index() {
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">
-            Controle Financeiro
-          </h1>
+          <img 
+            src={logo} 
+            alt="Vértice Soluções" 
+            className="h-16 md:h-20 mx-auto mb-4"
+            loading="lazy"
+            decoding="async"
+          />
           <p className="text-muted-foreground">
             Gerencie suas compras e vendas com facilidade
           </p>
