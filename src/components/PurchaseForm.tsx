@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, Calendar, DollarSign } from "lucide-react";
+import { InvoiceScanner } from "./InvoiceScanner";
 
 interface PurchaseData {
   produto: string;
@@ -49,6 +50,13 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
     });
   };
 
+  const handleScannedItems = (items: PurchaseData[]) => {
+    // Submit all scanned items
+    items.forEach((item) => {
+      onSubmit(item);
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="form-section animate-fade-in">
       <div className="flex items-center gap-3 mb-6">
@@ -62,6 +70,19 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
           <p className="text-sm text-muted-foreground">
             Registre suas compras de produtos
           </p>
+        </div>
+      </div>
+
+      <InvoiceScanner onConfirm={handleScannedItems} />
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-card px-2 text-muted-foreground">
+            ou preencha manualmente
+          </span>
         </div>
       </div>
 
