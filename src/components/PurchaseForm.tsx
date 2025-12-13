@@ -3,11 +3,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Calendar, DollarSign } from "lucide-react";
+import { ShoppingCart, Calendar, DollarSign, Package, Hash, Loader2 } from "lucide-react";
 import { InvoiceScanner } from "./InvoiceScanner";
+import { useInsumos } from "@/hooks/useInsumos";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PurchaseData {
-  produto: string;
+  insumo: string;
+  quantidade: string;
+  unidade: string;
   dataCompra: string;
   valorCompra: string;
 }
@@ -18,16 +28,28 @@ interface PurchaseFormProps {
 
 export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   const { toast } = useToast();
+  const { insumos, isLoading: isLoadingInsumos } = useInsumos();
   const [formData, setFormData] = useState<PurchaseData>({
-    produto: "",
+    insumo: "",
+    quantidade: "",
+    unidade: "",
     dataCompra: new Date().toISOString().split("T")[0],
     valorCompra: "",
   });
 
+  const handleInsumoChange = (value: string) => {
+    const selectedInsumo = insumos.find((i) => i.nome === value);
+    setFormData({
+      ...formData,
+      insumo: value,
+      unidade: selectedInsumo?.unidade || "",
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.produto || !formData.dataCompra || !formData.valorCompra) {
+    if (!formData.insumo || !formData.quantidade || !formData.dataCompra || !formData.valorCompra) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos.",
@@ -40,20 +62,28 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
     
     toast({
       title: "Compra registrada!",
-      description: `Produto "${formData.produto}" adicionado com sucesso.`,
+      description: `Insumo "${formData.insumo}" adicionado com sucesso.`,
     });
 
     setFormData({
-      produto: "",
+      insumo: "",
+      quantidade: "",
+      unidade: "",
       dataCompra: new Date().toISOString().split("T")[0],
       valorCompra: "",
     });
   };
 
-  const handleScannedItems = (items: PurchaseData[]) => {
-    // Submit all scanned items
+  const handleScannedItems = (items: Array<{ produto: string; dataCompra: string; valorCompra: string }>) => {
+    // Submit all scanned items - convert to PurchaseData format
     items.forEach((item) => {
-      onSubmit(item);
+      onSubmit({
+        insumo: item.produto,
+        quantidade: "1",
+        unidade: "",
+        dataCompra: item.dataCompra,
+        valorCompra: item.valorCompra,
+      });
     });
   };
 
@@ -65,10 +95,10 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Lançamento de Compra
+            Lançamento de Insumos
           </h2>
           <p className="text-sm text-muted-foreground">
-            Registre suas compras de produtos
+            Registre suas compras de insumos
           </p>
         </div>
       </div>
@@ -88,17 +118,63 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
 
       <div className="space-y-4">
         <div>
-          <Label htmlFor="produto" className="input-label">
-            Produto
+          <Label htmlFor="insumo" className="input-label">
+            <Package className="w-4 h-4 inline mr-1.5" />
+            Insumo
           </Label>
-          <Input
-            id="produto"
-            placeholder="Nome do produto"
-            value={formData.produto}
-            onChange={(e) =>
-              setFormData({ ...formData, produto: e.target.value })
-            }
-          />
+          {isLoadingInsumos ? (
+            <div className="flex items-center gap-2 h-10 px-3 text-muted-foreground">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm">Carregando insumos...</span>
+            </div>
+          ) : (
+            <Select value={formData.insumo} onValueChange={handleInsumoChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione o insumo" />
+              </SelectTrigger>
+              <SelectContent>
+                {insumos.map((insumo) => (
+                  <SelectItem key={insumo.codigo} value={insumo.nome}>
+                    {insumo.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label htmlFor="quantidade" className="input-label">
+              <Hash className="w-4 h-4 inline mr-1.5" />
+              Quantidade
+            </Label>
+            <Input
+              id="quantidade"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0"
+              value={formData.quantidade}
+              onChange={(e) =>
+                setFormData({ ...formData, quantidade: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="unidade" className="input-label">
+              Unidade
+            </Label>
+            <Input
+              id="unidade"
+              placeholder="kg, un, L..."
+              value={formData.unidade}
+              onChange={(e) =>
+                setFormData({ ...formData, unidade: e.target.value })
+              }
+            />
+          </div>
         </div>
 
         <div>
