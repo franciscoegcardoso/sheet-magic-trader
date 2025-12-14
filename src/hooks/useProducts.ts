@@ -33,8 +33,8 @@ export function useProducts() {
           const tamanho = cols[4]?.trim() || "";
           const unidade = cols[5]?.trim() || "";
 
-          // Only include products with a name
-          if (nome && nome !== "" && !nome.startsWith("PRO-")) {
+          // Only include products with a valid name (not empty and not just the code)
+          if (nome && nome !== "" && nome !== cod) {
             parsedProducts.push({ cod, nome, tamanho, unidade });
           }
         }
