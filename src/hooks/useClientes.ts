@@ -30,9 +30,10 @@ export function useClientes() {
         const parsedClientes: Cliente[] = dataLines
           .map((line) => {
             const columns = line.split(",").map((col) => col.trim().replace(/^"|"$/g, ""));
+            // Columns: 0-1 empty, 2=Cod, 3=Nome, 4=Telefone
             return {
-              nome: columns[0] || "",
-              telefone: columns[1] || "",
+              nome: columns[3] || "",
+              telefone: columns[4] || "",
             };
           })
           .filter((cliente) => cliente.nome);
