@@ -70,18 +70,15 @@ serve(async (req) => {
 
     console.log('Access token obtained');
 
-    // Spreadsheet ID from the URL
-    const spreadsheetId = '1vS-L_lpONAuzksa_F7LEl-3fsgJZKa93_emcXyh1j0u0he-xrWnSelzYM4ioWroWMKXAF8eIjohfF5Y'.replace('2PACX-1vS-L_lpONAuzksa_F7LEl-3fsgJZKa93_emcXyh1j0u0he-xrWnSelzYM4ioWroWMKXAF8eIjohfF5Y', '');
-    
-    // The actual spreadsheet ID from the shared URL
-    const actualSpreadsheetId = '1vt8s0mXMb7vQi5b6s5p6sQ3V7l6z6v5w6';
+    // Spreadsheet ID
+    const spreadsheetId = '1uxPvkb6uu9PrKc1L6RBShM8nBmEBbvYE6Wzaze4abGk';
     
     // First, get the sheet to find the first empty row in column D
     const sheetName = 'Cadastro Clientes';
     const rangeToCheck = `'${sheetName}'!D:D`;
     
     const getResponse = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${actualSpreadsheetId}/values/${encodeURIComponent(rangeToCheck)}`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(rangeToCheck)}`,
       {
         headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
       }
@@ -107,7 +104,7 @@ serve(async (req) => {
     // Append data to the first empty row in columns D and E
     const updateRange = `'${sheetName}'!D${firstEmptyRow}:E${firstEmptyRow}`;
     const updateResponse = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${actualSpreadsheetId}/values/${encodeURIComponent(updateRange)}?valueInputOption=USER_ENTERED`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(updateRange)}?valueInputOption=USER_ENTERED`,
       {
         method: 'PUT',
         headers: {
