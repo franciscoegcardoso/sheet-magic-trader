@@ -4,9 +4,29 @@ import { SaleForm } from "@/components/SaleForm";
 import { SheetsConfig } from "@/components/SheetsConfig";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, Receipt, FileSpreadsheet } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 type TabType = "compra" | "venda" | "config";
+
+interface PurchaseData {
+  insumo: string;
+  quantidade: string;
+  unidade: string;
+  dataCompra: string;
+  valorCompra: string;
+}
+
+interface SaleData {
+  cliente: string;
+  telefoneCliente: string;
+  produto: string;
+  tamanho: string;
+  embalagem: string;
+  valorFrete: string;
+  formaPagamento: string;
+  valorVenda: string;
+}
 
 export default function Index() {
   const { toast } = useToast();
@@ -14,46 +34,48 @@ export default function Index() {
   const [webhookUrl, setWebhookUrl] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
-  const sendToSheets = async (data: object, type: "compra" | "venda") => {
-    if (!isConnected || !webhookUrl) {
-      console.log("Dados salvos localmente:", { type, data });
-      return;
-    }
-
+  const handlePurchaseSubmit = async (data: PurchaseData) => {
     try {
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "no-cors",
-        body: JSON.stringify({
-          type,
-          timestamp: new Date().toISOString(),
-          ...data,
-        }),
+      const { data: result, error } = await supabase.functions.invoke('add-compra-sheets', {
+        body: data,
       });
 
+      if (error) throw error;
+
       toast({
-        title: "Enviado para planilha",
-        description: "Os dados foram sincronizados com o Google Sheets.",
+        title: "Compra registrada!",
+        description: "Dados salvos na planilha com sucesso.",
       });
     } catch (error) {
-      console.error("Erro ao enviar para Sheets:", error);
+      console.error("Erro ao salvar compra:", error);
       toast({
-        title: "Erro na sincronização",
-        description: "Não foi possível enviar os dados para a planilha.",
+        title: "Erro ao salvar",
+        description: "Não foi possível registrar a compra na planilha.",
         variant: "destructive",
       });
     }
   };
 
-  const handlePurchaseSubmit = (data: object) => {
-    sendToSheets(data, "compra");
-  };
+  const handleSaleSubmit = async (data: SaleData) => {
+    try {
+      const { data: result, error } = await supabase.functions.invoke('add-venda-sheets', {
+        body: data,
+      });
 
-  const handleSaleSubmit = (data: object) => {
-    sendToSheets(data, "venda");
+      if (error) throw error;
+
+      toast({
+        title: "Venda registrada!",
+        description: "Dados salvos na planilha com sucesso.",
+      });
+    } catch (error) {
+      console.error("Erro ao salvar venda:", error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível registrar a venda na planilha.",
+        variant: "destructive",
+      });
+    }
   };
 
   const tabs = [
