@@ -11,6 +11,7 @@ import { StockReport } from "@/components/StockReport";
 import { SalesPlanning } from "@/components/SalesPlanning";
 import { DocsPage } from "@/components/DocsPage";
 import { PriceSimulator } from "@/components/PriceSimulator";
+import { ProfilePage } from "@/components/ProfilePage";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -28,11 +29,12 @@ import {
   Target,
   BookOpen,
   Calculator,
+  UserCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "simulador" | "admin" | "config" | "docs";
+type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "simulador" | "admin" | "config" | "docs" | "perfil";
 
 interface PurchaseData {
   insumo: string;
@@ -113,6 +115,7 @@ export default function Index() {
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
+    { id: "perfil" as TabType, label: "Perfil", icon: UserCircle, mobile: true, desktop: true },
   ];
 
   const mobileBottomTabs = allTabs.filter((t) => t.mobile);
@@ -139,6 +142,7 @@ export default function Index() {
         />
       );
     if (activeTab === "docs") return <DocsPage />;
+    if (activeTab === "perfil") return <ProfilePage />;
     return null;
   };
 
