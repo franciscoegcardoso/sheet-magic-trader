@@ -14,7 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      receita_ingredientes: {
+        Row: {
+          created_at: string
+          custo_unitario: number | null
+          id: string
+          insumo_nome: string
+          quantidade: number
+          receita_id: string
+          unidade: string | null
+        }
+        Insert: {
+          created_at?: string
+          custo_unitario?: number | null
+          id?: string
+          insumo_nome: string
+          quantidade?: number
+          receita_id: string
+          unidade?: string | null
+        }
+        Update: {
+          created_at?: string
+          custo_unitario?: number | null
+          id?: string
+          insumo_nome?: string
+          quantidade?: number
+          receita_id?: string
+          unidade?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receita_ingredientes_receita_id_fkey"
+            columns: ["receita_id"]
+            isOneToOne: false
+            referencedRelation: "receitas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      receitas: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          foto_url: string | null
+          id: string
+          modo_preparo: string | null
+          nome: string
+          rendimento: number | null
+          unidade_rendimento: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          foto_url?: string | null
+          id?: string
+          modo_preparo?: string | null
+          nome: string
+          rendimento?: number | null
+          unidade_rendimento?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          foto_url?: string | null
+          id?: string
+          modo_preparo?: string | null
+          nome?: string
+          rendimento?: number | null
+          unidade_rendimento?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
