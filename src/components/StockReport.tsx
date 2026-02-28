@@ -3,6 +3,7 @@ import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
 import { useReceitas } from "@/hooks/useReceitas";
 import { useProdutos } from "@/hooks/useProdutos";
+import { useProducao } from "@/hooks/useProducao";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Loader2,
   Warehouse,
@@ -19,6 +21,9 @@ import {
   CheckCircle2,
   Save,
   Package,
+  Factory,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -46,12 +51,20 @@ export function StockReport() {
   const { produtos, isLoading: loadingProdutos } = useProdutos();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { producoes, addProducao, deleteProducao, estoqueProdutos, isLoading: loadingProducao } = useProducao();
 
   const [diasSugestao, setDiasSugestao] = useState(30);
   const [savingReview, setSavingReview] = useState(false);
   const [inventoryRows, setInventoryRows] = useState<InventoryRow[]>([]);
 
-  const isLoading = loadingCompras || loadingVendas || loadingReceitas || loadingProdutos;
+  // Production form state
+  const [produtoSelecionado, setProdutoSelecionado] = useState("");
+  const [qtdProducao, setQtdProducao] = useState("");
+  const [dataProducao, setDataProducao] = useState(() => new Date().toISOString().split("T")[0]);
+  const [obsProducao, setObsProducao] = useState("");
+  const [savingProducao, setSavingProducao] = useState(false);
+
+  const isLoading = loadingCompras || loadingVendas || loadingReceitas || loadingProdutos || loadingProducao;
 
   // Fetch past reviews
   const { data: revisoes = [] } = useQuery({
@@ -240,17 +253,21 @@ export function StockReport() {
       </div>
 
       <Tabs defaultValue="estoque" className="w-full">
-        <TabsList className="w-full grid grid-cols-3">
-          <TabsTrigger value="estoque" className="text-xs">
-            <Package className="w-3.5 h-3.5 mr-1" />
+        <TabsList className="w-full grid grid-cols-4">
+          <TabsTrigger value="estoque" className="text-[10px] sm:text-xs">
+            <Package className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
             Estoque
           </TabsTrigger>
-          <TabsTrigger value="pedido" className="text-xs">
-            <ShoppingCart className="w-3.5 h-3.5 mr-1" />
+          <TabsTrigger value="producao" className="text-[10px] sm:text-xs">
+            <Factory className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
+            Produção
+          </TabsTrigger>
+          <TabsTrigger value="pedido" className="text-[10px] sm:text-xs">
+            <ShoppingCart className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
             Sugestão
           </TabsTrigger>
-          <TabsTrigger value="revisao" className="text-xs">
-            <ClipboardCheck className="w-3.5 h-3.5 mr-1" />
+          <TabsTrigger value="revisao" className="text-[10px] sm:text-xs">
+            <ClipboardCheck className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
             Revisão
           </TabsTrigger>
         </TabsList>
@@ -303,6 +320,112 @@ export function StockReport() {
                           : "Sem consumo recente"}
                       </span>
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        {/* Production Tab */}
+        <TabsContent value="producao" className="space-y-3">
+          {/* Production form */}
+          <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+            <h3 className="font-display font-semibold text-sm text-foreground">Lançar Produto Acabado</h3>
+            <div>
+              <Label className="text-xs text-muted-foreground">Produto</Label>
+              <Select value={produtoSelecionado} onValueChange={setProdutoSelecionado}>
+                <SelectTrigger className="h-9"><SelectValue placeholder="Selecione o produto..." /></SelectTrigger>
+                <SelectContent>
+                  {produtos.filter((p) => p.ativo).map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs text-muted-foreground">Quantidade</Label>
+                <Input type="number" step="1" min="1" value={qtdProducao} onChange={(e) => setQtdProducao(e.target.value)} placeholder="0" className="h-9" />
+              </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">Data</Label>
+                <Input type="date" value={dataProducao} onChange={(e) => setDataProducao(e.target.value)} className="h-9" />
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Observação (opcional)</Label>
+              <Input value={obsProducao} onChange={(e) => setObsProducao(e.target.value)} placeholder="Ex: Lote 23" className="h-9" />
+            </div>
+            <Button
+              className="w-full"
+              disabled={savingProducao || !produtoSelecionado || !qtdProducao}
+              onClick={async () => {
+                const prod = produtos.find((p) => p.id === produtoSelecionado);
+                if (!prod) return;
+                setSavingProducao(true);
+                try {
+                  await addProducao({
+                    produto_id: prod.id,
+                    produto_nome: prod.nome,
+                    quantidade: Number(qtdProducao),
+                    data_producao: dataProducao,
+                    observacao: obsProducao || null,
+                  });
+                  toast({ title: "Produção registrada!", description: `${qtdProducao}x ${prod.nome}` });
+                  setProdutoSelecionado("");
+                  setQtdProducao("");
+                  setObsProducao("");
+                } catch {
+                  toast({ title: "Erro ao registrar", variant: "destructive" });
+                } finally {
+                  setSavingProducao(false);
+                }
+              }}
+            >
+              {savingProducao ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+              Registrar Produção
+            </Button>
+          </div>
+
+          {/* Stock summary */}
+          {Object.keys(estoqueProdutos).length > 0 && (
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b border-border">
+                <h3 className="font-display font-semibold text-sm text-foreground">Estoque de Produtos Acabados</h3>
+              </div>
+              <div className="divide-y divide-border">
+                {Object.entries(estoqueProdutos).sort(([,a], [,b]) => b - a).map(([nome, qtd]) => (
+                  <div key={nome} className="flex items-center justify-between px-4 py-3">
+                    <span className="text-sm font-medium text-foreground">{nome}</span>
+                    <span className="text-sm font-bold text-primary">{qtd} un</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recent production entries */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-border">
+              <h3 className="font-display font-semibold text-sm text-foreground">Lançamentos Recentes</h3>
+            </div>
+            {producoes.length === 0 ? (
+              <p className="text-center text-sm text-muted-foreground py-8">Nenhum lançamento registrado</p>
+            ) : (
+              <div className="divide-y divide-border max-h-[40vh] overflow-y-auto">
+                {producoes.slice(0, 30).map((p) => (
+                  <div key={p.id} className="flex items-center justify-between px-4 py-3">
+                    <div>
+                      <span className="text-sm font-medium text-foreground">{p.produto_nome}</span>
+                      <span className="text-xs text-muted-foreground ml-2">
+                        {new Date(p.data_producao).toLocaleDateString("pt-BR")} · {Number(p.quantidade)} un
+                      </span>
+                      {p.observacao && <span className="text-xs text-muted-foreground ml-1">({p.observacao})</span>}
+                    </div>
+                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteProducao(p.id)}>
+                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                    </Button>
                   </div>
                 ))}
               </div>
