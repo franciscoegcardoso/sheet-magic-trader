@@ -5,7 +5,8 @@ import { SaleForm } from "@/components/SaleForm";
 import { SheetsConfig } from "@/components/SheetsConfig";
 import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
-import { AdminDashboard } from "@/components/AdminDashboard";
+import { ReportsPage } from "@/components/ReportsPage";
+import { DespesasPage } from "@/components/DespesasPage";
 import { ProductManager } from "@/components/ProductManager";
 import { CRMPage } from "@/components/CRMPage";
 import { StockReport } from "@/components/StockReport";
@@ -33,13 +34,14 @@ import {
   Megaphone,
   BookOpen,
   Calculator,
+  Wallet,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
   "home", "compra", "venda", "produto", "receita", "crm",
-  "estoque", "planejamento", "simulador", "marketing", "relatorios", "config", "docs", "configuracoes",
+  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "config", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
@@ -131,6 +133,7 @@ export default function Index() {
     { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true },
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
+    { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
@@ -150,7 +153,8 @@ export default function Index() {
     if (activeTab === "planejamento") return <SalesPlanning />;
     if (activeTab === "simulador") return <PriceSimulator />;
     if (activeTab === "marketing") return <MarketingPage />;
-    if (activeTab === "relatorios") return <AdminDashboard />;
+    if (activeTab === "relatorios") return <ReportsPage />;
+    if (activeTab === "despesas") return <DespesasPage />;
     if (activeTab === "config")
       return (
         <SheetsConfig
@@ -272,6 +276,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
+    { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
     { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
   ];
