@@ -26,18 +26,28 @@ export interface Produto {
   variacoes?: ProdutoVariacao[];
 }
 
-function generateBarcode(): string {
-  // Generate a 13-digit EAN-like code
-  const prefix = "789"; // Brazil prefix
-  const random = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10)).join("");
+// Generate an internal EAN-13 code (prefix 2 = internal use per GS1 standard)
+export function generateInternalBarcode(): string {
+  const prefix = "2"; // GS1 prefix for internal/restricted use
+  const random = Array.from({ length: 11 }, () => Math.floor(Math.random() * 10)).join("");
   const base = prefix + random;
-  // Calculate check digit
   let sum = 0;
   for (let i = 0; i < 12; i++) {
     sum += parseInt(base[i]) * (i % 2 === 0 ? 1 : 3);
   }
   const check = (10 - (sum % 10)) % 10;
   return base + check;
+}
+
+// Validate EAN-13 check digit
+export function isValidEAN13(code: string): boolean {
+  if (!/^\d{13}$/.test(code)) return false;
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    sum += parseInt(code[i]) * (i % 2 === 0 ? 1 : 3);
+  }
+  const check = (10 - (sum % 10)) % 10;
+  return check === parseInt(code[12]);
 }
 
 export function useProdutos() {
@@ -77,10 +87,10 @@ export function useProdutos() {
   }, [fetchProdutos]);
 
   const addProduto = async (
-    produto: Omit<Produto, "id" | "created_at" | "updated_at" | "variacoes" | "codigo_barras">,
+    produto: Omit<Produto, "id" | "created_at" | "updated_at" | "variacoes" | "codigo_barras"> & { codigo_barras?: string | null },
     variacoes: Omit<ProdutoVariacao, "id" | "produto_id" | "created_at">[]
   ) => {
-    const codigo_barras = generateBarcode();
+    const codigo_barras = produto.codigo_barras || generateInternalBarcode();
     const { data, error } = await supabase
       .from("produtos")
       .insert({

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useProdutos, ProdutoVariacao } from "@/hooks/useProdutos";
+import { useProdutos, ProdutoVariacao, generateInternalBarcode, isValidEAN13 } from "@/hooks/useProdutos";
 import { useReceitas } from "@/hooks/useReceitas";
 import { ProductBarcode } from "@/components/ProductBarcode";
 import {
@@ -27,6 +27,8 @@ import {
   Image as ImageIcon,
   X,
   ToggleLeft,
+  Barcode,
+  RefreshCw,
 } from "lucide-react";
 
 export function ProductManager() {
@@ -42,6 +44,8 @@ export function ProductManager() {
   const [fotoUrl, setFotoUrl] = useState("");
   const [ativo, setAtivo] = useState(true);
   const [receitaId, setReceitaId] = useState("");
+  const [codigoBarras, setCodigoBarras] = useState("");
+  const [codigoTipo, setCodigoTipo] = useState<"interno" | "gtin">("interno");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -56,6 +60,8 @@ export function ProductManager() {
     setFotoUrl("");
     setAtivo(true);
     setReceitaId("");
+    setCodigoBarras("");
+    setCodigoTipo("interno");
     setEditingId(null);
     setShowForm(false);
   };
@@ -66,6 +72,8 @@ export function ProductManager() {
     setFotoUrl(p.foto_url || "");
     setAtivo(p.ativo);
     setReceitaId(p.receita_id || "");
+    setCodigoBarras(p.codigo_barras || "");
+    setCodigoTipo(p.codigo_barras?.startsWith("2") ? "interno" : "gtin");
     setEditingId(p.id);
     setShowForm(true);
   };
@@ -92,8 +100,16 @@ export function ProductManager() {
       toast({ title: "Nome obrigatório", variant: "destructive" });
       return;
     }
+    // Validate GTIN if user entered one
+    if (codigoTipo === "gtin" && codigoBarras) {
+      if (!isValidEAN13(codigoBarras)) {
+        toast({ title: "GTIN inválido", description: "O código deve ter 13 dígitos numéricos com dígito verificador válido (EAN-13).", variant: "destructive" });
+        return;
+      }
+    }
     try {
       setIsSubmitting(true);
+      const barcode = codigoTipo === "gtin" && codigoBarras ? codigoBarras : undefined;
       const data = {
         nome,
         descricao: descricao || null,
@@ -106,10 +122,10 @@ export function ProductManager() {
       };
 
       if (editingId) {
-        await updateProduto(editingId, data);
+        await updateProduto(editingId, { ...data, codigo_barras: barcode || codigoBarras || null });
         toast({ title: "Produto atualizado!" });
       } else {
-        await addProduto(data, []);
+        await addProduto({ ...data, codigo_barras: barcode }, []);
         toast({ title: "Produto cadastrado!" });
       }
       resetForm();
@@ -283,6 +299,55 @@ export function ProductManager() {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* GTIN / Código de Barras */}
+          <div className="space-y-2 p-3 rounded-lg border border-border bg-secondary/20">
+            <Label className="text-xs text-muted-foreground flex items-center gap-1">
+              <Barcode className="w-3.5 h-3.5" />
+              Código de Barras (GTIN / EAN-13)
+            </Label>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant={codigoTipo === "interno" ? "default" : "outline"}
+                size="sm"
+                className="text-xs"
+                onClick={() => { setCodigoTipo("interno"); setCodigoBarras(""); }}
+              >
+                Código Interno
+              </Button>
+              <Button
+                type="button"
+                variant={codigoTipo === "gtin" ? "default" : "outline"}
+                size="sm"
+                className="text-xs"
+                onClick={() => { setCodigoTipo("gtin"); setCodigoBarras(""); }}
+              >
+                GTIN Oficial
+              </Button>
+            </div>
+            {codigoTipo === "gtin" ? (
+              <div>
+                <Input
+                  value={codigoBarras}
+                  onChange={(e) => setCodigoBarras(e.target.value.replace(/\D/g, "").slice(0, 13))}
+                  placeholder="Ex: 7891234567890"
+                  maxLength={13}
+                  className="font-mono"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Código EAN-13 do produto (13 dígitos). Prefixos 789/790 = Brasil.
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-xs text-muted-foreground">
+                  Um código interno (prefixo 2, padrão GS1) será gerado automaticamente ao cadastrar.
+                  Ideal para produtos artesanais ou sem registro GS1.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between py-1">
