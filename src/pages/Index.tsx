@@ -6,14 +6,15 @@ import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import { ProductManager } from "@/components/ProductManager";
+import { CRMPage } from "@/components/CRMPage";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
-import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3, Package } from "lucide-react";
+import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3, Package, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "compra" | "venda" | "produto" | "receita" | "admin" | "config";
+type TabType = "compra" | "venda" | "produto" | "receita" | "crm" | "admin" | "config";
 
 interface PurchaseData {
   insumo: string;
@@ -74,6 +75,7 @@ export default function Index() {
         forma_pagamento: data.formaPagamento,
         valor_venda: Number(data.valorVenda),
         data_venda: new Date().toISOString().split("T")[0],
+        cliente_id: null,
       });
       // Also send to Sheets
       await supabase.functions.invoke('add-venda-sheets', { body: data }).catch(() => {});
@@ -89,6 +91,7 @@ export default function Index() {
     { id: "venda" as TabType, label: "Venda", icon: Receipt },
     { id: "produto" as TabType, label: "Produtos", icon: Package },
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
+    { id: "crm" as TabType, label: "CRM", icon: Users },
     { id: "admin" as TabType, label: "Admin", icon: BarChart3 },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet },
   ];
@@ -144,6 +147,7 @@ export default function Index() {
               <RecipeList />
             </div>
           )}
+          {activeTab === "crm" && <CRMPage />}
           {activeTab === "admin" && <AdminDashboard />}
           {activeTab === "config" && (
             <SheetsConfig

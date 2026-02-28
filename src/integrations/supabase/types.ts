@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      clientes: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          email: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       compras: {
         Row: {
           created_at: string
@@ -217,6 +250,7 @@ export type Database = {
       vendas: {
         Row: {
           cliente: string
+          cliente_id: string | null
           created_at: string
           data_venda: string
           embalagem: string | null
@@ -230,6 +264,7 @@ export type Database = {
         }
         Insert: {
           cliente: string
+          cliente_id?: string | null
           created_at?: string
           data_venda?: string
           embalagem?: string | null
@@ -243,6 +278,7 @@ export type Database = {
         }
         Update: {
           cliente?: string
+          cliente_id?: string | null
           created_at?: string
           data_venda?: string
           embalagem?: string | null
@@ -254,7 +290,15 @@ export type Database = {
           valor_frete?: number | null
           valor_venda?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vendas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
