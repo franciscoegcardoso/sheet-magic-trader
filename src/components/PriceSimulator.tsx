@@ -5,6 +5,7 @@ import { useCompras } from "@/hooks/useCompras";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { GrossProfitCalculator } from "@/components/GrossProfitCalculator";
 import {
   Calculator,
   Loader2,
@@ -34,7 +35,6 @@ export function PriceSimulator() {
   const [taxaPercent, setTaxaPercent] = useState("3.5");
   const [embalagemCusto, setEmbalagemCusto] = useState("");
   const [entregaCusto, setEntregaCusto] = useState("");
-  const [showEducation, setShowEducation] = useState(true);
   const [showStrategy, setShowStrategy] = useState(false);
 
   // Calculate CMV for products
@@ -324,74 +324,11 @@ export function PriceSimulator() {
         </>
       )}
 
-      {/* ===== EDUCATIONAL SECTION ===== */}
+      {/* ===== LUCRO BRUTO MÍNIMO IDEAL ===== */}
+      <GrossProfitCalculator />
+
+      {/* ===== STRATEGY SECTION ===== */}
       <div className="space-y-3">
-        {/* Minimum gross profit explanation */}
-        <button
-          onClick={() => setShowEducation(!showEducation)}
-          className="w-full bg-card border border-border rounded-xl p-4 text-left flex items-start gap-3"
-        >
-          <Lightbulb className="w-5 h-5 text-warning shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-foreground">
-                Qual o lucro bruto mínimo ideal?
-              </h3>
-              {showEducation ? (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
-              )}
-            </div>
-          </div>
-        </button>
-
-        {showEducation && (
-          <div className="bg-accent/30 border border-border rounded-xl p-4 space-y-4">
-            <p className="text-sm text-foreground leading-relaxed">
-              O <strong>Lucro Bruto</strong> não é o lucro final — ele ainda precisa cobrir os{" "}
-              <strong>custos administrativos</strong> da empresa:
-            </p>
-
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: "Aluguel", emoji: "🏠" },
-                { label: "Energia / Água", emoji: "💡" },
-                { label: "Internet / Tel.", emoji: "📱" },
-                { label: "Contador", emoji: "📋" },
-                { label: "Manutenção", emoji: "🔧" },
-                { label: "Marketing", emoji: "📢" },
-                { label: "Pró-labore", emoji: "👤" },
-                { label: "Reserva", emoji: "🏦" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border"
-                >
-                  <span className="text-base">{item.emoji}</span>
-                  <span className="text-xs text-foreground">{item.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-card border border-border rounded-xl p-4 space-y-2">
-              <h4 className="text-xs font-semibold text-foreground">📏 Referência de Margem Bruta</h4>
-              <div className="space-y-1.5">
-                <MarginRef label="Abaixo de 15%" level="danger" desc="Prejuízo quase certo. Os custos fixos vão consumir tudo." />
-                <MarginRef label="15% a 25%" level="attention" desc="Zona de atenção. Sobra pouco para custos fixos." />
-                <MarginRef label="25% a 40%" level="good" desc="Saudável. Consegue cobrir custos fixos e ter lucro." />
-                <MarginRef label="Acima de 40%" level="excellent" desc="Excelente! Margem confortável para crescer." />
-              </div>
-            </div>
-
-            <p className="text-xs text-muted-foreground italic">
-              💡 Dica: some todos os custos fixos mensais e divida pelo faturamento. Se o resultado
-              for 20%, seu lucro bruto mínimo precisa ser pelo menos 20% + a margem de lucro desejada.
-            </p>
-          </div>
-        )}
-
-        {/* Strategy section — chamariz vs premium */}
         <button
           onClick={() => setShowStrategy(!showStrategy)}
           className="w-full bg-card border border-border rounded-xl p-4 text-left flex items-start gap-3"
@@ -432,8 +369,7 @@ export function PriceSimulator() {
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   É o produto que <strong>atrai clientes</strong>. Tem preço competitivo e margem reduzida
-                  (10-20%), mas gera <strong>tráfego e volume</strong>. Ex: um bolo simples com preço acessível
-                  que faz o cliente conhecer sua marca.
+                  (10-20%), mas gera <strong>tráfego e volume</strong>.
                 </p>
                 <div className="mt-2 flex items-center gap-1.5 text-[10px]">
                   <ArrowDown className="w-3 h-3 text-warning" />
@@ -457,8 +393,7 @@ export function PriceSimulator() {
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   É o produto que <strong>gera lucro real</strong>. Tem margem alta (40-60%+) por agregar
-                  mais valor: personalização, ingredientes especiais, apresentação diferenciada. Ex: um
-                  bolo decorado sob encomenda.
+                  mais valor: personalização, ingredientes especiais, apresentação diferenciada.
                 </p>
                 <div className="mt-2 flex items-center gap-1.5 text-[10px]">
                   <ArrowUp className="w-3 h-3 text-primary" />
@@ -470,52 +405,12 @@ export function PriceSimulator() {
               </div>
             </div>
 
-            {/* Balance illustration */}
-            <div className="bg-card border border-border rounded-xl p-4">
-              <h4 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-1.5">
-                ⚖️ O segredo é o equilíbrio
-              </h4>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1">
-                    <div className="flex justify-between text-[10px] mb-1">
-                      <span className="text-muted-foreground">Chamariz — margem 15%</span>
-                      <span className="text-foreground font-medium">60 vendas</span>
-                    </div>
-                    <div className="h-3 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full bg-warning/60 rounded-full" style={{ width: "60%" }} />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1">
-                    <div className="flex justify-between text-[10px] mb-1">
-                      <span className="text-muted-foreground">Premium — margem 50%</span>
-                      <span className="text-foreground font-medium">20 vendas</span>
-                    </div>
-                    <div className="h-3 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full bg-primary/70 rounded-full" style={{ width: "40%" }} />
-                    </div>
-                  </div>
-                </div>
-                <div className="text-center pt-2 border-t border-border">
-                  <p className="text-xs text-muted-foreground">
-                    Margem média ponderada: <strong className="text-primary">~25-30%</strong>
-                  </p>
-                  <p className="text-[10px] text-muted-foreground mt-1">
-                    O chamariz traz os clientes. O premium paga as contas. Juntos, fecham a conta! ✅
-                  </p>
-                </div>
-              </div>
-            </div>
-
             <div className="flex items-start gap-2 p-3 rounded-lg bg-primary/10 border border-primary/20">
               <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <p className="text-xs text-foreground leading-relaxed">
                 <strong>Na prática:</strong> use o simulador acima para testar cada produto.
-                Identifique quais são seus chamarizes e quais são os premium. Garanta que a{" "}
-                <strong>margem média ponderada</strong> do seu mix de produtos seja suficiente
-                para cobrir todos os custos fixos + lucro desejado.
+                Garanta que a <strong>margem média ponderada</strong> do seu mix de produtos
+                seja suficiente para cobrir todos os custos fixos + lucro desejado.
               </p>
             </div>
           </div>
@@ -573,31 +468,5 @@ function HealthBadge({ level, percent }: { level: string; percent: number }) {
     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${c.bg} ${c.text}`}>
       {c.label} ({percent.toFixed(1)}%)
     </span>
-  );
-}
-
-function MarginRef({
-  label,
-  level,
-  desc,
-}: {
-  label: string;
-  level: "danger" | "attention" | "good" | "excellent";
-  desc: string;
-}) {
-  const colors: Record<string, string> = {
-    danger: "bg-destructive",
-    attention: "bg-warning",
-    good: "bg-primary/70",
-    excellent: "bg-primary",
-  };
-  return (
-    <div className="flex items-start gap-2">
-      <div className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1 ${colors[level]}`} />
-      <div>
-        <span className="text-xs font-semibold text-foreground">{label}</span>
-        <span className="text-xs text-muted-foreground ml-1">— {desc}</span>
-      </div>
-    </div>
   );
 }
