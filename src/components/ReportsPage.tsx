@@ -4,9 +4,11 @@ import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
 import { useProdutos } from "@/hooks/useProdutos";
 import { useDespesasFixas } from "@/hooks/useDespesasFixas";
+import { exportToCSV } from "@/lib/exportUtils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Bar,
@@ -34,6 +36,7 @@ import {
   Wallet,
   ArrowUpRight,
   ArrowDownRight,
+  Download,
 } from "lucide-react";
 
 const COLORS = [
@@ -178,6 +181,89 @@ export function ReportsPage() {
       .sort((a, b) => b.value - a.value);
   }, [vendasFiltradas]);
 
+  // Export functions
+  const exportVendas = () => {
+    exportToCSV(
+      vendasFiltradas.map((v) => ({
+        data: v.data_venda,
+        produto: v.produto,
+        cliente: v.cliente,
+        valor: Number(v.valor_venda).toFixed(2),
+        pagamento: v.forma_pagamento || "",
+        tamanho: v.tamanho || "",
+        frete: Number(v.valor_frete || 0).toFixed(2),
+      })),
+      `vendas_${dataInicio}_${dataFim}`,
+      [
+        { key: "data", label: "Data" },
+        { key: "produto", label: "Produto" },
+        { key: "cliente", label: "Cliente" },
+        { key: "valor", label: "Valor (R$)" },
+        { key: "pagamento", label: "Pagamento" },
+        { key: "tamanho", label: "Tamanho" },
+        { key: "frete", label: "Frete (R$)" },
+      ]
+    );
+  };
+
+  const exportMargem = () => {
+    exportToCSV(
+      margemPorProduto.map((p) => ({
+        produto: p.nome,
+        custo: p.custoPorUn.toFixed(2),
+        preco: p.precoVenda.toFixed(2),
+        margem_un: p.margemUnitaria.toFixed(2),
+        margem_pct: p.margemPercent.toFixed(1),
+        qtd_vendas: p.qtdVendas,
+        lucro_total: p.margemTotal.toFixed(2),
+      })),
+      `margem_produtos_${dataInicio}_${dataFim}`,
+      [
+        { key: "produto", label: "Produto" },
+        { key: "custo", label: "Custo (R$)" },
+        { key: "preco", label: "Preço (R$)" },
+        { key: "margem_un", label: "Margem/un (R$)" },
+        { key: "margem_pct", label: "Margem (%)" },
+        { key: "qtd_vendas", label: "Qtd Vendas" },
+        { key: "lucro_total", label: "Lucro Total (R$)" },
+      ]
+    );
+  };
+
+  const exportCustos = () => {
+    exportToCSV(
+      custoMedioPorInsumo.map((c) => ({
+        insumo: c.insumo_nome,
+        custo_medio: c.custo_medio.toFixed(2),
+        total_gasto: c.total_gasto.toFixed(2),
+        num_compras: c.num_compras,
+      })),
+      `custos_insumos`,
+      [
+        { key: "insumo", label: "Insumo" },
+        { key: "custo_medio", label: "Custo Médio (R$)" },
+        { key: "total_gasto", label: "Total Gasto (R$)" },
+        { key: "num_compras", label: "Nº Compras" },
+      ]
+    );
+  };
+
+  const exportDespesas = () => {
+    exportToCSV(
+      despesas.filter((d) => d.ativo).map((d) => ({
+        categoria: d.categoria,
+        descricao: d.descricao || "",
+        valor: Number(d.valor).toFixed(2),
+      })),
+      `despesas_fixas`,
+      [
+        { key: "categoria", label: "Categoria" },
+        { key: "descricao", label: "Descrição" },
+        { key: "valor", label: "Valor (R$)" },
+      ]
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -244,6 +330,11 @@ export function ReportsPage() {
 
         {/* Sales Tab */}
         <TabsContent value="vendas" className="space-y-4">
+          <div className="flex justify-end">
+            <Button variant="outline" size="sm" onClick={exportVendas} disabled={vendasFiltradas.length === 0}>
+              <Download className="w-4 h-4 mr-1" /> Exportar CSV
+            </Button>
+          </div>
           <ReportCard title="Vendas Diárias">
             {vendasDiarias.length === 0 ? (
               <EmptyState text="Nenhuma venda no período selecionado" />
@@ -306,6 +397,11 @@ export function ReportsPage() {
 
         {/* Margin Tab */}
         <TabsContent value="margem">
+          <div className="flex justify-end mb-4">
+            <Button variant="outline" size="sm" onClick={exportMargem} disabled={margemPorProduto.length === 0}>
+              <Download className="w-4 h-4 mr-1" /> Exportar CSV
+            </Button>
+          </div>
           <ReportCard title="Margem por Produto">
             {margemPorProduto.length === 0 ? (
               <EmptyState text="Cadastre produtos com receita vinculada" />
@@ -367,6 +463,11 @@ export function ReportsPage() {
 
         {/* Costs Tab */}
         <TabsContent value="custos" className="space-y-4">
+          <div className="flex justify-end">
+            <Button variant="outline" size="sm" onClick={exportCustos} disabled={custoMedioPorInsumo.length === 0}>
+              <Download className="w-4 h-4 mr-1" /> Exportar CSV
+            </Button>
+          </div>
           <ReportCard title="Custo de Produção por Receita">
             {receitasComCustoMedio.length === 0 ? (
               <EmptyState text="Cadastre receitas e registre compras" />
@@ -415,6 +516,11 @@ export function ReportsPage() {
 
         {/* Expenses Tab */}
         <TabsContent value="despesas" className="space-y-4">
+          <div className="flex justify-end">
+            <Button variant="outline" size="sm" onClick={exportDespesas} disabled={despesas.filter(d => d.ativo).length === 0}>
+              <Download className="w-4 h-4 mr-1" /> Exportar CSV
+            </Button>
+          </div>
           <ReportCard title="Despesas Fixas Mensais">
             {despesasPieData.length === 0 ? (
               <EmptyState text="Cadastre despesas fixas para ver o relatório" />
