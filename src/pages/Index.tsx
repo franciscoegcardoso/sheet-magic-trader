@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
 import { SheetsConfig } from "@/components/SheetsConfig";
@@ -25,7 +26,6 @@ import {
   Package,
   Users,
   Warehouse,
-  Plus,
   Home,
   Target,
   BookOpen,
@@ -35,7 +35,12 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "simulador" | "admin" | "config" | "docs" | "perfil";
+const VALID_TABS = [
+  "home", "compra", "venda", "produto", "receita", "crm",
+  "estoque", "planejamento", "simulador", "admin", "config", "docs", "perfil",
+] as const;
+
+type TabType = (typeof VALID_TABS)[number];
 
 interface PurchaseData {
   insumo: string;
@@ -60,7 +65,16 @@ export default function Index() {
   const { toast } = useToast();
   const { addCompra } = useCompras();
   const { addVenda } = useVendas();
-  const [activeTab, setActiveTab] = useState<TabType>("home");
+  const navigate = useNavigate();
+  const { tab } = useParams<{ tab?: string }>();
+
+  const activeTab: TabType =
+    tab && VALID_TABS.includes(tab as TabType) ? (tab as TabType) : (tab ? "home" : "home");
+
+  const setActiveTab = (t: TabType) => {
+    navigate(t === "home" ? "/" : `/${t}`);
+  };
+
   const [webhookUrl, setWebhookUrl] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
@@ -209,12 +223,10 @@ export default function Index() {
 
       {/* ===== MOBILE LAYOUT (< md) ===== */}
       <div className="md:hidden flex flex-col min-h-screen pb-16">
-        {/* Mobile content area */}
         <main className="flex-1 px-4 pt-4 pb-4 overflow-y-auto">
           {renderContent()}
         </main>
 
-        {/* Bottom navigation */}
         <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 safe-area-bottom">
           <div className="flex items-stretch">
             {mobileBottomTabs.map((tab) => {
@@ -261,13 +273,11 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header */}
       <div className="text-center pt-4 pb-2">
         <h1 className="text-2xl font-display font-bold text-foreground">Controle Financeiro</h1>
         <p className="text-sm text-muted-foreground mt-1">O que deseja registrar?</p>
       </div>
 
-      {/* Quick Actions — big prominent buttons */}
       <div className="grid grid-cols-2 gap-3">
         {quickActions.map((action) => {
           const Icon = action.icon;
@@ -289,7 +299,6 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         })}
       </div>
 
-      {/* Other sections */}
       <div>
         <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
           Gestão
