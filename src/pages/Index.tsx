@@ -11,11 +11,22 @@ import { StockReport } from "@/components/StockReport";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
-import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3, Package, Users, Warehouse } from "lucide-react";
+import {
+  ShoppingCart,
+  Receipt,
+  FileSpreadsheet,
+  ChefHat,
+  BarChart3,
+  Package,
+  Users,
+  Warehouse,
+  Plus,
+  Home,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "admin" | "config";
+type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "admin" | "config";
 
 interface PurchaseData {
   insumo: string;
@@ -40,13 +51,12 @@ export default function Index() {
   const { toast } = useToast();
   const { addCompra } = useCompras();
   const { addVenda } = useVendas();
-  const [activeTab, setActiveTab] = useState<TabType>("compra");
+  const [activeTab, setActiveTab] = useState<TabType>("home");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePurchaseSubmit = async (data: PurchaseData) => {
     try {
-      // Save to DB
       await addCompra({
         insumo_nome: data.insumo,
         quantidade: Number(data.quantidade),
@@ -54,7 +64,6 @@ export default function Index() {
         data_compra: data.dataCompra,
         valor_compra: Number(data.valorCompra),
       });
-      // Also send to Sheets
       await supabase.functions.invoke('add-compra-sheets', { body: data }).catch(() => {});
       toast({ title: "Compra registrada!", description: "Dados salvos com sucesso." });
     } catch (error) {
@@ -65,7 +74,6 @@ export default function Index() {
 
   const handleSaleSubmit = async (data: SaleData) => {
     try {
-      // Save to DB
       await addVenda({
         cliente: data.cliente,
         telefone_cliente: data.telefoneCliente,
@@ -78,7 +86,6 @@ export default function Index() {
         data_venda: new Date().toISOString().split("T")[0],
         cliente_id: null,
       });
-      // Also send to Sheets
       await supabase.functions.invoke('add-venda-sheets', { body: data }).catch(() => {});
       toast({ title: "Venda registrada!", description: "Dados salvos com sucesso." });
     } catch (error) {
@@ -87,93 +94,199 @@ export default function Index() {
     }
   };
 
-  const tabs = [
-    { id: "compra" as TabType, label: "Compra", icon: ShoppingCart },
-    { id: "venda" as TabType, label: "Venda", icon: Receipt },
-    { id: "produto" as TabType, label: "Produtos", icon: Package },
-    { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
-    { id: "crm" as TabType, label: "CRM", icon: Users },
-    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
-    { id: "admin" as TabType, label: "Admin", icon: BarChart3 },
-    { id: "config" as TabType, label: "Config", icon: FileSpreadsheet },
+  const allTabs = [
+    { id: "home" as TabType, label: "Início", icon: Home, mobile: true, desktop: false },
+    { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true },
+    { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true },
+    { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true },
+    { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true },
+    { id: "crm" as TabType, label: "CRM", icon: Users, mobile: false, desktop: true },
+    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true },
+    { id: "admin" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
+    { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
   ];
+
+  const mobileBottomTabs = allTabs.filter((t) => t.mobile);
+  const desktopSidebarTabs = allTabs.filter((t) => t.desktop);
+
+  const renderContent = () => {
+    if (activeTab === "home") return <MobileHome onNavigate={setActiveTab} />;
+    if (activeTab === "compra") return <PurchaseForm onSubmit={handlePurchaseSubmit} />;
+    if (activeTab === "venda") return <SaleForm onSubmit={handleSaleSubmit} />;
+    if (activeTab === "produto") return <ProductManager />;
+    if (activeTab === "receita") return <div className="space-y-6"><RecipeForm /><RecipeList /></div>;
+    if (activeTab === "crm") return <CRMPage />;
+    if (activeTab === "estoque") return <StockReport />;
+    if (activeTab === "admin") return <AdminDashboard />;
+    if (activeTab === "config")
+      return (
+        <SheetsConfig
+          webhookUrl={webhookUrl}
+          setWebhookUrl={setWebhookUrl}
+          isConnected={isConnected}
+          setIsConnected={setIsConnected}
+        />
+      );
+    return null;
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">
-            Controle Financeiro
-          </h1>
-          <p className="text-muted-foreground">
-            Gerencie suas compras, vendas e receitas com facilidade
-          </p>
-        </div>
-
-        {/* Connection Status */}
-        {isConnected && (
-          <div className="flex items-center justify-center gap-2 mb-6 text-sm text-primary">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Conectado ao Google Sheets
+      {/* ===== DESKTOP / TABLET LAYOUT (md+) ===== */}
+      <div className="hidden md:flex min-h-screen">
+        {/* Sidebar */}
+        <aside className="w-56 lg:w-64 border-r border-border bg-card flex flex-col shrink-0">
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center gap-2.5">
+              <img src={logo} alt="Logo" className="h-7" />
+              <div>
+                <h1 className="text-sm font-display font-bold text-foreground leading-tight">
+                  Controle Financeiro
+                </h1>
+                <p className="text-[10px] text-muted-foreground">Gestão completa</p>
+              </div>
+            </div>
           </div>
-        )}
 
-        {/* Tabs */}
-        <div className="flex gap-1 p-1.5 bg-secondary rounded-xl mb-6 overflow-x-auto">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
+          {isConnected && (
+            <div className="flex items-center gap-1.5 px-4 py-2 text-[11px] text-primary border-b border-border">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Google Sheets conectado
+            </div>
+          )}
+
+          <nav className="flex-1 py-2 overflow-y-auto">
+            {desktopSidebarTabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-accent text-accent-foreground border-r-2 border-primary"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="p-3 border-t border-border">
+            <img src={logo} alt="Vértice Soluções" className="h-6 opacity-50 mx-auto" />
+          </div>
+        </aside>
+
+        {/* Main content */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="max-w-3xl mx-auto px-6 py-8">
+            {renderContent()}
+          </div>
+        </main>
+      </div>
+
+      {/* ===== MOBILE LAYOUT (< md) ===== */}
+      <div className="md:hidden flex flex-col min-h-screen pb-16">
+        {/* Mobile content area */}
+        <main className="flex-1 px-4 pt-4 pb-4 overflow-y-auto">
+          {renderContent()}
+        </main>
+
+        {/* Bottom navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 safe-area-bottom">
+          <div className="flex items-stretch">
+            {mobileBottomTabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition-colors ${
+                    isActive ? "text-primary" : "text-muted-foreground"
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
+                  <span className="text-[10px] font-medium">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+      </div>
+    </div>
+  );
+}
+
+/* ===== Mobile Home Screen ===== */
+function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
+  const quickActions = [
+    { id: "compra" as TabType, label: "Nova Compra", icon: ShoppingCart, desc: "Registrar entrada" },
+    { id: "venda" as TabType, label: "Nova Venda", icon: Receipt, desc: "Registrar saída" },
+  ];
+
+  const menuItems = [
+    { id: "produto" as TabType, label: "Produtos", icon: Package },
+    { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
+    { id: "crm" as TabType, label: "Clientes", icon: Users },
+    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
+    { id: "admin" as TabType, label: "Relatórios", icon: BarChart3 },
+    { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
+  ];
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      {/* Header */}
+      <div className="text-center pt-4 pb-2">
+        <h1 className="text-2xl font-display font-bold text-foreground">Controle Financeiro</h1>
+        <p className="text-sm text-muted-foreground mt-1">O que deseja registrar?</p>
+      </div>
+
+      {/* Quick Actions — big prominent buttons */}
+      <div className="grid grid-cols-2 gap-3">
+        {quickActions.map((action) => {
+          const Icon = action.icon;
+          return (
+            <button
+              key={action.id}
+              onClick={() => onNavigate(action.id)}
+              className="flex flex-col items-center gap-2 p-6 rounded-2xl bg-primary text-primary-foreground shadow-lg active:scale-[0.97] transition-transform"
+            >
+              <div className="w-12 h-12 rounded-full bg-primary-foreground/20 flex items-center justify-center">
+                <Icon className="w-6 h-6" />
+              </div>
+              <div className="text-center">
+                <span className="text-sm font-semibold block">{action.label}</span>
+                <span className="text-[11px] opacity-80">{action.desc}</span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Other sections */}
+      <div>
+        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+          Gestão
+        </h2>
+        <div className="grid grid-cols-3 gap-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
             return (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg font-medium text-xs sm:text-sm transition-all whitespace-nowrap ${
-                  activeTab === tab.id ? "tab-active" : "tab-inactive"
-                }`}
+                key={item.id}
+                onClick={() => onNavigate(item.id)}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border active:bg-accent transition-colors"
               >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span className="hidden sm:inline">{tab.label}</span>
+                <Icon className="w-5 h-5 text-primary" />
+                <span className="text-[11px] font-medium text-foreground">{item.label}</span>
               </button>
             );
           })}
-        </div>
-
-        {/* Content */}
-        <div className="relative">
-          {activeTab === "compra" && <PurchaseForm onSubmit={handlePurchaseSubmit} />}
-          {activeTab === "venda" && <SaleForm onSubmit={handleSaleSubmit} />}
-          {activeTab === "produto" && <ProductManager />}
-          {activeTab === "receita" && (
-            <div className="space-y-6">
-              <RecipeForm />
-              <RecipeList />
-            </div>
-          )}
-          {activeTab === "crm" && <CRMPage />}
-          {activeTab === "estoque" && <StockReport />}
-          {activeTab === "admin" && <AdminDashboard />}
-          {activeTab === "config" && (
-            <SheetsConfig
-              webhookUrl={webhookUrl}
-              setWebhookUrl={setWebhookUrl}
-              isConnected={isConnected}
-              setIsConnected={setIsConnected}
-            />
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="flex flex-col items-center gap-3 mt-8">
-          <p className="text-xs text-muted-foreground">
-            Os dados são enviados para sua planilha quando a integração está ativa
-          </p>
-          <img
-            src={logo}
-            alt="Vértice Soluções"
-            className="h-8 opacity-60"
-            loading="lazy"
-            decoding="async"
-          />
         </div>
       </div>
     </div>
