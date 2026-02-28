@@ -9,6 +9,7 @@ import { ProductManager } from "@/components/ProductManager";
 import { CRMPage } from "@/components/CRMPage";
 import { StockReport } from "@/components/StockReport";
 import { SalesPlanning } from "@/components/SalesPlanning";
+import { DocsPage } from "@/components/DocsPage";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -24,11 +25,12 @@ import {
   Plus,
   Home,
   Target,
+  BookOpen,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "admin" | "config";
+type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "admin" | "config" | "docs";
 
 interface PurchaseData {
   insumo: string;
@@ -107,6 +109,7 @@ export default function Index() {
     { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true },
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
+    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
   ];
 
   const mobileBottomTabs = allTabs.filter((t) => t.mobile);
@@ -131,6 +134,7 @@ export default function Index() {
           setIsConnected={setIsConnected}
         />
       );
+    if (activeTab === "docs") return <DocsPage />;
     return null;
   };
 
@@ -241,6 +245,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
+    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
   ];
 
   return (
