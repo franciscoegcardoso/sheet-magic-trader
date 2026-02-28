@@ -12,6 +12,7 @@ import { SalesPlanning } from "@/components/SalesPlanning";
 import { DocsPage } from "@/components/DocsPage";
 import { PriceSimulator } from "@/components/PriceSimulator";
 import { ProfilePage } from "@/components/ProfilePage";
+import { HelpButton } from "@/components/HelpButton";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -148,6 +149,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      {activeTab !== "docs" && <HelpButton onClick={() => setActiveTab("docs")} />}
       {/* ===== DESKTOP / TABLET LAYOUT (md+) ===== */}
       <div className="hidden md:flex min-h-screen">
         {/* Sidebar */}
