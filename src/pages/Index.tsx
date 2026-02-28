@@ -8,6 +8,7 @@ import { AdminDashboard } from "@/components/AdminDashboard";
 import { ProductManager } from "@/components/ProductManager";
 import { CRMPage } from "@/components/CRMPage";
 import { StockReport } from "@/components/StockReport";
+import { SalesPlanning } from "@/components/SalesPlanning";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -22,11 +23,12 @@ import {
   Warehouse,
   Plus,
   Home,
+  Target,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "admin" | "config";
+type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "admin" | "config";
 
 interface PurchaseData {
   insumo: string;
@@ -102,6 +104,7 @@ export default function Index() {
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true },
     { id: "crm" as TabType, label: "CRM", icon: Users, mobile: false, desktop: true },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true },
+    { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true },
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
   ];
@@ -117,6 +120,7 @@ export default function Index() {
     if (activeTab === "receita") return <div className="space-y-6"><RecipeForm /><RecipeList /></div>;
     if (activeTab === "crm") return <CRMPage />;
     if (activeTab === "estoque") return <StockReport />;
+    if (activeTab === "planejamento") return <SalesPlanning />;
     if (activeTab === "admin") return <AdminDashboard />;
     if (activeTab === "config")
       return (
@@ -234,6 +238,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
     { id: "crm" as TabType, label: "Clientes", icon: Users },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
+    { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
   ];
