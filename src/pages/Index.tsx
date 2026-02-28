@@ -10,6 +10,7 @@ import { CRMPage } from "@/components/CRMPage";
 import { StockReport } from "@/components/StockReport";
 import { SalesPlanning } from "@/components/SalesPlanning";
 import { DocsPage } from "@/components/DocsPage";
+import { PriceSimulator } from "@/components/PriceSimulator";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -26,11 +27,12 @@ import {
   Home,
   Target,
   BookOpen,
+  Calculator,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "admin" | "config" | "docs";
+type TabType = "home" | "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "planejamento" | "simulador" | "admin" | "config" | "docs";
 
 interface PurchaseData {
   insumo: string;
@@ -107,6 +109,7 @@ export default function Index() {
     { id: "crm" as TabType, label: "CRM", icon: Users, mobile: false, desktop: true },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true },
     { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true },
+    { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true },
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
@@ -124,6 +127,7 @@ export default function Index() {
     if (activeTab === "crm") return <CRMPage />;
     if (activeTab === "estoque") return <StockReport />;
     if (activeTab === "planejamento") return <SalesPlanning />;
+    if (activeTab === "simulador") return <PriceSimulator />;
     if (activeTab === "admin") return <AdminDashboard />;
     if (activeTab === "config")
       return (
@@ -243,6 +247,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "crm" as TabType, label: "Clientes", icon: Users },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
     { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
+    { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
