@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useReceitas } from "@/hooks/useReceitas";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
+import { useProdutos } from "@/hooks/useProdutos";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   BarChart3,
@@ -19,8 +20,9 @@ export function AdminDashboard() {
   const { receitas, isLoading: loadingReceitas } = useReceitas();
   const { compras, custoMedioPorInsumo, isLoading: loadingCompras } = useCompras();
   const { vendas, isLoading: loadingVendas } = useVendas();
+  const { produtos, isLoading: loadingProdutos } = useProdutos();
 
-  const isLoading = loadingReceitas || loadingCompras || loadingVendas;
+  const isLoading = loadingReceitas || loadingCompras || loadingVendas || loadingProdutos;
 
   // Compute recipe cost using average purchase cost
   const receitasComCustoMedio = useMemo(() => {
@@ -189,28 +191,38 @@ export function AdminDashboard() {
         {/* Consolidated Report */}
         <TabsContent value="consolidado">
           <ReportCard title="Produto · Receita · Custo · Margem">
-            {receitasComCustoMedio.length === 0 ? (
-              <EmptyState text="Cadastre receitas e registre vendas para ver o consolidado" />
+            {produtos.length === 0 ? (
+              <EmptyState text="Cadastre produtos para ver o consolidado" />
             ) : (
               <div className="divide-y divide-border">
-                {receitasComCustoMedio.map((r) => {
-                  // Find sales matching this recipe/product name
+                {produtos.map((p) => {
+                  const receita = receitasComCustoMedio.find((r) => r.id === p.receita_id);
+                  const custoPorUn = receita
+                    ? receita.rendimento && receita.rendimento > 0
+                      ? receita.custo_calculado / receita.rendimento
+                      : receita.custo_calculado
+                    : 0;
+                  const precoVenda = Number(p.preco_venda);
+                  const margem = precoVenda > 0 ? ((precoVenda - custoPorUn) / precoVenda) * 100 : 0;
+
+                  // Count sales for this product
                   const vendasProduto = vendas.filter(
-                    (v) => v.produto.toLowerCase().includes(r.nome.toLowerCase()) ||
-                           r.nome.toLowerCase().includes(v.produto.toLowerCase())
+                    (v) => v.produto.toLowerCase().includes(p.nome.toLowerCase()) ||
+                           p.nome.toLowerCase().includes(v.produto.toLowerCase())
                   );
-                  const totalVendido = vendasProduto.reduce((s, v) => s + Number(v.valor_venda), 0);
                   const qtdVendas = vendasProduto.length;
-                  const precoMedioVenda = qtdVendas > 0 ? totalVendido / qtdVendas : 0;
-                  const custoPorUn =
-                    r.rendimento && r.rendimento > 0 ? r.custo_calculado / r.rendimento : r.custo_calculado;
-                  const margem = precoMedioVenda > 0 ? ((precoMedioVenda - custoPorUn) / precoMedioVenda) * 100 : 0;
+                  const totalVendido = vendasProduto.reduce((s, v) => s + Number(v.valor_venda), 0);
 
                   return (
-                    <div key={r.id} className="px-4 py-3 space-y-1">
+                    <div key={p.id} className="px-4 py-3 space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-foreground">{r.nome}</span>
-                        {qtdVendas > 0 && (
+                        <div>
+                          <span className="text-sm font-medium text-foreground">{p.nome}</span>
+                          {p.tamanho && (
+                            <span className="text-xs bg-secondary px-1.5 py-0.5 rounded text-muted-foreground ml-2">{p.tamanho}</span>
+                          )}
+                        </div>
+                        {precoVenda > 0 && custoPorUn > 0 && (
                           <span
                             className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                               margem >= 30
@@ -224,20 +236,34 @@ export function AdminDashboard() {
                           </span>
                         )}
                       </div>
-                      <div className="grid grid-cols-3 gap-2 text-xs">
+                      {receita && (
+                        <div className="text-xs text-primary">
+                          <ChefHat className="w-3 h-3 inline mr-0.5" />
+                          {receita.nome}
+                        </div>
+                      )}
+                      <div className="grid grid-cols-4 gap-2 text-xs">
                         <div>
                           <span className="text-muted-foreground">Custo</span>
-                          <div className="font-medium text-foreground">R$ {custoPorUn.toFixed(2)}/{r.unidade_rendimento}</div>
+                          <div className="font-medium text-foreground">
+                            {custoPorUn > 0 ? `R$ ${custoPorUn.toFixed(2)}` : "—"}
+                          </div>
                         </div>
                         <div>
-                          <span className="text-muted-foreground">Preço Médio</span>
+                          <span className="text-muted-foreground">Preço</span>
                           <div className="font-medium text-foreground">
-                            {precoMedioVenda > 0 ? `R$ ${precoMedioVenda.toFixed(2)}` : "—"}
+                            {precoVenda > 0 ? `R$ ${precoVenda.toFixed(2)}` : "—"}
                           </div>
                         </div>
                         <div>
                           <span className="text-muted-foreground">Vendas</span>
                           <div className="font-medium text-foreground">{qtdVendas}</div>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Faturado</span>
+                          <div className="font-medium text-foreground">
+                            {totalVendido > 0 ? `R$ ${totalVendido.toFixed(2)}` : "—"}
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -5,14 +5,15 @@ import { SheetsConfig } from "@/components/SheetsConfig";
 import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { AdminDashboard } from "@/components/AdminDashboard";
+import { ProductManager } from "@/components/ProductManager";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
-import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3 } from "lucide-react";
+import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "compra" | "venda" | "receita" | "admin" | "config";
+type TabType = "compra" | "venda" | "produto" | "receita" | "admin" | "config";
 
 interface PurchaseData {
   insumo: string;
@@ -86,6 +87,7 @@ export default function Index() {
   const tabs = [
     { id: "compra" as TabType, label: "Compra", icon: ShoppingCart },
     { id: "venda" as TabType, label: "Venda", icon: Receipt },
+    { id: "produto" as TabType, label: "Produtos", icon: Package },
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
     { id: "admin" as TabType, label: "Admin", icon: BarChart3 },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet },
@@ -135,6 +137,7 @@ export default function Index() {
         <div className="relative">
           {activeTab === "compra" && <PurchaseForm onSubmit={handlePurchaseSubmit} />}
           {activeTab === "venda" && <SaleForm onSubmit={handleSaleSubmit} />}
+          {activeTab === "produto" && <ProductManager />}
           {activeTab === "receita" && (
             <div className="space-y-6">
               <RecipeForm />
