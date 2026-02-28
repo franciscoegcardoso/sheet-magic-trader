@@ -2,12 +2,15 @@ import { useState } from "react";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
 import { SheetsConfig } from "@/components/SheetsConfig";
+import { RecipeForm } from "@/components/RecipeForm";
+import { RecipeList } from "@/components/RecipeList";
+import { AdminDashboard } from "@/components/AdminDashboard";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Receipt, FileSpreadsheet } from "lucide-react";
+import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "compra" | "venda" | "config";
+type TabType = "compra" | "venda" | "receita" | "admin" | "config";
 
 interface PurchaseData {
   insumo: string;
@@ -39,20 +42,11 @@ export default function Index() {
       const { data: result, error } = await supabase.functions.invoke('add-compra-sheets', {
         body: data,
       });
-
       if (error) throw error;
-
-      toast({
-        title: "Compra registrada!",
-        description: "Dados salvos na planilha com sucesso.",
-      });
+      toast({ title: "Compra registrada!", description: "Dados salvos na planilha com sucesso." });
     } catch (error) {
       console.error("Erro ao salvar compra:", error);
-      toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível registrar a compra na planilha.",
-        variant: "destructive",
-      });
+      toast({ title: "Erro ao salvar", description: "Não foi possível registrar a compra na planilha.", variant: "destructive" });
     }
   };
 
@@ -61,27 +55,20 @@ export default function Index() {
       const { data: result, error } = await supabase.functions.invoke('add-venda-sheets', {
         body: data,
       });
-
       if (error) throw error;
-
-      toast({
-        title: "Venda registrada!",
-        description: "Dados salvos na planilha com sucesso.",
-      });
+      toast({ title: "Venda registrada!", description: "Dados salvos na planilha com sucesso." });
     } catch (error) {
       console.error("Erro ao salvar venda:", error);
-      toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível registrar a venda na planilha.",
-        variant: "destructive",
-      });
+      toast({ title: "Erro ao salvar", description: "Não foi possível registrar a venda na planilha.", variant: "destructive" });
     }
   };
 
   const tabs = [
     { id: "compra" as TabType, label: "Compra", icon: ShoppingCart },
     { id: "venda" as TabType, label: "Venda", icon: Receipt },
-    { id: "config" as TabType, label: "Configuração", icon: FileSpreadsheet },
+    { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
+    { id: "admin" as TabType, label: "Admin", icon: BarChart3 },
+    { id: "config" as TabType, label: "Config", icon: FileSpreadsheet },
   ];
 
   return (
@@ -93,7 +80,7 @@ export default function Index() {
             Controle Financeiro
           </h1>
           <p className="text-muted-foreground">
-            Gerencie suas compras e vendas com facilidade
+            Gerencie suas compras, vendas e receitas com facilidade
           </p>
         </div>
 
@@ -106,20 +93,18 @@ export default function Index() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2 p-1.5 bg-secondary rounded-xl mb-6">
+        <div className="flex gap-1 p-1.5 bg-secondary rounded-xl mb-6 overflow-x-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all ${
-                  activeTab === tab.id
-                    ? "tab-active"
-                    : "tab-inactive"
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg font-medium text-xs sm:text-sm transition-all whitespace-nowrap ${
+                  activeTab === tab.id ? "tab-active" : "tab-inactive"
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-4 h-4 shrink-0" />
                 <span className="hidden sm:inline">{tab.label}</span>
               </button>
             );
@@ -128,10 +113,15 @@ export default function Index() {
 
         {/* Content */}
         <div className="relative">
-          {activeTab === "compra" && (
-            <PurchaseForm onSubmit={handlePurchaseSubmit} />
-          )}
+          {activeTab === "compra" && <PurchaseForm onSubmit={handlePurchaseSubmit} />}
           {activeTab === "venda" && <SaleForm onSubmit={handleSaleSubmit} />}
+          {activeTab === "receita" && (
+            <div className="space-y-6">
+              <RecipeForm />
+              <RecipeList />
+            </div>
+          )}
+          {activeTab === "admin" && <AdminDashboard />}
           {activeTab === "config" && (
             <SheetsConfig
               webhookUrl={webhookUrl}
@@ -147,9 +137,9 @@ export default function Index() {
           <p className="text-xs text-muted-foreground">
             Os dados são enviados para sua planilha quando a integração está ativa
           </p>
-          <img 
-            src={logo} 
-            alt="Vértice Soluções" 
+          <img
+            src={logo}
+            alt="Vértice Soluções"
             className="h-8 opacity-60"
             loading="lazy"
             decoding="async"

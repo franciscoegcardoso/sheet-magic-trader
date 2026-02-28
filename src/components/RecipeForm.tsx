@@ -1,0 +1,345 @@
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { useInsumos } from "@/hooks/useInsumos";
+import { useReceitas, Ingrediente } from "@/hooks/useReceitas";
+import {
+  ChefHat,
+  Plus,
+  Trash2,
+  DollarSign,
+  Hash,
+  Loader2,
+  BookOpen,
+  UtensilsCrossed,
+} from "lucide-react";
+
+export function RecipeForm() {
+  const { toast } = useToast();
+  const { insumos, isLoading: loadingInsumos } = useInsumos();
+  const { addReceita } = useReceitas();
+
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [modoPreparo, setModoPreparo] = useState("");
+  const [rendimento, setRendimento] = useState("1");
+  const [unidadeRendimento, setUnidadeRendimento] = useState("un");
+  const [ingredientes, setIngredientes] = useState<Ingrediente[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const custoTotal = ingredientes.reduce(
+    (sum, i) => sum + i.quantidade * i.custo_unitario,
+    0
+  );
+
+  const custoPorUnidade = rendimento
+    ? custoTotal / Number(rendimento)
+    : custoTotal;
+
+  const addIngrediente = () => {
+    setIngredientes([
+      ...ingredientes,
+      { insumo_nome: "", quantidade: 0, unidade: "", custo_unitario: 0 },
+    ]);
+  };
+
+  const updateIngrediente = (index: number, field: keyof Ingrediente, value: string | number) => {
+    const updated = [...ingredientes];
+    (updated[index] as any)[field] = value;
+    setIngredientes(updated);
+  };
+
+  const handleInsumoSelect = (index: number, nome: string) => {
+    const insumo = insumos.find((i) => i.nome === nome);
+    const updated = [...ingredientes];
+    updated[index] = {
+      ...updated[index],
+      insumo_nome: nome,
+      unidade: insumo?.unidade || updated[index].unidade,
+    };
+    setIngredientes(updated);
+  };
+
+  const removeIngrediente = (index: number) => {
+    setIngredientes(ingredientes.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!nome.trim()) {
+      toast({ title: "Nome obrigatório", variant: "destructive" });
+      return;
+    }
+
+    if (ingredientes.length === 0) {
+      toast({
+        title: "Adicione ingredientes",
+        description: "Uma receita precisa de pelo menos um ingrediente.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await addReceita(
+        {
+          nome,
+          descricao: descricao || null,
+          modo_preparo: modoPreparo || null,
+          foto_url: null,
+          rendimento: Number(rendimento) || 1,
+          unidade_rendimento: unidadeRendimento,
+          ingredientes: [],
+        },
+        ingredientes
+      );
+
+      toast({
+        title: "Receita cadastrada!",
+        description: `"${nome}" salva com sucesso.`,
+      });
+
+      // Reset
+      setNome("");
+      setDescricao("");
+      setModoPreparo("");
+      setRendimento("1");
+      setUnidadeRendimento("un");
+      setIngredientes([]);
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível cadastrar a receita.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="form-section animate-fade-in">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2.5 rounded-lg bg-accent">
+          <ChefHat className="w-5 h-5 text-accent-foreground" />
+        </div>
+        <div>
+          <h2 className="text-lg font-display font-semibold text-foreground">
+            Cadastro de Receita
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Monte receitas e calcule custos automaticamente
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <Label className="input-label">Nome da Receita</Label>
+          <Input
+            placeholder="Ex: Bolo de Chocolate"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <Label className="input-label">Descrição (opcional)</Label>
+          <Input
+            placeholder="Breve descrição da receita"
+            value={descricao}
+            onChange={(e) => setDescricao(e.target.value)}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label className="input-label">
+              <Hash className="w-4 h-4 inline mr-1" />
+              Rendimento
+            </Label>
+            <Input
+              type="number"
+              min="1"
+              step="1"
+              value={rendimento}
+              onChange={(e) => setRendimento(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label className="input-label">Unidade</Label>
+            <Select value={unidadeRendimento} onValueChange={setUnidadeRendimento}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="un">Unidades</SelectItem>
+                <SelectItem value="porção">Porções</SelectItem>
+                <SelectItem value="kg">Quilogramas</SelectItem>
+                <SelectItem value="L">Litros</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Ingredientes */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <Label className="input-label mb-0">
+              <UtensilsCrossed className="w-4 h-4 inline mr-1" />
+              Ingredientes
+            </Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addIngrediente}
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Adicionar
+            </Button>
+          </div>
+
+          {ingredientes.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-lg">
+              Clique em "Adicionar" para incluir ingredientes
+            </p>
+          )}
+
+          <div className="space-y-3">
+            {ingredientes.map((ing, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-12 gap-2 items-end p-3 bg-secondary/50 rounded-lg"
+              >
+                <div className="col-span-12 sm:col-span-4">
+                  <Label className="text-xs text-muted-foreground">Insumo</Label>
+                  {loadingInsumos ? (
+                    <div className="flex items-center gap-1 h-10 text-muted-foreground">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    </div>
+                  ) : (
+                    <Select
+                      value={ing.insumo_nome}
+                      onValueChange={(v) => handleInsumoSelect(index, v)}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {insumos.map((i) => (
+                          <SelectItem key={i.codigo} value={i.nome}>
+                            {i.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                <div className="col-span-4 sm:col-span-2">
+                  <Label className="text-xs text-muted-foreground">Qtd</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    className="h-9 text-sm"
+                    value={ing.quantidade || ""}
+                    onChange={(e) =>
+                      updateIngrediente(index, "quantidade", Number(e.target.value))
+                    }
+                  />
+                </div>
+                <div className="col-span-3 sm:col-span-2">
+                  <Label className="text-xs text-muted-foreground">Unid.</Label>
+                  <Input
+                    className="h-9 text-sm"
+                    value={ing.unidade}
+                    onChange={(e) =>
+                      updateIngrediente(index, "unidade", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="col-span-4 sm:col-span-3">
+                  <Label className="text-xs text-muted-foreground">Custo (R$)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    className="h-9 text-sm"
+                    value={ing.custo_unitario || ""}
+                    onChange={(e) =>
+                      updateIngrediente(index, "custo_unitario", Number(e.target.value))
+                    }
+                  />
+                </div>
+                <div className="col-span-1">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 w-9 p-0 text-destructive hover:text-destructive"
+                    onClick={() => removeIngrediente(index)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Custo */}
+        {ingredientes.length > 0 && (
+          <div className="p-4 bg-accent/50 rounded-lg space-y-1">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Custo total da receita</span>
+              <span className="font-semibold text-foreground">
+                R$ {custoTotal.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">
+                Custo por {unidadeRendimento}
+              </span>
+              <span className="font-semibold text-primary">
+                R$ {custoPorUnidade.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Modo de preparo */}
+        <div>
+          <Label className="input-label">
+            <BookOpen className="w-4 h-4 inline mr-1" />
+            Modo de Preparo (opcional)
+          </Label>
+          <Textarea
+            placeholder="Descreva o passo a passo..."
+            rows={4}
+            value={modoPreparo}
+            onChange={(e) => setModoPreparo(e.target.value)}
+          />
+        </div>
+
+        <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+          Cadastrar Receita
+        </Button>
+      </div>
+    </form>
+  );
+}
