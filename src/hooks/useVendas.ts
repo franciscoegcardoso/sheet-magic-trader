@@ -12,6 +12,7 @@ export interface Venda {
   forma_pagamento: string | null;
   valor_venda: number;
   data_venda: string;
+  cliente_id: string | null;
   created_at: string;
 }
 
