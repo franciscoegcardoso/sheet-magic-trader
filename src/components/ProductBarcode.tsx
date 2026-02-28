@@ -10,6 +10,8 @@ interface ProductBarcodeProps {
 
 export function ProductBarcode({ codigo, nome }: ProductBarcodeProps) {
   const { toast } = useToast();
+  const isInternal = codigo.startsWith("2");
+  const label = isInternal ? "Código Interno" : "GTIN (EAN-13)";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(codigo);
@@ -22,9 +24,12 @@ export function ProductBarcode({ codigo, nome }: ProductBarcodeProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <QrCode className="w-3 h-3" />
-          <span>Código do Produto</span>
+          <span>{label}</span>
         </div>
         <p className="text-xs font-mono font-medium text-foreground mt-0.5 truncate">{codigo}</p>
+        {!isInternal && codigo.startsWith("789") && (
+          <span className="text-[10px] text-primary">🇧🇷 Brasil</span>
+        )}
       </div>
       <Button variant="ghost" size="sm" className="h-7 w-7 p-0 shrink-0" onClick={handleCopy} title="Copiar código">
         <Copy className="w-3.5 h-3.5" />
