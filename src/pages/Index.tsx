@@ -12,7 +12,7 @@ import { StockReport } from "@/components/StockReport";
 import { SalesPlanning } from "@/components/SalesPlanning";
 import { DocsPage } from "@/components/DocsPage";
 import { PriceSimulator } from "@/components/PriceSimulator";
-import { ProfilePage } from "@/components/ProfilePage";
+import { SettingsPage } from "@/components/SettingsPage";
 import { HelpButton } from "@/components/HelpButton";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
@@ -28,16 +28,16 @@ import {
   Warehouse,
   Home,
   Target,
+  Settings,
   BookOpen,
   Calculator,
-  UserCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
   "home", "compra", "venda", "produto", "receita", "crm",
-  "estoque", "planejamento", "simulador", "admin", "config", "docs", "perfil",
+  "estoque", "planejamento", "simulador", "admin", "config", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
@@ -130,7 +130,7 @@ export default function Index() {
     { id: "admin" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
-    { id: "perfil" as TabType, label: "Perfil", icon: UserCircle, mobile: true, desktop: true },
+    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
   ];
 
   const mobileBottomTabs = allTabs.filter((t) => t.mobile);
@@ -157,7 +157,7 @@ export default function Index() {
         />
       );
     if (activeTab === "docs") return <DocsPage />;
-    if (activeTab === "perfil") return <ProfilePage />;
+    if (activeTab === "configuracoes") return <SettingsPage />;
     return null;
   };
 
