@@ -6,6 +6,8 @@ import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import { useToast } from "@/hooks/use-toast";
+import { useCompras } from "@/hooks/useCompras";
+import { useVendas } from "@/hooks/useVendas";
 import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
@@ -33,33 +35,51 @@ interface SaleData {
 
 export default function Index() {
   const { toast } = useToast();
+  const { addCompra } = useCompras();
+  const { addVenda } = useVendas();
   const [activeTab, setActiveTab] = useState<TabType>("compra");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
   const handlePurchaseSubmit = async (data: PurchaseData) => {
     try {
-      const { data: result, error } = await supabase.functions.invoke('add-compra-sheets', {
-        body: data,
+      // Save to DB
+      await addCompra({
+        insumo_nome: data.insumo,
+        quantidade: Number(data.quantidade),
+        unidade: data.unidade,
+        data_compra: data.dataCompra,
+        valor_compra: Number(data.valorCompra),
       });
-      if (error) throw error;
-      toast({ title: "Compra registrada!", description: "Dados salvos na planilha com sucesso." });
+      // Also send to Sheets
+      await supabase.functions.invoke('add-compra-sheets', { body: data }).catch(() => {});
+      toast({ title: "Compra registrada!", description: "Dados salvos com sucesso." });
     } catch (error) {
       console.error("Erro ao salvar compra:", error);
-      toast({ title: "Erro ao salvar", description: "Não foi possível registrar a compra na planilha.", variant: "destructive" });
+      toast({ title: "Erro ao salvar", description: "Não foi possível registrar a compra.", variant: "destructive" });
     }
   };
 
   const handleSaleSubmit = async (data: SaleData) => {
     try {
-      const { data: result, error } = await supabase.functions.invoke('add-venda-sheets', {
-        body: data,
+      // Save to DB
+      await addVenda({
+        cliente: data.cliente,
+        telefone_cliente: data.telefoneCliente,
+        produto: data.produto,
+        tamanho: data.tamanho,
+        embalagem: data.embalagem,
+        valor_frete: Number(data.valorFrete) || 0,
+        forma_pagamento: data.formaPagamento,
+        valor_venda: Number(data.valorVenda),
+        data_venda: new Date().toISOString().split("T")[0],
       });
-      if (error) throw error;
-      toast({ title: "Venda registrada!", description: "Dados salvos na planilha com sucesso." });
+      // Also send to Sheets
+      await supabase.functions.invoke('add-venda-sheets', { body: data }).catch(() => {});
+      toast({ title: "Venda registrada!", description: "Dados salvos com sucesso." });
     } catch (error) {
       console.error("Erro ao salvar venda:", error);
-      toast({ title: "Erro ao salvar", description: "Não foi possível registrar a venda na planilha.", variant: "destructive" });
+      toast({ title: "Erro ao salvar", description: "Não foi possível registrar a venda.", variant: "destructive" });
     }
   };
 
