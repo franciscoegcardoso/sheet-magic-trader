@@ -140,6 +140,44 @@ export type Database = {
         }
         Relationships: []
       }
+      producao: {
+        Row: {
+          created_at: string
+          data_producao: string
+          id: string
+          observacao: string | null
+          produto_id: string
+          produto_nome: string
+          quantidade: number
+        }
+        Insert: {
+          created_at?: string
+          data_producao?: string
+          id?: string
+          observacao?: string | null
+          produto_id: string
+          produto_nome: string
+          quantidade?: number
+        }
+        Update: {
+          created_at?: string
+          data_producao?: string
+          id?: string
+          observacao?: string | null
+          produto_id?: string
+          produto_nome?: string
+          quantidade?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "producao_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produto_variacoes: {
         Row: {
           ativo: boolean
