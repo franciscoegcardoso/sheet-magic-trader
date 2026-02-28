@@ -77,6 +77,39 @@ export type Database = {
         }
         Relationships: []
       }
+      inventario_revisoes: {
+        Row: {
+          created_at: string
+          data_revisao: string
+          diferenca: number
+          id: string
+          insumo_nome: string
+          observacao: string | null
+          quantidade_contada: number
+          quantidade_sistema: number
+        }
+        Insert: {
+          created_at?: string
+          data_revisao?: string
+          diferenca?: number
+          id?: string
+          insumo_nome: string
+          observacao?: string | null
+          quantidade_contada?: number
+          quantidade_sistema?: number
+        }
+        Update: {
+          created_at?: string
+          data_revisao?: string
+          diferenca?: number
+          id?: string
+          insumo_nome?: string
+          observacao?: string | null
+          quantidade_contada?: number
+          quantidade_sistema?: number
+        }
+        Relationships: []
+      }
       produto_variacoes: {
         Row: {
           ativo: boolean

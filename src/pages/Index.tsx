@@ -7,14 +7,15 @@ import { RecipeList } from "@/components/RecipeList";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import { ProductManager } from "@/components/ProductManager";
 import { CRMPage } from "@/components/CRMPage";
+import { StockReport } from "@/components/StockReport";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
-import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3, Package, Users } from "lucide-react";
+import { ShoppingCart, Receipt, FileSpreadsheet, ChefHat, BarChart3, Package, Users, Warehouse } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
-type TabType = "compra" | "venda" | "produto" | "receita" | "crm" | "admin" | "config";
+type TabType = "compra" | "venda" | "produto" | "receita" | "crm" | "estoque" | "admin" | "config";
 
 interface PurchaseData {
   insumo: string;
@@ -92,6 +93,7 @@ export default function Index() {
     { id: "produto" as TabType, label: "Produtos", icon: Package },
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
     { id: "crm" as TabType, label: "CRM", icon: Users },
+    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
     { id: "admin" as TabType, label: "Admin", icon: BarChart3 },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet },
   ];
@@ -148,6 +150,7 @@ export default function Index() {
             </div>
           )}
           {activeTab === "crm" && <CRMPage />}
+          {activeTab === "estoque" && <StockReport />}
           {activeTab === "admin" && <AdminDashboard />}
           {activeTab === "config" && (
             <SheetsConfig
