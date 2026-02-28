@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      compras: {
+        Row: {
+          created_at: string
+          data_compra: string
+          id: string
+          insumo_nome: string
+          quantidade: number
+          unidade: string | null
+          valor_compra: number
+        }
+        Insert: {
+          created_at?: string
+          data_compra?: string
+          id?: string
+          insumo_nome: string
+          quantidade?: number
+          unidade?: string | null
+          valor_compra?: number
+        }
+        Update: {
+          created_at?: string
+          data_compra?: string
+          id?: string
+          insumo_nome?: string
+          quantidade?: number
+          unidade?: string | null
+          valor_compra?: number
+        }
+        Relationships: []
+      }
       receita_ingredientes: {
         Row: {
           created_at: string
@@ -85,6 +115,48 @@ export type Database = {
           rendimento?: number | null
           unidade_rendimento?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      vendas: {
+        Row: {
+          cliente: string
+          created_at: string
+          data_venda: string
+          embalagem: string | null
+          forma_pagamento: string | null
+          id: string
+          produto: string
+          tamanho: string | null
+          telefone_cliente: string | null
+          valor_frete: number | null
+          valor_venda: number
+        }
+        Insert: {
+          cliente: string
+          created_at?: string
+          data_venda?: string
+          embalagem?: string | null
+          forma_pagamento?: string | null
+          id?: string
+          produto: string
+          tamanho?: string | null
+          telefone_cliente?: string | null
+          valor_frete?: number | null
+          valor_venda?: number
+        }
+        Update: {
+          cliente?: string
+          created_at?: string
+          data_venda?: string
+          embalagem?: string | null
+          forma_pagamento?: string | null
+          id?: string
+          produto?: string
+          tamanho?: string | null
+          telefone_cliente?: string | null
+          valor_frete?: number | null
+          valor_venda?: number
         }
         Relationships: []
       }

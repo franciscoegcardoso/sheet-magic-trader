@@ -17,7 +17,6 @@ import {
   ChefHat,
   Plus,
   Trash2,
-  DollarSign,
   Hash,
   Loader2,
   BookOpen,
@@ -36,15 +35,6 @@ export function RecipeForm() {
   const [unidadeRendimento, setUnidadeRendimento] = useState("un");
   const [ingredientes, setIngredientes] = useState<Ingrediente[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const custoTotal = ingredientes.reduce(
-    (sum, i) => sum + i.quantidade * i.custo_unitario,
-    0
-  );
-
-  const custoPorUnidade = rendimento
-    ? custoTotal / Number(rendimento)
-    : custoTotal;
 
   const addIngrediente = () => {
     setIngredientes([
@@ -224,8 +214,9 @@ export function RecipeForm() {
               <div
                 key={index}
                 className="grid grid-cols-12 gap-2 items-end p-3 bg-secondary/50 rounded-lg"
+
               >
-                <div className="col-span-12 sm:col-span-4">
+                <div className="col-span-12 sm:col-span-5">
                   <Label className="text-xs text-muted-foreground">Insumo</Label>
                   {loadingInsumos ? (
                     <div className="flex items-center gap-1 h-10 text-muted-foreground">
@@ -249,7 +240,7 @@ export function RecipeForm() {
                     </Select>
                   )}
                 </div>
-                <div className="col-span-4 sm:col-span-2">
+                <div className="col-span-5 sm:col-span-3">
                   <Label className="text-xs text-muted-foreground">Qtd</Label>
                   <Input
                     type="number"
@@ -262,26 +253,13 @@ export function RecipeForm() {
                     }
                   />
                 </div>
-                <div className="col-span-3 sm:col-span-2">
+                <div className="col-span-5 sm:col-span-3">
                   <Label className="text-xs text-muted-foreground">Unid.</Label>
                   <Input
                     className="h-9 text-sm"
                     value={ing.unidade}
                     onChange={(e) =>
                       updateIngrediente(index, "unidade", e.target.value)
-                    }
-                  />
-                </div>
-                <div className="col-span-4 sm:col-span-3">
-                  <Label className="text-xs text-muted-foreground">Custo (R$)</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    className="h-9 text-sm"
-                    value={ing.custo_unitario || ""}
-                    onChange={(e) =>
-                      updateIngrediente(index, "custo_unitario", Number(e.target.value))
                     }
                   />
                 </div>
@@ -301,25 +279,6 @@ export function RecipeForm() {
           </div>
         </div>
 
-        {/* Custo */}
-        {ingredientes.length > 0 && (
-          <div className="p-4 bg-accent/50 rounded-lg space-y-1">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Custo total da receita</span>
-              <span className="font-semibold text-foreground">
-                R$ {custoTotal.toFixed(2)}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                Custo por {unidadeRendimento}
-              </span>
-              <span className="font-semibold text-primary">
-                R$ {custoPorUnidade.toFixed(2)}
-              </span>
-            </div>
-          </div>
-        )}
 
         {/* Modo de preparo */}
         <div>
