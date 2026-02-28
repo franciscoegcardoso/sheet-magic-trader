@@ -39,7 +39,7 @@ import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
   "home", "compra", "venda", "produto", "receita", "crm",
-  "estoque", "planejamento", "simulador", "marketing", "admin", "config", "docs", "configuracoes",
+  "estoque", "planejamento", "simulador", "marketing", "relatorios", "config", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
@@ -130,7 +130,7 @@ export default function Index() {
     { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true },
     { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true },
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
-    { id: "admin" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
+    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
@@ -150,7 +150,7 @@ export default function Index() {
     if (activeTab === "planejamento") return <SalesPlanning />;
     if (activeTab === "simulador") return <PriceSimulator />;
     if (activeTab === "marketing") return <MarketingPage />;
-    if (activeTab === "admin") return <AdminDashboard />;
+    if (activeTab === "relatorios") return <AdminDashboard />;
     if (activeTab === "config")
       return (
         <SheetsConfig
@@ -271,7 +271,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
     { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
-    { id: "admin" as TabType, label: "Relatórios", icon: BarChart3 },
+    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
   ];
