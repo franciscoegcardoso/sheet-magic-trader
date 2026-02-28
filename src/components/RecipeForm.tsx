@@ -279,13 +279,30 @@ export function RecipeForm() {
                 </div>
                 <div className="col-span-5 sm:col-span-3">
                   <Label className="text-xs text-muted-foreground">Unid.</Label>
-                  <Input
-                    className="h-9 text-sm"
+                  <Select
                     value={ing.unidade}
-                    onChange={(e) =>
-                      updateIngrediente(index, "unidade", e.target.value)
-                    }
-                  />
+                    onValueChange={(v) => updateIngrediente(index, "unidade", v)}
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="g">g (gramas)</SelectItem>
+                      <SelectItem value="kg">kg (quilos)</SelectItem>
+                      <SelectItem value="mg">mg (miligramas)</SelectItem>
+                      <SelectItem value="ml">ml (mililitros)</SelectItem>
+                      <SelectItem value="L">L (litros)</SelectItem>
+                      <SelectItem value="un">un (unidades)</SelectItem>
+                      <SelectItem value="m">m (metros)</SelectItem>
+                      <SelectItem value="cm">cm (centímetros)</SelectItem>
+                      <SelectItem value="colher_sopa">colher de sopa</SelectItem>
+                      <SelectItem value="colher_cha">colher de chá</SelectItem>
+                      <SelectItem value="xicara">xícara</SelectItem>
+                      <SelectItem value="fatia">fatia</SelectItem>
+                      <SelectItem value="pct">pacote</SelectItem>
+                      <SelectItem value="cx">caixa</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="col-span-1">
                   <Button
