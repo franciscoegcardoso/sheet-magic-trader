@@ -147,4 +147,8 @@
   .tab-inactive {
     @apply bg-secondary text-secondary-foreground hover:bg-accent;
   }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
