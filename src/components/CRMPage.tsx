@@ -19,6 +19,7 @@ import {
   ShoppingBag,
   X,
   User,
+  MessageCircle,
 } from "lucide-react";
 
 export function CRMPage() {
@@ -247,8 +248,18 @@ export function CRMPage() {
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       {c.telefone && (
-                        <span className="flex items-center gap-0.5">
+                        <span className="flex items-center gap-1">
                           <Phone className="w-3 h-3" /> {c.telefone}
+                          <a
+                            href={`https://wa.me/55${c.telefone.replace(/\D/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
+                            title="Abrir no WhatsApp"
+                          >
+                            <MessageCircle className="w-3 h-3" />
+                          </a>
                         </span>
                       )}
                       {c.email && (
