@@ -20,9 +20,24 @@ export interface Produto {
   receita_id: string | null;
   foto_url: string | null;
   ativo: boolean;
+  codigo_barras: string | null;
   created_at: string;
   updated_at: string;
   variacoes?: ProdutoVariacao[];
+}
+
+function generateBarcode(): string {
+  // Generate a 13-digit EAN-like code
+  const prefix = "789"; // Brazil prefix
+  const random = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10)).join("");
+  const base = prefix + random;
+  // Calculate check digit
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    sum += parseInt(base[i]) * (i % 2 === 0 ? 1 : 3);
+  }
+  const check = (10 - (sum % 10)) % 10;
+  return base + check;
 }
 
 export function useProdutos() {
@@ -62,9 +77,10 @@ export function useProdutos() {
   }, [fetchProdutos]);
 
   const addProduto = async (
-    produto: Omit<Produto, "id" | "created_at" | "updated_at" | "variacoes">,
+    produto: Omit<Produto, "id" | "created_at" | "updated_at" | "variacoes" | "codigo_barras">,
     variacoes: Omit<ProdutoVariacao, "id" | "produto_id" | "created_at">[]
   ) => {
+    const codigo_barras = generateBarcode();
     const { data, error } = await supabase
       .from("produtos")
       .insert({
@@ -76,6 +92,7 @@ export function useProdutos() {
         unidade: produto.unidade,
         preco_venda: produto.preco_venda,
         receita_id: produto.receita_id,
+        codigo_barras,
       })
       .select()
       .single();
@@ -90,6 +107,10 @@ export function useProdutos() {
 
     await fetchProdutos();
     return data;
+  };
+
+  const findByBarcode = (code: string) => {
+    return produtos.find((p) => p.codigo_barras === code);
   };
 
   const updateProduto = async (id: string, updates: Partial<Produto>) => {
@@ -139,6 +160,7 @@ export function useProdutos() {
     addVariacao,
     deleteVariacao,
     uploadPhoto,
+    findByBarcode,
     refetch: fetchProdutos,
   };
 }

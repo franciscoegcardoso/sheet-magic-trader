@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useProdutos, ProdutoVariacao } from "@/hooks/useProdutos";
 import { useReceitas } from "@/hooks/useReceitas";
+import { ProductBarcode } from "@/components/ProductBarcode";
 import {
   Package,
   Plus,
@@ -369,8 +370,15 @@ export function ProductManager() {
                         </Button>
                       </div>
                     </div>
+                    </div>
                   </div>
-                </div>
+
+                  {/* Barcode / QR Code */}
+                  {p.codigo_barras && (
+                    <div className="px-3 pb-3">
+                      <ProductBarcode codigo={p.codigo_barras} nome={p.nome} />
+                    </div>
+                  )}
 
                 {/* Variations */}
                 <div className="border-t border-border">

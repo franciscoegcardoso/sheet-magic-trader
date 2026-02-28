@@ -148,6 +148,7 @@ export type Database = {
       produtos: {
         Row: {
           ativo: boolean
+          codigo_barras: string | null
           created_at: string
           descricao: string | null
           foto_url: string | null
@@ -161,6 +162,7 @@ export type Database = {
         }
         Insert: {
           ativo?: boolean
+          codigo_barras?: string | null
           created_at?: string
           descricao?: string | null
           foto_url?: string | null
@@ -174,6 +176,7 @@ export type Database = {
         }
         Update: {
           ativo?: boolean
+          codigo_barras?: string | null
           created_at?: string
           descricao?: string | null
           foto_url?: string | null

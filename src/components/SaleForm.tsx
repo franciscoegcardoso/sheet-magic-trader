@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,9 +17,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, Phone, UserPlus } from "lucide-react";
+import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, Phone, UserPlus, ScanLine } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { useClientes } from "@/hooks/useClientes";
+import { useProdutos } from "@/hooks/useProdutos";
+import { BarcodeScanner } from "@/components/BarcodeScanner";
 
 const EMBALAGENS = [
   "Marmitex P (500ml)",
@@ -62,7 +64,8 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
   const { toast } = useToast();
   const { products, isLoading: loadingProducts } = useProducts();
   const { clientes, isLoading: loadingClientes } = useClientes();
-  
+  const { produtos, findByBarcode } = useProdutos();
+  const [showScanner, setShowScanner] = useState(false);
   const [formData, setFormData] = useState<SaleData>({
     cliente: "",
     telefoneCliente: "",
@@ -175,8 +178,27 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
     });
   };
 
+  const handleBarcodeScan = useCallback((code: string) => {
+    setShowScanner(false);
+    const produto = findByBarcode(code);
+    if (produto) {
+      const sheetProduct = products.find((p) => p.nome.toLowerCase() === produto.nome.toLowerCase());
+      setFormData((prev) => ({
+        ...prev,
+        produto: sheetProduct?.cod || produto.nome,
+        tamanho: sheetProduct?.tamanho || produto.tamanho || "",
+      }));
+      toast({ title: "Produto identificado!", description: produto.nome });
+    } else {
+      toast({ title: "Produto não encontrado", description: `Código: ${code}`, variant: "destructive" });
+    }
+  }, [findByBarcode, products, toast]);
+
   return (
     <>
+      {showScanner && (
+        <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
+      )}
       <form onSubmit={handleSubmit} className="form-section animate-fade-in">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2.5 rounded-lg bg-accent">
@@ -190,6 +212,19 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
               Registre suas vendas de produtos
             </p>
           </div>
+        </div>
+
+        {/* Barcode Scanner Button */}
+        <div className="mb-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => setShowScanner(true)}
+          >
+            <ScanLine className="w-4 h-4 mr-2" />
+            Escanear Código do Produto
+          </Button>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
