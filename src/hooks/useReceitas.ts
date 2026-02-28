@@ -17,6 +17,7 @@ export interface Receita {
   foto_url: string | null;
   rendimento: number;
   unidade_rendimento: string;
+  produto_id: string | null;
   created_at: string;
   updated_at: string;
   ingredientes?: Ingrediente[];
@@ -82,6 +83,7 @@ export function useReceitas() {
         foto_url: receita.foto_url,
         rendimento: receita.rendimento,
         unidade_rendimento: receita.unidade_rendimento,
+        produto_id: receita.produto_id || null,
       })
       .select()
       .single();

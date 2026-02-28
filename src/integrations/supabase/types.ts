@@ -44,11 +44,47 @@ export type Database = {
         }
         Relationships: []
       }
+      produto_variacoes: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          preco_venda: number
+          produto_id: string
+          tamanho: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          preco_venda?: number
+          produto_id: string
+          tamanho: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          preco_venda?: number
+          produto_id?: string
+          tamanho?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_variacoes_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produtos: {
         Row: {
           ativo: boolean
           created_at: string
           descricao: string | null
+          foto_url: string | null
           id: string
           nome: string
           preco_venda: number
@@ -61,6 +97,7 @@ export type Database = {
           ativo?: boolean
           created_at?: string
           descricao?: string | null
+          foto_url?: string | null
           id?: string
           nome: string
           preco_venda?: number
@@ -73,6 +110,7 @@ export type Database = {
           ativo?: boolean
           created_at?: string
           descricao?: string | null
+          foto_url?: string | null
           id?: string
           nome?: string
           preco_venda?: number
@@ -137,6 +175,7 @@ export type Database = {
           id: string
           modo_preparo: string | null
           nome: string
+          produto_id: string | null
           rendimento: number | null
           unidade_rendimento: string | null
           updated_at: string
@@ -148,6 +187,7 @@ export type Database = {
           id?: string
           modo_preparo?: string | null
           nome: string
+          produto_id?: string | null
           rendimento?: number | null
           unidade_rendimento?: string | null
           updated_at?: string
@@ -159,11 +199,20 @@ export type Database = {
           id?: string
           modo_preparo?: string | null
           nome?: string
+          produto_id?: string | null
           rendimento?: number | null
           unidade_rendimento?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "receitas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendas: {
         Row: {

@@ -13,6 +13,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useInsumos } from "@/hooks/useInsumos";
 import { useReceitas, Ingrediente } from "@/hooks/useReceitas";
+import { useProdutos } from "@/hooks/useProdutos";
 import {
   ChefHat,
   Plus,
@@ -21,12 +22,14 @@ import {
   Loader2,
   BookOpen,
   UtensilsCrossed,
+  Package,
 } from "lucide-react";
 
 export function RecipeForm() {
   const { toast } = useToast();
   const { insumos, isLoading: loadingInsumos } = useInsumos();
   const { addReceita } = useReceitas();
+  const { produtos } = useProdutos();
 
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -34,6 +37,7 @@ export function RecipeForm() {
   const [rendimento, setRendimento] = useState("1");
   const [unidadeRendimento, setUnidadeRendimento] = useState("un");
   const [ingredientes, setIngredientes] = useState<Ingrediente[]>([]);
+  const [produtoId, setProdutoId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const addIngrediente = () => {
@@ -92,6 +96,7 @@ export function RecipeForm() {
           rendimento: Number(rendimento) || 1,
           unidade_rendimento: unidadeRendimento,
           ingredientes: [],
+          produto_id: produtoId && produtoId !== "none" ? produtoId : null,
         },
         ingredientes
       );
@@ -108,6 +113,7 @@ export function RecipeForm() {
       setRendimento("1");
       setUnidadeRendimento("un");
       setIngredientes([]);
+      setProdutoId("");
     } catch (err) {
       console.error(err);
       toast({
@@ -153,6 +159,24 @@ export function RecipeForm() {
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
           />
+        </div>
+
+        <div>
+          <Label className="input-label">
+            <Package className="w-4 h-4 inline mr-1" />
+            Produto Vinculado
+          </Label>
+          <Select value={produtoId} onValueChange={setProdutoId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Nenhum" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Nenhum</SelectItem>
+              {produtos.map((p) => (
+                <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
