@@ -286,7 +286,7 @@ export function ProductManager() {
           <div>
             <Label className="text-xs text-muted-foreground">
               <ChefHat className="w-3.5 h-3.5 inline mr-0.5" />
-              Receita Vinculada
+              Qual receita usa para fazer?
             </Label>
             <Select value={receitaId} onValueChange={setReceitaId}>
               <SelectTrigger>
