@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useVendas } from "@/hooks/useVendas";
 import { useProdutos } from "@/hooks/useProdutos";
+import { useReceitas } from "@/hooks/useReceitas";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, Plus, Trash2, TrendingUp, BarChart3, Lightbulb, Loader2,
   ArrowUp, ArrowDown, Minus, AlertTriangle, Package, DollarSign, Scale,
-  X, ChevronRight,
+  X, ChevronRight, Target,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
