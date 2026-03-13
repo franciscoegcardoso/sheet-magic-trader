@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useVendas } from "@/hooks/useVendas";
+import { useProdutos } from "@/hooks/useProdutos";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ interface TopProduct {
 export function ConcorrenciaPage() {
   const { toast } = useToast();
   const { vendas } = useVendas();
+  const { produtos } = useProdutos();
   const [concorrentes, setConcorrentes] = useState<Concorrente[]>([]);
   const [precos, setPrecos] = useState<ConcorrentePreco[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -354,9 +356,22 @@ export function ConcorrenciaPage() {
                           </p>
                         </div>
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        ~R$ {p.precoMedio.toFixed(2)}/un
-                      </Badge>
+                      <div className="text-right">
+                        <Badge variant="secondary" className="text-xs">
+                          ~R$ {p.precoMedio.toFixed(2)}/un
+                        </Badge>
+                        {(() => {
+                          const produtoData = produtos.find((pr) => pr.nome === p.nome);
+                          if (produtoData && (produtoData.peso_quantidade !== 1 || produtoData.unidade !== "un")) {
+                            return (
+                              <p className="text-[10px] text-muted-foreground mt-0.5">
+                                {produtoData.peso_quantidade} {produtoData.unidade || "un"}
+                              </p>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -478,7 +493,10 @@ export function ConcorrenciaPage() {
                               </div>
                             </div>
                             <p className="text-[10px] text-muted-foreground">
-                              💡 Se o tamanho for diferente do seu, colocamos o peso aqui para calcular o preço equivalente
+                              💡 Seu produto está cadastrado como {(() => {
+                                const produtoData = produtos.find((p) => p.nome === prod.nome);
+                                return produtoData ? `${produtoData.peso_quantidade} ${produtoData.unidade || "un"}` : "1 un";
+                              })()}. Se o concorrente vende em tamanho diferente, ajuste para calcular o preço equivalente.
                             </p>
                             <div className="flex gap-2">
                               <Button size="sm" onClick={handleAddPreco}>Salvar</Button>
@@ -491,10 +509,11 @@ export function ConcorrenciaPage() {
                             size="sm"
                             className="w-full justify-start text-xs text-muted-foreground h-8"
                             onClick={() => {
+                              const produtoData = produtos.find((p) => p.nome === prod.nome);
                               setAddingPriceFor({ concorrenteId: c.id, produtoNome: prod.nome });
                               setNovoPreco("");
-                              setNovoPeso("1");
-                              setNovaUnidade("un");
+                              setNovoPeso(produtoData?.peso_quantidade ? String(produtoData.peso_quantidade) : "1");
+                              setNovaUnidade(produtoData?.unidade || "un");
                             }}
                           >
                             <Plus className="w-3 h-3 mr-1" /> Adicionar preço de {c.nome}

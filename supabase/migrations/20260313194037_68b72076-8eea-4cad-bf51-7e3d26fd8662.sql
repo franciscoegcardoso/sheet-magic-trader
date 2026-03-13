@@ -1,0 +1,1 @@
+ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS peso_quantidade numeric NOT NULL DEFAULT 1;

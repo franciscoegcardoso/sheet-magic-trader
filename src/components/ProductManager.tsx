@@ -29,6 +29,7 @@ import {
   ToggleLeft,
   Barcode,
   RefreshCw,
+  Scale,
 } from "lucide-react";
 
 export function ProductManager() {
@@ -46,6 +47,8 @@ export function ProductManager() {
   const [receitaId, setReceitaId] = useState("");
   const [codigoBarras, setCodigoBarras] = useState("");
   const [codigoTipo, setCodigoTipo] = useState<"interno" | "gtin">("interno");
+  const [pesoQuantidade, setPesoQuantidade] = useState("1");
+  const [unidade, setUnidade] = useState("un");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -62,6 +65,8 @@ export function ProductManager() {
     setReceitaId("");
     setCodigoBarras("");
     setCodigoTipo("interno");
+    setPesoQuantidade("1");
+    setUnidade("un");
     setEditingId(null);
     setShowForm(false);
   };
@@ -74,6 +79,8 @@ export function ProductManager() {
     setReceitaId(p.receita_id || "");
     setCodigoBarras(p.codigo_barras || "");
     setCodigoTipo(p.codigo_barras?.startsWith("2") ? "interno" : "gtin");
+    setPesoQuantidade(String(p.peso_quantidade || 1));
+    setUnidade(p.unidade || "un");
     setEditingId(p.id);
     setShowForm(true);
   };
@@ -117,7 +124,8 @@ export function ProductManager() {
         ativo,
         receita_id: receitaId && receitaId !== "none" ? receitaId : null,
         tamanho: null,
-        unidade: null,
+        unidade: unidade || "un",
+        peso_quantidade: Number(pesoQuantidade) || 1,
         preco_venda: 0,
       };
 
@@ -299,6 +307,50 @@ export function ProductManager() {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Peso / Medida */}
+          <div className="space-y-2 p-3 rounded-lg border border-border bg-secondary/20">
+            <Label className="text-xs text-muted-foreground flex items-center gap-1">
+              <Scale className="w-3.5 h-3.5" />
+              Peso ou tamanho do produto
+            </Label>
+            <p className="text-[10px] text-muted-foreground">
+              Usado para comparar automaticamente com preços da concorrência
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Quantidade</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  value={pesoQuantidade}
+                  onChange={(e) => setPesoQuantidade(e.target.value)}
+                  placeholder="1"
+                />
+              </div>
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Medida</Label>
+                <Select value={unidade} onValueChange={setUnidade}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Unidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="un">Unidade</SelectItem>
+                    <SelectItem value="kg">Kg</SelectItem>
+                    <SelectItem value="g">Gramas</SelectItem>
+                    <SelectItem value="L">Litros</SelectItem>
+                    <SelectItem value="ml">mL</SelectItem>
+                    <SelectItem value="fatia">Fatia</SelectItem>
+                    <SelectItem value="porcao">Porção</SelectItem>
+                    <SelectItem value="dz">Dúzia</SelectItem>
+                    <SelectItem value="cx">Caixa</SelectItem>
+                    <SelectItem value="pct">Pacote</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
 
           {/* GTIN / Código de Barras */}

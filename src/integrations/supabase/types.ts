@@ -382,6 +382,7 @@ export type Database = {
           foto_url: string | null
           id: string
           nome: string
+          peso_quantidade: number
           preco_venda: number
           receita_id: string | null
           tamanho: string | null
@@ -396,6 +397,7 @@ export type Database = {
           foto_url?: string | null
           id?: string
           nome: string
+          peso_quantidade?: number
           preco_venda?: number
           receita_id?: string | null
           tamanho?: string | null
@@ -410,6 +412,7 @@ export type Database = {
           foto_url?: string | null
           id?: string
           nome?: string
+          peso_quantidade?: number
           preco_venda?: number
           receita_id?: string | null
           tamanho?: string | null
