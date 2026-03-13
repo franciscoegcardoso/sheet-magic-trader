@@ -160,7 +160,7 @@ export function ContasPage() {
           <div className="grid grid-cols-3 gap-3">
             <div><Label className="text-xs text-muted-foreground">Quanto? (R$) *</Label>
               <Input type="number" step="0.01" value={valor} onChange={e => setValor(e.target.value)} /></div>
-            <div><Label className="text-xs text-muted-foreground">Categoria</Label>
+            <div><Label className="text-xs text-muted-foreground">Tipo (opcional)</Label>
               <Input value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Insumos" /></div>
             <div><Label className="text-xs text-muted-foreground">Vencimento *</Label>
               <Input type="date" value={dataVencimento} onChange={e => setDataVencimento(e.target.value)} /></div>
