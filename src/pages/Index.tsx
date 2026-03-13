@@ -178,12 +178,6 @@ export default function Index() {
             </div>
           </div>
 
-          {isConnected && (
-            <div className="flex items-center gap-1.5 px-4 py-2 text-[11px] text-primary border-b border-border">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Google Sheets conectado
-            </div>
-          )}
 
           <nav className="flex-1 py-2 overflow-y-auto">
             {desktopSidebarTabs.map((tab) => {
