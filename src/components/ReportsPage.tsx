@@ -39,6 +39,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Download,
+  History,
 } from "lucide-react";
 
 const COLORS = [
