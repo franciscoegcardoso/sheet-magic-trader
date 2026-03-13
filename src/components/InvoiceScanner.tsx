@@ -39,6 +39,21 @@ export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerPro
   const [items, setItems] = useState<InvoiceItem[]>([]);
   const [invoiceTotal, setInvoiceTotal] = useState(0);
 
+  const scanFileFromExternal = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Arquivo inválido", description: "Selecione uma imagem.", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      await scanInvoice(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  useImperativeHandle(ref, () => ({ scanFile: scanFileFromExternal }));
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
