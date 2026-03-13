@@ -79,8 +79,7 @@ export default function Index() {
     navigate(t === "home" ? "/" : `/${t}`);
   };
 
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
+  // webhookUrl/isConnected now managed inside SettingsPage > SheetsConfig
 
   const handlePurchaseSubmit = async (data: PurchaseData) => {
     try {
