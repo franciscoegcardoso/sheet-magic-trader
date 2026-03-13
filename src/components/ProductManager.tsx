@@ -123,7 +123,8 @@ export function ProductManager() {
         ativo,
         receita_id: receitaId && receitaId !== "none" ? receitaId : null,
         tamanho: null,
-        unidade: null,
+        unidade: unidade || "un",
+        peso_quantidade: Number(pesoQuantidade) || 1,
         preco_venda: 0,
       };
 
