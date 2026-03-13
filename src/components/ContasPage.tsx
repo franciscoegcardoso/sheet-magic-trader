@@ -195,7 +195,7 @@ export function ContasPage() {
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-foreground truncate">{c.descricao}</span>
                       {c.categoria && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground">{c.categoria}</span>}
-                      {isOverdue && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive/15 text-destructive font-medium">Atrasado</span>}
+                      {isOverdue && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive/15 text-destructive font-medium">Vencida</span>}
                       {c.status === "pago" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
                     </div>
                     <div className="text-[11px] text-muted-foreground mt-0.5">
