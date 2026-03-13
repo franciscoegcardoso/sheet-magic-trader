@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,7 +27,11 @@ interface InvoiceScannerProps {
   onConfirm: (items: Array<{ produto: string; dataCompra: string; valorCompra: string }>) => void;
 }
 
-export function InvoiceScanner({ onConfirm }: InvoiceScannerProps) {
+export interface InvoiceScannerHandle {
+  scanFile: (file: File) => void;
+}
+
+export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerProps>(function InvoiceScanner({ onConfirm }, ref) {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isScanning, setIsScanning] = useState(false);
