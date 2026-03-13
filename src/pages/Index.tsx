@@ -22,7 +22,6 @@ import { useVendas } from "@/hooks/useVendas";
 import {
   ShoppingCart,
   Receipt,
-  FileSpreadsheet,
   ChefHat,
   BarChart3,
   Package,
