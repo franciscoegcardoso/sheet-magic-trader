@@ -426,7 +426,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label htmlFor="valorFrete" className="input-label">
               <Truck className="w-4 h-4 inline mr-1.5" />
-              Valor do Frete (R$)
+              Cobrou entrega? (R$)
             </Label>
             <Input
               id="valorFrete"
