@@ -53,6 +53,9 @@ export function ConcorrenciaPage() {
   const [novoConcorrente, setNovoConcorrente] = useState("");
   const [insights, setInsights] = useState<string | null>(null);
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
+  
+  // Target margin state (default 50%)
+  const [targetMargin, setTargetMargin] = useState<30 | 50 | 65>(50);
 
   // Price form state
   const [addingPriceFor, setAddingPriceFor] = useState<{ concorrenteId: string; produtoNome: string } | null>(null);
