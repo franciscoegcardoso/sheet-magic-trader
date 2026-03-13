@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UNIT_GROUPS } from "@/lib/units";
 
 interface PurchaseData {
   insumo: string;
