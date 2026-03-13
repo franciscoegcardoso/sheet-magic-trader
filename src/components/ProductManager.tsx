@@ -305,7 +305,7 @@ export function ProductManager() {
           <div className="space-y-2 p-3 rounded-lg border border-border bg-secondary/20">
             <Label className="text-xs text-muted-foreground flex items-center gap-1">
               <Barcode className="w-3.5 h-3.5" />
-              Código de Barras (GTIN / EAN-13)
+              Código de barras (opcional)
             </Label>
             <div className="flex gap-2">
               <Button
