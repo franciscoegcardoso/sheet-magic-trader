@@ -316,9 +316,9 @@ export function PriceSimulator() {
                 step={0.5}
               />
               <div className="flex justify-between text-[10px] text-muted-foreground">
-                <span>Abaixo CMV ⚠️</span>
-                <span>CMV: R$ {selectedProd.cmv.toFixed(2)}</span>
-                <span>5x CMV</span>
+                <span>Prejuízo ⚠️</span>
+                <span>Custo: R$ {selectedProd.cmv.toFixed(2)}</span>
+                <span>5x o custo</span>
               </div>
             </div>
           )}
