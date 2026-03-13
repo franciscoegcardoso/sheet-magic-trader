@@ -200,10 +200,67 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
     }
   }, [findByBarcode, products, toast]);
 
+  // On mobile, auto-switch to scanner mode
+  useEffect(() => {
+    if (isMobile && !hasInitialized) {
+      setMode("scanner");
+      setHasInitialized(true);
+      const timer = setTimeout(() => {
+        setShowScanner(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile, hasInitialized]);
+
+  // Mobile scanner landing screen
+  if (isMobile && mode === "scanner" && !showScanner) {
+    return (
+      <div className="animate-fade-in flex flex-col items-center justify-center py-8 px-4">
+        <div className="p-4 rounded-2xl bg-accent mb-6">
+          <ScanLine className="w-10 h-10 text-accent-foreground" />
+        </div>
+        <h2 className="text-lg font-display font-semibold text-foreground mb-1">Escanear Produto</h2>
+        <p className="text-sm text-muted-foreground text-center mb-8">
+          Escaneie o código de barras do produto para preencher automaticamente
+        </p>
+
+        <div className="w-full space-y-3">
+          <Button
+            type="button"
+            onClick={() => setShowScanner(true)}
+            className="w-full gap-2 h-12"
+          >
+            <ScanLine className="w-5 h-5" />
+            Escanear Código de Barras
+          </Button>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">ou</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setMode("manual")}
+            className="w-full gap-2 text-muted-foreground"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Inserir dados manualmente
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {showScanner && (
-        <BarcodeScanner onScan={handleBarcodeScan} onClose={() => setShowScanner(false)} />
+        <BarcodeScanner onScan={(code) => { handleBarcodeScan(code); setMode("manual"); }} onClose={() => { setShowScanner(false); if (mode === "scanner") setMode("manual"); }} />
       )}
       <form onSubmit={handleSubmit} className="form-section animate-fade-in">
         <div className="flex items-center gap-3 mb-6">
