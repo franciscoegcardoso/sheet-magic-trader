@@ -485,7 +485,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
 
           <div className="md:col-span-2 flex gap-2">
             <Button type="submit" className="flex-1 mt-2">
-              Registrar Venda
+              Salvar Venda
             </Button>
             <Button
               type="button"

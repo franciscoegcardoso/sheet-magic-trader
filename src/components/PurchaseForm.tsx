@@ -366,7 +366,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         </div>
 
         <Button type="submit" className="w-full mt-6">
-          Registrar Compra
+          Salvar Compra
         </Button>
       </div>
     </form>
