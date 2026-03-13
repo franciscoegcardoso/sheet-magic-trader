@@ -291,8 +291,8 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center pt-4 pb-2">
-        <h1 className="text-2xl font-display font-bold text-foreground">Controle Financeiro</h1>
-        <p className="text-sm text-muted-foreground mt-1">O que deseja registrar?</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">Olá! 👋</h1>
+        <p className="text-sm text-muted-foreground mt-1">O que você quer fazer agora?</p>
       </div>
 
 
