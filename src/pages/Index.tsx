@@ -154,15 +154,6 @@ export default function Index() {
     if (activeTab === "marketing") return <MarketingPage />;
     if (activeTab === "relatorios") return <ReportsPage />;
     if (activeTab === "despesas") return <DespesasPage />;
-    if (activeTab === "config")
-      return (
-        <SheetsConfig
-          webhookUrl={webhookUrl}
-          setWebhookUrl={setWebhookUrl}
-          isConnected={isConnected}
-          setIsConnected={setIsConnected}
-        />
-      );
     if (activeTab === "docs") return <DocsPage />;
     if (activeTab === "configuracoes") return <SettingsPage />;
     return null;
