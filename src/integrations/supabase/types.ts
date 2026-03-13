@@ -77,6 +77,68 @@ export type Database = {
         }
         Relationships: []
       }
+      concorrente_precos: {
+        Row: {
+          concorrente_id: string
+          created_at: string
+          id: string
+          peso_quantidade: number
+          preco: number
+          produto_nome: string
+          unidade: string
+          updated_at: string
+        }
+        Insert: {
+          concorrente_id: string
+          created_at?: string
+          id?: string
+          peso_quantidade?: number
+          preco?: number
+          produto_nome: string
+          unidade?: string
+          updated_at?: string
+        }
+        Update: {
+          concorrente_id?: string
+          created_at?: string
+          id?: string
+          peso_quantidade?: number
+          preco?: number
+          produto_nome?: string
+          unidade?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concorrente_precos_concorrente_id_fkey"
+            columns: ["concorrente_id"]
+            isOneToOne: false
+            referencedRelation: "concorrentes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concorrentes: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          observacoes: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          observacoes?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          observacoes?: string | null
+        }
+        Relationships: []
+      }
       contas: {
         Row: {
           categoria: string | null
