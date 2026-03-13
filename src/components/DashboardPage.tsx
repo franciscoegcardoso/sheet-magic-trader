@@ -8,7 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   BarChart3, TrendingUp, TrendingDown, ShoppingBag, Users, DollarSign,
   Package, ArrowUp, ArrowDown, Loader2, AlertTriangle, Scale,
+  ArrowRight,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardPage() {
   const { vendas, isLoading: loadingVendas } = useVendas();
