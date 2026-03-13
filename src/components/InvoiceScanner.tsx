@@ -25,13 +25,14 @@ interface InvoiceItem {
 
 interface InvoiceScannerProps {
   onConfirm: (items: Array<{ produto: string; dataCompra: string; valorCompra: string }>) => void;
+  onScanningChange?: (scanning: boolean) => void;
 }
 
 export interface InvoiceScannerHandle {
   scanFile: (file: File) => void;
 }
 
-export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerProps>(function InvoiceScanner({ onConfirm }, ref) {
+export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerProps>(function InvoiceScanner({ onConfirm, onScanningChange }, ref) {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -79,6 +80,7 @@ export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerPro
 
   const scanInvoice = async (imageBase64: string) => {
     setIsScanning(true);
+    onScanningChange?.(true);
 
     try {
       const { data, error } = await supabase.functions.invoke("scan-invoice", {
@@ -118,6 +120,7 @@ export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerPro
       });
     } finally {
       setIsScanning(false);
+      onScanningChange?.(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }

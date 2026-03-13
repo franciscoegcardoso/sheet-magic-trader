@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Calendar, DollarSign, Package, Hash, Loader2, Camera, Image, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Calendar, DollarSign, Package, Hash, Loader2, Camera, Image, ArrowLeft, FileText } from "lucide-react";
 import { InvoiceScanner, type InvoiceScannerHandle } from "./InvoiceScanner";
 import { useInsumos } from "@/hooks/useInsumos";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -33,6 +33,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   const { insumos, isLoading: isLoadingInsumos } = useInsumos();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"scanner" | "manual">(isMobile ? "scanner" : "manual");
+  const [isProcessing, setIsProcessing] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const scannerRef = useRef<InvoiceScannerHandle>(null);
@@ -117,74 +118,97 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   if (isMobile && mode === "scanner") {
     return (
       <div className="animate-fade-in flex flex-col items-center justify-center py-8 px-4">
-        <div className="p-4 rounded-2xl bg-accent mb-6">
-          <Camera className="w-10 h-10 text-accent-foreground" />
-        </div>
-        <h2 className="text-lg font-display font-semibold text-foreground mb-1">Escanear Nota Fiscal</h2>
-        <p className="text-sm text-muted-foreground text-center mb-8">
-          Tire uma foto da nota ou escolha da galeria
-        </p>
-
-        {/* Hidden file inputs */}
-        <input
-          ref={cameraInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleFileSelected}
-          className="hidden"
-        />
-        <input
-          ref={galleryInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleFileSelected}
-          className="hidden"
-        />
-
-        <div className="w-full space-y-3">
-          <Button
-            type="button"
-            onClick={() => cameraInputRef.current?.click()}
-            className="w-full gap-2 h-12"
-          >
-            <Camera className="w-5 h-5" />
-            Tirar Foto
-          </Button>
-
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => galleryInputRef.current?.click()}
-            className="w-full gap-2 h-12"
-          >
-            <Image className="w-5 h-5" />
-            Buscar na Galeria
-          </Button>
-
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+        {isProcessing ? (
+          // Loading animation while processing
+          <div className="flex flex-col items-center justify-center py-12 animate-fade-in">
+            <div className="relative mb-8">
+              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center animate-pulse">
+                <FileText className="w-10 h-10 text-primary" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+                <Loader2 className="w-4 h-4 text-primary-foreground animate-spin" />
+              </div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">ou</span>
+            <h2 className="text-lg font-display font-semibold text-foreground mb-2">Processando nota fiscal...</h2>
+            <p className="text-sm text-muted-foreground text-center mb-6 max-w-[260px]">
+              Estamos lendo os itens da sua nota. Isso pode levar alguns segundos.
+            </p>
+            <div className="w-48 h-1.5 bg-secondary rounded-full overflow-hidden">
+              <div className="h-full bg-primary rounded-full animate-[slide-progress_2s_ease-in-out_infinite]" />
             </div>
           </div>
+        ) : (
+          <>
+            <div className="p-4 rounded-2xl bg-accent mb-6">
+              <Camera className="w-10 h-10 text-accent-foreground" />
+            </div>
+            <h2 className="text-lg font-display font-semibold text-foreground mb-1">Escanear Nota Fiscal</h2>
+            <p className="text-sm text-muted-foreground text-center mb-8">
+              Tire uma foto da nota ou escolha da galeria
+            </p>
 
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setMode("manual")}
-            className="w-full gap-2 text-muted-foreground"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Inserir dados manualmente
-          </Button>
-        </div>
+            {/* Hidden file inputs */}
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileSelected}
+              className="hidden"
+            />
+            <input
+              ref={galleryInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelected}
+              className="hidden"
+            />
+
+            <div className="w-full space-y-3">
+              <Button
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+                className="w-full gap-2 h-12"
+              >
+                <Camera className="w-5 h-5" />
+                Tirar Foto
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => galleryInputRef.current?.click()}
+                className="w-full gap-2 h-12"
+              >
+                <Image className="w-5 h-5" />
+                Buscar na Galeria
+              </Button>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">ou</span>
+                </div>
+              </div>
+
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setMode("manual")}
+                className="w-full gap-2 text-muted-foreground"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Inserir dados manualmente
+              </Button>
+            </div>
+          </>
+        )}
 
         {/* Hidden scanner component for processing */}
         <div className="hidden">
-          <InvoiceScanner ref={scannerRef} onConfirm={handleScannedItems} />
+          <InvoiceScanner ref={scannerRef} onConfirm={handleScannedItems} onScanningChange={setIsProcessing} />
         </div>
       </div>
     );
