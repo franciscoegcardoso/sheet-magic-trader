@@ -41,7 +41,16 @@ export function SettingsPage() {
       case "assinatura": return <SettingsAssinatura />;
       case "financeiro": return <SettingsFinanceiro />;
       case "legal": return <SettingsLegal />;
-      case "integracoes": return <SheetsConfig />;
+      case "integracoes": return (
+        <div className="space-y-6">
+          <div className="bg-card border border-border rounded-xl p-5">
+            <SheetsConfig />
+          </div>
+          <div className="bg-card border border-border rounded-xl p-5">
+            <MercadoPagoConfig />
+          </div>
+        </div>
+      );
     }
   };
 
