@@ -305,7 +305,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label className="input-label">
               <User className="w-4 h-4 inline mr-1.5" />
-              Cliente
+              Para quem vendeu?
             </Label>
             <Select
               value={formData.cliente}
