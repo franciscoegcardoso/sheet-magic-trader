@@ -78,6 +78,8 @@ export function ProductManager() {
     setReceitaId(p.receita_id || "");
     setCodigoBarras(p.codigo_barras || "");
     setCodigoTipo(p.codigo_barras?.startsWith("2") ? "interno" : "gtin");
+    setPesoQuantidade(String(p.peso_quantidade || 1));
+    setUnidade(p.unidade || "un");
     setEditingId(p.id);
     setShowForm(true);
   };
