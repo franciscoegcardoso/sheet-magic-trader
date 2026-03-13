@@ -287,22 +287,47 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "venda" as TabType, label: "Nova Venda", icon: Receipt, desc: "Registrar saída" },
   ];
 
-  const menuItems = [
-    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard },
-    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays },
-    { id: "produto" as TabType, label: "Produtos", icon: Package },
-    { id: "catalogo" as TabType, label: "Catálogo", icon: Store },
-    { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
-    { id: "crm" as TabType, label: "Clientes", icon: Users },
-    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
-    { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
-    { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
-    { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
-    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
-    { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
-    { id: "contas" as TabType, label: "Contas", icon: CreditCard },
-    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
-    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
+  const menuSections = [
+    {
+      label: "Visão Geral",
+      items: [
+        { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard },
+      ],
+    },
+    {
+      label: "Vendas",
+      items: [
+        { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays },
+        { id: "crm" as TabType, label: "Clientes", icon: Users },
+        { id: "catalogo" as TabType, label: "Catálogo", icon: Store },
+      ],
+    },
+    {
+      label: "Produção",
+      items: [
+        { id: "produto" as TabType, label: "Produtos", icon: Package },
+        { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
+        { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
+      ],
+    },
+    {
+      label: "Financeiro",
+      items: [
+        { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
+        { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
+        { id: "contas" as TabType, label: "Contas", icon: CreditCard },
+        { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
+        { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
+      ],
+    },
+    {
+      label: "Marketing & Sistema",
+      items: [
+        { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
+        { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
+        { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
+      ],
+    },
   ];
 
   return (
@@ -336,26 +361,28 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         })}
       </div>
 
-      <div>
-        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
-          Gestão
-        </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border active:bg-accent transition-colors"
-              >
-                <Icon className="w-5 h-5 text-primary" />
-                <span className="text-[11px] font-medium text-foreground">{item.label}</span>
-              </button>
-            );
-          })}
+      {menuSections.map((section) => (
+        <div key={section.label}>
+          <h2 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+            {section.label}
+          </h2>
+          <div className="grid grid-cols-3 gap-2">
+            {section.items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border active:bg-accent transition-colors"
+                >
+                  <Icon className="w-5 h-5 text-primary" />
+                  <span className="text-[11px] font-medium text-foreground">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
