@@ -232,10 +232,10 @@ export function PriceSimulator() {
               </div>
 
               <div className="divide-y divide-border">
-                <DRERow label="Receita Bruta" value={calc.receita} isTotal />
+                <DRERow label="Preço de venda" value={calc.receita} isTotal />
                 <DRERow label="(-) Impostos" value={-calc.impostos} percent={Number(impostoPercent)} />
-                <DRERow label="(-) Taxas" value={-calc.taxas} percent={Number(taxaPercent)} />
-                <DRERow label="(-) CMV" value={-calc.cmv} highlight />
+                <DRERow label="(-) Taxas de máquina" value={-calc.taxas} percent={Number(taxaPercent)} />
+                <DRERow label="(-) Custo do produto" value={-calc.cmv} highlight />
                 {calc.embalagem > 0 && <DRERow label="(-) Embalagem" value={-calc.embalagem} />}
                 {calc.entrega > 0 && <DRERow label="(-) Entrega" value={-calc.entrega} />}
                 <div
