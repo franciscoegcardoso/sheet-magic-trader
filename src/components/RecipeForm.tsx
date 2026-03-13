@@ -165,7 +165,7 @@ export function RecipeForm() {
         <div>
           <Label className="input-label">
             <Package className="w-4 h-4 inline mr-1" />
-            Produto Vinculado
+            Essa receita é de qual produto?
           </Label>
           <Select value={produtoId} onValueChange={setProdutoId}>
             <SelectTrigger>
