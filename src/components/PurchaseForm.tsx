@@ -46,16 +46,17 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
     valorCompra: "",
   });
 
-  // On mobile, auto-trigger camera on mount
+  // On mobile, switch to scanner mode and auto-trigger camera
   useEffect(() => {
-    if (isMobile && mode === "scanner") {
-      // Small delay to let the component mount
+    if (isMobile && !hasInitialized) {
+      setMode("scanner");
+      setHasInitialized(true);
       const timer = setTimeout(() => {
         cameraInputRef.current?.click();
-      }, 300);
+      }, 400);
       return () => clearTimeout(timer);
     }
-  }, []); // only on mount
+  }, [isMobile, hasInitialized]);
 
   const handleInsumoChange = (value: string) => {
     const selectedInsumo = insumos.find((i) => i.nome === value);
