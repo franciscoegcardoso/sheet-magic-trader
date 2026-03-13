@@ -162,7 +162,7 @@ export function ContasPage() {
               <Input type="number" step="0.01" value={valor} onChange={e => setValor(e.target.value)} /></div>
             <div><Label className="text-xs text-muted-foreground">Tipo (opcional)</Label>
               <Input value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Insumos" /></div>
-            <div><Label className="text-xs text-muted-foreground">Vencimento *</Label>
+            <div><Label className="text-xs text-muted-foreground">Data limite *</Label>
               <Input type="date" value={dataVencimento} onChange={e => setDataVencimento(e.target.value)} /></div>
           </div>
           <div><Label className="text-xs text-muted-foreground">Observações</Label>
