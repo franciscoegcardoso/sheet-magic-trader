@@ -116,7 +116,7 @@ export function PriceSimulator() {
 
       {/* Product selector */}
       <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-        <Label className="text-xs font-semibold text-foreground">Selecione o Produto</Label>
+        <Label className="text-xs font-semibold text-foreground">Qual produto quer calcular?</Label>
         <select
           value={selectedProduct}
           onChange={(e) => {
