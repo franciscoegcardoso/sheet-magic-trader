@@ -8,6 +8,7 @@ import { ReportsPage } from "@/components/ReportsPage";
 import { DespesasPage } from "@/components/DespesasPage";
 import { ProductManager } from "@/components/ProductManager";
 import { CRMPage } from "@/components/CRMPage";
+import { ConcorrenciaPage } from "@/components/ConcorrenciaPage";
 import { StockReport } from "@/components/StockReport";
 import { SalesPlanning } from "@/components/SalesPlanning";
 import { DocsPage } from "@/components/DocsPage";
