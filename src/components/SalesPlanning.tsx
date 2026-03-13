@@ -223,10 +223,10 @@ export function SalesPlanning() {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Planejamento de Vendas
+            Metas e Planejamento
           </h2>
           <p className="text-sm text-muted-foreground">
-            Histórico, projeções e simulador de preço
+            Analise seu desempenho e teste novos preços
           </p>
         </div>
       </div>
