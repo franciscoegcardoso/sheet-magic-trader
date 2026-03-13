@@ -249,7 +249,7 @@ export function SalesPlanning() {
 
         {/* ===== HISTORY ===== */}
         <TabsContent value="historico" className="space-y-4">
-          <ReportCard title="Vendas Mensais">
+          <ReportCard title="Vendas por Mês">
             {salesByMonth.length === 0 ? (
               <EmptyState text="Registre vendas para ver o histórico" />
             ) : (
