@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
-import { SheetsConfig } from "@/components/SheetsConfig";
+// SheetsConfig is now inside SettingsPage
 import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { ReportsPage } from "@/components/ReportsPage";
@@ -22,7 +22,6 @@ import { useVendas } from "@/hooks/useVendas";
 import {
   ShoppingCart,
   Receipt,
-  FileSpreadsheet,
   ChefHat,
   BarChart3,
   Package,
@@ -41,7 +40,7 @@ import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
   "home", "compra", "venda", "produto", "receita", "crm",
-  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "config", "docs", "configuracoes",
+  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
@@ -79,8 +78,7 @@ export default function Index() {
     navigate(t === "home" ? "/" : `/${t}`);
   };
 
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
+  // webhookUrl/isConnected now managed inside SettingsPage > SheetsConfig
 
   const handlePurchaseSubmit = async (data: PurchaseData) => {
     try {
@@ -134,7 +132,6 @@ export default function Index() {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
-    { id: "config" as TabType, label: "Config", icon: FileSpreadsheet, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
   ];
@@ -155,15 +152,6 @@ export default function Index() {
     if (activeTab === "marketing") return <MarketingPage />;
     if (activeTab === "relatorios") return <ReportsPage />;
     if (activeTab === "despesas") return <DespesasPage />;
-    if (activeTab === "config")
-      return (
-        <SheetsConfig
-          webhookUrl={webhookUrl}
-          setWebhookUrl={setWebhookUrl}
-          isConnected={isConnected}
-          setIsConnected={setIsConnected}
-        />
-      );
     if (activeTab === "docs") return <DocsPage />;
     if (activeTab === "configuracoes") return <SettingsPage />;
     return null;
@@ -188,12 +176,6 @@ export default function Index() {
             </div>
           </div>
 
-          {isConnected && (
-            <div className="flex items-center gap-1.5 px-4 py-2 text-[11px] text-primary border-b border-border">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Google Sheets conectado
-            </div>
-          )}
 
           <nav className="flex-1 py-2 overflow-y-auto">
             {desktopSidebarTabs.map((tab) => {
@@ -277,7 +259,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
-    { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
+    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
   ];
 

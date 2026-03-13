@@ -5,6 +5,7 @@ import { SettingsPreferencias } from "./settings/SettingsPreferencias";
 import { SettingsAssinatura } from "./settings/SettingsAssinatura";
 import { SettingsFinanceiro } from "./settings/SettingsFinanceiro";
 import { SettingsLegal } from "./settings/SettingsLegal";
+import { SheetsConfig } from "./SheetsConfig";
 import {
   Settings,
   User,
@@ -13,9 +14,10 @@ import {
   Crown,
   DollarSign,
   Scale,
+  FileSpreadsheet,
 } from "lucide-react";
 
-type SettingsTab = "cadastro" | "seguranca" | "preferencias" | "assinatura" | "financeiro" | "legal";
+type SettingsTab = "cadastro" | "seguranca" | "preferencias" | "assinatura" | "financeiro" | "legal" | "integracoes";
 
 const tabs: { id: SettingsTab; label: string; icon: typeof User }[] = [
   { id: "cadastro", label: "Cadastro", icon: User },
@@ -24,6 +26,7 @@ const tabs: { id: SettingsTab; label: string; icon: typeof User }[] = [
   { id: "assinatura", label: "Assinatura", icon: Crown },
   { id: "financeiro", label: "Financeiro", icon: DollarSign },
   { id: "legal", label: "Legal", icon: Scale },
+  { id: "integracoes", label: "Integrações", icon: FileSpreadsheet },
 ];
 
 export function SettingsPage() {
@@ -37,6 +40,7 @@ export function SettingsPage() {
       case "assinatura": return <SettingsAssinatura />;
       case "financeiro": return <SettingsFinanceiro />;
       case "legal": return <SettingsLegal />;
+      case "integracoes": return <SheetsConfig />;
     }
   };
 

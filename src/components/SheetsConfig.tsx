@@ -6,20 +6,27 @@ import { useToast } from "@/hooks/use-toast";
 import { Settings, Link, CheckCircle, AlertCircle } from "lucide-react";
 
 interface SheetsConfigProps {
-  webhookUrl: string;
-  setWebhookUrl: (url: string) => void;
-  isConnected: boolean;
-  setIsConnected: (connected: boolean) => void;
+  webhookUrl?: string;
+  setWebhookUrl?: (url: string) => void;
+  isConnected?: boolean;
+  setIsConnected?: (connected: boolean) => void;
 }
 
 export function SheetsConfig({
-  webhookUrl,
-  setWebhookUrl,
-  isConnected,
-  setIsConnected,
+  webhookUrl: externalUrl,
+  setWebhookUrl: externalSetUrl,
+  isConnected: externalConnected,
+  setIsConnected: externalSetConnected,
 }: SheetsConfigProps) {
   const { toast } = useToast();
+  const [internalUrl, setInternalUrl] = useState("");
+  const [internalConnected, setInternalConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const webhookUrl = externalUrl ?? internalUrl;
+  const setWebhookUrl = externalSetUrl ?? setInternalUrl;
+  const isConnected = externalConnected ?? internalConnected;
+  const setIsConnected = externalSetConnected ?? setInternalConnected;
 
   const handleConnect = async () => {
     if (!webhookUrl.trim()) {
@@ -32,8 +39,6 @@ export function SheetsConfig({
     }
 
     setIsLoading(true);
-
-    // Simulate connection test
     setTimeout(() => {
       setIsConnected(true);
       setIsLoading(false);
@@ -54,21 +59,7 @@ export function SheetsConfig({
   };
 
   return (
-    <div className="form-section animate-fade-in">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2.5 rounded-lg bg-accent">
-          <Settings className="w-5 h-5 text-accent-foreground" />
-        </div>
-        <div>
-          <h2 className="text-lg font-display font-semibold text-foreground">
-            Configuração do Google Sheets
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Configure a integração com sua planilha
-          </p>
-        </div>
-      </div>
-
+    <div className="space-y-4">
       {isConnected ? (
         <div className="space-y-4">
           <div className="flex items-center gap-2 p-4 rounded-lg bg-accent/50 border border-primary/20">
