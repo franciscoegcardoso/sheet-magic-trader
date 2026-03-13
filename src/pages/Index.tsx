@@ -266,7 +266,10 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
   ];
 
   const menuItems = [
+    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard },
+    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays },
     { id: "produto" as TabType, label: "Produtos", icon: Package },
+    { id: "catalogo" as TabType, label: "Catálogo", icon: Store },
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
     { id: "crm" as TabType, label: "Clientes", icon: Users },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
@@ -275,6 +278,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
+    { id: "contas" as TabType, label: "Contas", icon: CreditCard },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
   ];
@@ -285,6 +289,9 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         <h1 className="text-2xl font-display font-bold text-foreground">Controle Financeiro</h1>
         <p className="text-sm text-muted-foreground mt-1">O que deseja registrar?</p>
       </div>
+
+      {/* Notifications */}
+      <NotificacoesPanel />
 
       <div className="grid grid-cols-2 gap-3">
         {quickActions.map((action) => {
