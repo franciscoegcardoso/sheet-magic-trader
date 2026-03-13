@@ -129,27 +129,35 @@ export default function Index() {
 
   const allTabs = [
     { id: "home" as TabType, label: "Início", icon: Home, mobile: true, desktop: false },
-    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard, mobile: false, desktop: true },
-    { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true },
-    { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true },
-    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays, mobile: false, desktop: true },
-    { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true },
-    { id: "catalogo" as TabType, label: "Catálogo", icon: Store, mobile: false, desktop: true },
-    { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true },
-    { id: "crm" as TabType, label: "CRM", icon: Users, mobile: false, desktop: true },
-    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true },
-    { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true },
-    { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true },
-    { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
-    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
-    { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
-    { id: "contas" as TabType, label: "Contas", icon: CreditCard, mobile: false, desktop: true },
-    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
-    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
+    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard, mobile: false, desktop: true, group: "geral" },
+    { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true, group: "producao" },
+    { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true, group: "vendas" },
+    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays, mobile: false, desktop: true, group: "vendas" },
+    { id: "crm" as TabType, label: "Clientes", icon: Users, mobile: false, desktop: true, group: "vendas" },
+    { id: "catalogo" as TabType, label: "Catálogo", icon: Store, mobile: false, desktop: true, group: "vendas" },
+    { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true, group: "producao" },
+    { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true, group: "producao" },
+    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true, group: "producao" },
+    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true, group: "financeiro" },
+    { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true, group: "financeiro" },
+    { id: "contas" as TabType, label: "Contas", icon: CreditCard, mobile: false, desktop: true, group: "financeiro" },
+    { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true, group: "financeiro" },
+    { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true, group: "financeiro" },
+    { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true, group: "marketing" },
+    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true, group: "sistema" },
+    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true, group: "sistema" },
   ];
 
   const mobileBottomTabs = allTabs.filter((t) => t.mobile);
-  const desktopSidebarTabs = allTabs.filter((t) => t.desktop);
+
+  const sidebarGroups = [
+    { key: "geral", label: "" },
+    { key: "vendas", label: "Vendas" },
+    { key: "producao", label: "Produção" },
+    { key: "financeiro", label: "Financeiro" },
+    { key: "marketing", label: "Marketing" },
+    { key: "sistema", label: "Sistema" },
+  ];
 
   const renderContent = () => {
     if (activeTab === "home") return <MobileHome onNavigate={setActiveTab} />;
@@ -192,24 +200,38 @@ export default function Index() {
             </div>
           </div>
 
-
-          <nav className="flex-1 py-2 overflow-y-auto">
-            {desktopSidebarTabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+          <nav className="flex-1 py-1 overflow-y-auto">
+            {sidebarGroups.map((group) => {
+              const groupTabs = allTabs.filter(t => t.desktop && (t as any).group === group.key);
+              if (groupTabs.length === 0) return null;
               return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-accent text-accent-foreground border-r-2 border-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  {tab.label}
-                </button>
+                <div key={group.key} className={group.label ? "mt-3" : ""}>
+                  {group.label && (
+                    <div className="px-4 py-1.5">
+                      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                        {group.label}
+                      </span>
+                    </div>
+                  )}
+                  {groupTabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`w-full flex items-center gap-2.5 px-4 py-2 text-[13px] font-medium transition-colors ${
+                          isActive
+                            ? "bg-accent text-accent-foreground border-r-2 border-primary"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 shrink-0" />
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
               );
             })}
           </nav>
@@ -265,22 +287,47 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "venda" as TabType, label: "Nova Venda", icon: Receipt, desc: "Registrar saída" },
   ];
 
-  const menuItems = [
-    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard },
-    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays },
-    { id: "produto" as TabType, label: "Produtos", icon: Package },
-    { id: "catalogo" as TabType, label: "Catálogo", icon: Store },
-    { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
-    { id: "crm" as TabType, label: "Clientes", icon: Users },
-    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
-    { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
-    { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
-    { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
-    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
-    { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
-    { id: "contas" as TabType, label: "Contas", icon: CreditCard },
-    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
-    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
+  const menuSections = [
+    {
+      label: "Visão Geral",
+      items: [
+        { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard },
+      ],
+    },
+    {
+      label: "Vendas",
+      items: [
+        { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays },
+        { id: "crm" as TabType, label: "Clientes", icon: Users },
+        { id: "catalogo" as TabType, label: "Catálogo", icon: Store },
+      ],
+    },
+    {
+      label: "Produção",
+      items: [
+        { id: "produto" as TabType, label: "Produtos", icon: Package },
+        { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
+        { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
+      ],
+    },
+    {
+      label: "Financeiro",
+      items: [
+        { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
+        { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
+        { id: "contas" as TabType, label: "Contas", icon: CreditCard },
+        { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
+        { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
+      ],
+    },
+    {
+      label: "Marketing & Sistema",
+      items: [
+        { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
+        { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
+        { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
+      ],
+    },
   ];
 
   return (
@@ -314,26 +361,28 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         })}
       </div>
 
-      <div>
-        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
-          Gestão
-        </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border active:bg-accent transition-colors"
-              >
-                <Icon className="w-5 h-5 text-primary" />
-                <span className="text-[11px] font-medium text-foreground">{item.label}</span>
-              </button>
-            );
-          })}
+      {menuSections.map((section) => (
+        <div key={section.label}>
+          <h2 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+            {section.label}
+          </h2>
+          <div className="grid grid-cols-3 gap-2">
+            {section.items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border active:bg-accent transition-colors"
+                >
+                  <Icon className="w-5 h-5 text-primary" />
+                  <span className="text-[11px] font-medium text-foreground">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
