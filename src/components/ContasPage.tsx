@@ -158,7 +158,7 @@ export function ContasPage() {
           <div><Label className="text-xs text-muted-foreground">O que é essa conta? *</Label>
             <Input value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Ex: Pagamento ao fornecedor de farinha" /></div>
           <div className="grid grid-cols-3 gap-3">
-            <div><Label className="text-xs text-muted-foreground">Valor (R$) *</Label>
+            <div><Label className="text-xs text-muted-foreground">Quanto? (R$) *</Label>
               <Input type="number" step="0.01" value={valor} onChange={e => setValor(e.target.value)} /></div>
             <div><Label className="text-xs text-muted-foreground">Categoria</Label>
               <Input value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Insumos" /></div>
