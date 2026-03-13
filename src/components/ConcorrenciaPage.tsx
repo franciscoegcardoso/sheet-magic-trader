@@ -493,10 +493,11 @@ export function ConcorrenciaPage() {
                             size="sm"
                             className="w-full justify-start text-xs text-muted-foreground h-8"
                             onClick={() => {
+                              const produtoData = produtos.find((p) => p.nome === prod.nome);
                               setAddingPriceFor({ concorrenteId: c.id, produtoNome: prod.nome });
                               setNovoPreco("");
-                              setNovoPeso("1");
-                              setNovaUnidade("un");
+                              setNovoPeso(produtoData?.peso_quantidade ? String(produtoData.peso_quantidade) : "1");
+                              setNovaUnidade(produtoData?.unidade || "un");
                             }}
                           >
                             <Plus className="w-3 h-3 mr-1" /> Adicionar preço de {c.nome}
