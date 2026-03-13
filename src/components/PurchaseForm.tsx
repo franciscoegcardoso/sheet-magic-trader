@@ -335,7 +335,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         <div>
           <Label htmlFor="dataCompra" className="input-label">
             <Calendar className="w-4 h-4 inline mr-1.5" />
-            Data da Compra
+            Quando comprou?
           </Label>
           <Input
             id="dataCompra"
