@@ -159,6 +159,7 @@ export function DashboardPage() {
     return <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
   }
 
+  const navigate = useNavigate();
   const faturamentoPct = pctChange(metrics.faturamentoMes, metrics.faturamentoAnterior);
   const faturamentoMTDPct = pctChange(metrics.faturamentoMes, metrics.faturamentoMTDAnterior);
   const vendasPct = pctChange(metrics.vendasMes, metrics.vendasAnterior);
