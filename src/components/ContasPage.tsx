@@ -114,7 +114,7 @@ export function ContasPage() {
           <div className="text-lg font-bold text-emerald-600 mt-1">R$ {summary.aReceber.toFixed(2)}</div>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-1.5 text-destructive"><ArrowUpCircle className="w-4 h-4" /><span className="text-[10px] font-medium">A Pagar</span></div>
+          <div className="flex items-center gap-1.5 text-destructive"><ArrowUpCircle className="w-4 h-4" /><span className="text-[10px] font-medium">Tenho que Pagar</span></div>
           <div className="text-lg font-bold text-destructive mt-1">R$ {summary.aPagar.toFixed(2)}</div>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
