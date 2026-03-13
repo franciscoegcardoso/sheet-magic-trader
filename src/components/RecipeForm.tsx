@@ -200,10 +200,11 @@ export function RecipeForm() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="un">Unidades</SelectItem>
-                <SelectItem value="porção">Porções</SelectItem>
-                <SelectItem value="kg">Quilogramas</SelectItem>
-                <SelectItem value="L">Litros</SelectItem>
+                {RENDIMENTO_UNITS.map((u) => (
+                  <SelectItem key={u.value} value={u.value}>
+                    {u.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
