@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,12 +17,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, Phone, UserPlus, ScanLine } from "lucide-react";
+import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, Phone, UserPlus, ScanLine, ArrowLeft } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { useClientes } from "@/hooks/useClientes";
 import { useProdutos } from "@/hooks/useProdutos";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
 import { MercadoPagoPaymentModal } from "@/components/MercadoPagoPaymentModal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const EMBALAGENS = [
   "Marmitex P (500ml)",
