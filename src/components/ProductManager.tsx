@@ -343,8 +343,8 @@ export function ProductManager() {
             ) : (
               <div>
                 <p className="text-xs text-muted-foreground">
-                  Um código interno (prefixo 2, padrão GS1) será gerado automaticamente ao cadastrar.
-                  Ideal para produtos artesanais ou sem registro GS1.
+                  Vamos criar um código automaticamente para você. 
+                  Ideal para produtos feitos à mão ou artesanais.
                 </p>
               </div>
             )}
