@@ -28,6 +28,7 @@ import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
 import {
   ShoppingCart,
+  Scale,
   Receipt,
   ChefHat,
   BarChart3,
