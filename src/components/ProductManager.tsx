@@ -29,6 +29,7 @@ import {
   ToggleLeft,
   Barcode,
   RefreshCw,
+  Scale,
 } from "lucide-react";
 
 export function ProductManager() {
