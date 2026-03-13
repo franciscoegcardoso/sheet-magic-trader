@@ -312,7 +312,7 @@ export function ReportsPage() {
         <StatCard icon={Package} label="Gasto com estoque" value={`R$ ${stats.custoEstoque.toFixed(2)}`} />
         <StatCard
           icon={TrendingUp}
-          label="Resultado Líquido"
+          label="Quanto sobrou"
           value={`R$ ${lucroPeriodo.toFixed(2)}`}
           accent={lucroPeriodo >= 0}
           negative={lucroPeriodo < 0}
