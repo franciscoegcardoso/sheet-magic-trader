@@ -35,6 +35,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/catalogo/:userId" element={<CatalogoPublico />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route
             path="/"
