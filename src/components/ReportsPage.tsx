@@ -368,13 +368,95 @@ export function ReportsPage() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="vendas" className="w-full">
-        <TabsList className="w-full grid grid-cols-4">
+      <Tabs defaultValue="evolucao" className="w-full">
+        <TabsList className="w-full grid grid-cols-5">
+          <TabsTrigger value="evolucao" className="text-[10px] sm:text-xs">Evolução</TabsTrigger>
           <TabsTrigger value="vendas" className="text-[10px] sm:text-xs">Vendas</TabsTrigger>
           <TabsTrigger value="margem" className="text-[10px] sm:text-xs">Lucro</TabsTrigger>
           <TabsTrigger value="custos" className="text-[10px] sm:text-xs">Ingredientes</TabsTrigger>
-          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Gastos Fixos</TabsTrigger>
+          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Gastos</TabsTrigger>
         </TabsList>
+
+        {/* Evolution Tab */}
+        <TabsContent value="evolucao" className="space-y-4">
+          <ReportCard title="Faturamento vs Custo (Mensal)">
+            {historicoMensal.length === 0 ? (
+              <EmptyState text="Registre vendas para ver o histórico" />
+            ) : (
+              <div className="px-2 pt-4 pb-2">
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={historicoMensal}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="label" tick={{ fontSize: 9 }} className="fill-muted-foreground" />
+                    <YAxis tick={{ fontSize: 10 }} className="fill-muted-foreground" />
+                    <Tooltip
+                      contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                      formatter={(value: number, name: string) => [
+                        `R$ ${value.toFixed(2)}`,
+                        name === "faturamento" ? "Faturamento" : name === "custo" ? "Custo" : "Margem",
+                      ]}
+                    />
+                    <Legend formatter={(v) => v === "faturamento" ? "Faturamento" : v === "custo" ? "Custo" : "Margem"} />
+                    <Bar dataKey="faturamento" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="custo" fill="hsl(var(--destructive) / 0.6)" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </ReportCard>
+
+          <ReportCard title="Evolução da Margem (%)">
+            {historicoMensal.length === 0 ? (
+              <EmptyState text="Registre vendas para ver o histórico" />
+            ) : (
+              <div className="px-2 pt-4 pb-2">
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={historicoMensal}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="label" tick={{ fontSize: 9 }} className="fill-muted-foreground" />
+                    <YAxis tick={{ fontSize: 10 }} className="fill-muted-foreground" unit="%" />
+                    <Tooltip
+                      contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                      formatter={(value: number) => [`${value.toFixed(1)}%`, "Margem"]}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="margemPercent"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      dot={{ fill: "hsl(var(--primary))", r: 4 }}
+                      name="Margem %"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </ReportCard>
+
+          {/* Monthly summary table */}
+          {historicoMensal.length > 0 && (
+            <ReportCard title="Resumo Mensal">
+              <div className="divide-y divide-border">
+                <div className="grid grid-cols-4 px-4 py-2 bg-accent/30">
+                  <span className="text-[10px] font-semibold text-muted-foreground">Mês</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Faturou</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Custo</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Margem</span>
+                </div>
+                {historicoMensal.map((m) => (
+                  <div key={m.label} className="grid grid-cols-4 px-4 py-2.5">
+                    <span className="text-xs font-medium text-foreground">{m.label}</span>
+                    <span className="text-xs text-foreground text-right">R$ {m.faturamento.toFixed(0)}</span>
+                    <span className="text-xs text-foreground text-right">R$ {m.custo.toFixed(0)}</span>
+                    <span className={`text-xs font-semibold text-right ${m.margem >= 0 ? "text-primary" : "text-destructive"}`}>
+                      {m.margemPercent.toFixed(0)}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </ReportCard>
+          )}
+        </TabsContent>
 
         {/* Sales Tab */}
         <TabsContent value="vendas" className="space-y-4">
