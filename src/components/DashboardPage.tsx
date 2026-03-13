@@ -17,6 +17,42 @@ export function DashboardPage() {
   const { clientes } = useClientesDB();
   const { pedidos } = usePedidos();
 
+  // Competitor price alerts
+  const [priceAlerts, setPriceAlerts] = useState<{ produto: string; meuPreco: number; mediaConc: number; diff: number }[]>([]);
+
+  useEffect(() => {
+    async function checkCompetitorPrices() {
+      const { data: concPrecos } = await supabase.from("concorrente_precos").select("*");
+      if (!concPrecos || concPrecos.length === 0) return;
+
+      // Build average price per product from sales
+      const prodMap = new Map<string, { total: number; count: number }>();
+      vendas.forEach((v) => {
+        const curr = prodMap.get(v.produto) || { total: 0, count: 0 };
+        curr.total += Number(v.valor_venda);
+        curr.count += 1;
+        prodMap.set(v.produto, curr);
+      });
+
+      const alerts: typeof priceAlerts = [];
+      prodMap.forEach((data, prodNome) => {
+        const myPrice = data.total / data.count;
+        const concPrices = concPrecos
+          .filter((p) => p.produto_nome === prodNome)
+          .map((p) => Number(p.preco) / (Number(p.peso_quantidade) || 1));
+        if (concPrices.length === 0) return;
+        const avg = concPrices.reduce((s, p) => s + p, 0) / concPrices.length;
+        const diff = ((myPrice - avg) / avg) * 100;
+        // Alert if price is more than 20% below competitors
+        if (diff < -20) {
+          alerts.push({ produto: prodNome, meuPreco: myPrice, mediaConc: avg, diff });
+        }
+      });
+      setPriceAlerts(alerts);
+    }
+    if (vendas.length > 0) checkCompetitorPrices();
+  }, [vendas]);
+
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
