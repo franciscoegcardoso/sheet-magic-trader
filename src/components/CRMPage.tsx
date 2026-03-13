@@ -137,7 +137,7 @@ export function CRMPage() {
       .sort((a, b) => b.data_venda.localeCompare(a.data_venda));
   };
 
-  // Compute client data with categories
+  // Compute client data with categories and metrics
   const clienteData = useMemo(() => {
     return clientes.map((c) => {
       const vendasCliente = getVendasCliente(c.nome, c.id);
@@ -145,7 +145,20 @@ export function CRMPage() {
       const lastDate = vendasCliente.length > 0 ? vendasCliente[0].data_venda : null;
       const firstDate = vendasCliente.length > 0 ? vendasCliente[vendasCliente.length - 1].data_venda : null;
       const category = categorizeClient(vendasCliente.length, lastDate, firstDate);
-      return { ...c, vendasCliente, totalGasto, lastDate, category };
+      
+      // Calculate ticket médio and frequency
+      const ticketMedio = vendasCliente.length > 0 ? totalGasto / vendasCliente.length : 0;
+      
+      // Calculate purchase frequency (days between purchases)
+      let frequenciaCompra: number | null = null;
+      if (vendasCliente.length >= 2 && firstDate && lastDate) {
+        const first = new Date(firstDate + "T00:00:00").getTime();
+        const last = new Date(lastDate + "T00:00:00").getTime();
+        const daysBetween = Math.floor((last - first) / (1000 * 60 * 60 * 24));
+        frequenciaCompra = Math.round(daysBetween / (vendasCliente.length - 1));
+      }
+      
+      return { ...c, vendasCliente, totalGasto, lastDate, category, ticketMedio, frequenciaCompra };
     });
   }, [clientes, vendas]);
 
@@ -324,7 +337,7 @@ export function CRMPage() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5 flex-wrap">
                       {c.telefone && (
                         <span className="flex items-center gap-1">
                           <Phone className="w-3 h-3" /> {c.telefone}
@@ -350,6 +363,21 @@ export function CRMPage() {
                           <Clock className="w-3 h-3" />
                           Última: {new Date(c.lastDate + "T00:00:00").toLocaleDateString("pt-BR")}
                         </span>
+                      )}
+                      {/* Ticket médio and frequency metrics */}
+                      {c.vendasCliente.length > 0 && (
+                        <>
+                          <span className="flex items-center gap-0.5 bg-secondary/50 px-1.5 py-0.5 rounded">
+                            <TrendingUp className="w-3 h-3" />
+                            Ticket: R$ {c.ticketMedio.toFixed(2)}
+                          </span>
+                          {c.frequenciaCompra !== null && (
+                            <span className="flex items-center gap-0.5 bg-secondary/50 px-1.5 py-0.5 rounded">
+                              <Clock className="w-3 h-3" />
+                              A cada {c.frequenciaCompra} dias
+                            </span>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
