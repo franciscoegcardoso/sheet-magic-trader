@@ -46,6 +46,8 @@ export function ProductManager() {
   const [receitaId, setReceitaId] = useState("");
   const [codigoBarras, setCodigoBarras] = useState("");
   const [codigoTipo, setCodigoTipo] = useState<"interno" | "gtin">("interno");
+  const [pesoQuantidade, setPesoQuantidade] = useState("1");
+  const [unidade, setUnidade] = useState("un");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 

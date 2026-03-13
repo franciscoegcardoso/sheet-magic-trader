@@ -16,6 +16,7 @@ export interface Produto {
   descricao: string | null;
   tamanho: string | null;
   unidade: string | null;
+  peso_quantidade: number;
   preco_venda: number;
   receita_id: string | null;
   foto_url: string | null;
