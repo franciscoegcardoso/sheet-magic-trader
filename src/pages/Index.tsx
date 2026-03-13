@@ -280,6 +280,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         { id: "contas" as TabType, label: "Contas", icon: CreditCard },
         { id: "planejamento" as TabType, label: "Metas de Venda", icon: Target },
         { id: "simulador" as TabType, label: "Calc. de Preço", icon: Calculator },
+        { id: "concorrencia" as TabType, label: "Concorrentes", icon: Scale },
       ],
     },
     {
