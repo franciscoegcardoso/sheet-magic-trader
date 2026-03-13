@@ -227,7 +227,7 @@ export function PriceSimulator() {
             <div className="bg-card border border-border rounded-xl overflow-hidden">
               <div className="px-4 py-3 border-b border-border">
                 <h3 className="font-display font-semibold text-sm text-foreground">
-                  DRE do Produto — {selectedProd.nome}
+                  Quanto sobra por venda — {selectedProd.nome}
                 </h3>
               </div>
 
