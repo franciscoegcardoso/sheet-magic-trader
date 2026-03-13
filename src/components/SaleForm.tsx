@@ -474,6 +474,14 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <MercadoPagoPaymentModal
+        open={showPaymentModal}
+        onOpenChange={setShowPaymentModal}
+        productName={formData.produto}
+        amount={Number(formData.valorVenda) || 0}
+        clientName={formData.cliente}
+      />
     </>
   );
 }
