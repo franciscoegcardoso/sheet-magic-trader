@@ -201,8 +201,8 @@ export function ProductManager() {
             <Package className="w-5 h-5 text-accent-foreground" />
           </div>
           <div>
-            <h2 className="text-lg font-display font-semibold text-foreground">Produtos</h2>
-            <p className="text-sm text-muted-foreground">Cadastre produtos com foto, variações e receitas</p>
+            <h2 className="text-lg font-display font-semibold text-foreground">Meus Produtos</h2>
+            <p className="text-sm text-muted-foreground">Cadastre o que você vende, com foto e preços</p>
           </div>
         </div>
         {!showForm && (
