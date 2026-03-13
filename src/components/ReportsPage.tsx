@@ -164,7 +164,7 @@ export function ReportsPage() {
     return { totalVendas, qtdVendas, lucro, custoEstimado, custoEstoque };
   }, [vendasFiltradas, produtos, receitasComCustoMedio, custoMedioPorInsumo]);
 
-  // Monthly history: faturamento, custo, margem (last 12 months from all data)
+  // Monthly history: faturamento, custo, despesas fixas, margem líquida (last 12 months)
   const historicoMensal = useMemo(() => {
     const meses = new Map<string, { faturamento: number; custo: number }>();
     
@@ -191,23 +191,33 @@ export function ReportsPage() {
       meses.set(key, curr);
     });
 
+    // Total active fixed expenses per month
+    const despesasMensal = despesas
+      .filter((d) => d.ativo)
+      .reduce((sum, d) => sum + Number(d.valor), 0);
+
     return Array.from(meses.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .slice(-12)
       .map(([key, data]) => {
         const [year, month] = key.split("-");
         const label = new Date(Number(year), Number(month) - 1).toLocaleDateString("pt-BR", { month: "short", year: "2-digit" });
-        const margem = data.faturamento - data.custo;
-        const margemPercent = data.faturamento > 0 ? (margem / data.faturamento) * 100 : 0;
+        const custoTotal = data.custo + despesasMensal;
+        const lucroLiquido = data.faturamento - custoTotal;
+        const margemBruta = data.faturamento > 0 ? ((data.faturamento - data.custo) / data.faturamento) * 100 : 0;
+        const margemLiquida = data.faturamento > 0 ? (lucroLiquido / data.faturamento) * 100 : 0;
         return {
           label,
           faturamento: Number(data.faturamento.toFixed(2)),
-          custo: Number(data.custo.toFixed(2)),
-          margem: Number(margem.toFixed(2)),
-          margemPercent: Number(margemPercent.toFixed(1)),
+          custoInsumos: Number(data.custo.toFixed(2)),
+          despesasFixas: Number(despesasMensal.toFixed(2)),
+          custoTotal: Number(custoTotal.toFixed(2)),
+          lucroLiquido: Number(lucroLiquido.toFixed(2)),
+          margemBruta: Number(margemBruta.toFixed(1)),
+          margemLiquida: Number(margemLiquida.toFixed(1)),
         };
       });
-  }, [vendas, produtos, receitasComCustoMedio]);
+  }, [vendas, produtos, receitasComCustoMedio, despesas]);
 
 
   const despesasPieData = useMemo(() => {
