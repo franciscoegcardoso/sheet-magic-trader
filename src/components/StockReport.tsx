@@ -256,19 +256,19 @@ export function StockReport() {
         <TabsList className="w-full grid grid-cols-4">
           <TabsTrigger value="estoque" className="text-[10px] sm:text-xs">
             <Package className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Estoque
+            O que tenho
           </TabsTrigger>
           <TabsTrigger value="producao" className="text-[10px] sm:text-xs">
             <Factory className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Produção
+            Produzir
           </TabsTrigger>
           <TabsTrigger value="pedido" className="text-[10px] sm:text-xs">
             <ShoppingCart className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Sugestão
+            Preciso comprar
           </TabsTrigger>
           <TabsTrigger value="revisao" className="text-[10px] sm:text-xs">
             <ClipboardCheck className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Revisão
+            Conferir
           </TabsTrigger>
         </TabsList>
 
