@@ -224,10 +224,10 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Lançamento de Insumos
+            Registrar Compra
           </h2>
           <p className="text-sm text-muted-foreground">
-            Registre suas compras de insumos
+            Anote o que você comprou para usar na produção
           </p>
         </div>
       </div>
