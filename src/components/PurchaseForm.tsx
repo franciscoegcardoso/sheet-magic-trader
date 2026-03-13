@@ -261,7 +261,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         <div>
           <Label htmlFor="insumo" className="input-label">
             <Package className="w-4 h-4 inline mr-1.5" />
-            Insumo
+            O que comprou?
           </Label>
           {isLoadingInsumos ? (
             <div className="flex items-center gap-2 h-10 px-3 text-muted-foreground">
