@@ -356,9 +356,22 @@ export function ConcorrenciaPage() {
                           </p>
                         </div>
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        ~R$ {p.precoMedio.toFixed(2)}/un
-                      </Badge>
+                      <div className="text-right">
+                        <Badge variant="secondary" className="text-xs">
+                          ~R$ {p.precoMedio.toFixed(2)}/un
+                        </Badge>
+                        {(() => {
+                          const produtoData = produtos.find((pr) => pr.nome === p.nome);
+                          if (produtoData && (produtoData.peso_quantidade !== 1 || produtoData.unidade !== "un")) {
+                            return (
+                              <p className="text-[10px] text-muted-foreground mt-0.5">
+                                {produtoData.peso_quantidade} {produtoData.unidade || "un"}
+                              </p>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </div>
                     </div>
                   ))}
                 </div>
