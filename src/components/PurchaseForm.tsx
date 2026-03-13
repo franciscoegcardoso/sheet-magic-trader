@@ -33,6 +33,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   const { insumos, isLoading: isLoadingInsumos } = useInsumos();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"scanner" | "manual">(isMobile ? "scanner" : "manual");
+  const [isProcessing, setIsProcessing] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const scannerRef = useRef<InvoiceScannerHandle>(null);
