@@ -388,12 +388,12 @@ export function SalesPlanning() {
             <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-destructive">CMV não definido</p>
-                <p className="text-xs text-destructive/80 mt-1">
-                  Para simular elasticidade de preço, é necessário ter o Custo de Mercadoria Vendida
-                  (CMV) definido. Vincule uma receita com ingredientes e registre compras para
-                  calcular automaticamente.
-                </p>
+              <p className="text-sm font-semibold text-destructive">Custo do produto não definido</p>
+              <p className="text-xs text-destructive/80 mt-1">
+                Para testar preços, precisamos saber quanto custa produzir. 
+                Cadastre uma receita com ingredientes e registre as compras para 
+                calcular o custo automaticamente.
+              </p>
               </div>
             </div>
           )}
