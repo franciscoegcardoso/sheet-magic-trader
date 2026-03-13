@@ -669,7 +669,7 @@ export function ConcorrenciaPage() {
                           </div>
                           <div className="flex justify-between text-xs">
                             <span className="text-muted-foreground">Margem selecionada ({targetMargin}%)</span>
-                            <span className="font-semibold text-primary">R$ {margemIdeal!.toFixed(2)}</span>
+                            <span className="font-semibold text-primary">R$ {margemSelecionada!.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-xs">
                             <span className="text-muted-foreground">Margem premium (65%)</span>
