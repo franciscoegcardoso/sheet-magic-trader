@@ -278,7 +278,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
         </div>
 
         {/* Barcode Scanner Button */}
-        <div className="mb-2">
+        <div className="mb-2 space-y-2">
           <Button
             type="button"
             variant="outline"
@@ -288,6 +288,17 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
             <ScanLine className="w-4 h-4 mr-2" />
             Escanear Código do Produto
           </Button>
+          {isMobile && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setMode("scanner")}
+              className="w-full gap-2"
+            >
+              <ScanLine className="w-4 h-4" />
+              Voltar ao escaneador
+            </Button>
+          )}
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
