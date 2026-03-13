@@ -609,10 +609,11 @@ export function ConcorrenciaPage() {
                   const rendimento = receita?.rendimento || 1;
                   const custoUnitario = rendimento > 0 ? custoReceita / rendimento : 0;
 
-                  // Margin-based prices (different targets)
-                  const margemMinima = custoUnitario > 0 ? custoUnitario / (1 - 0.3) : null; // 30% margin
-                  const margemIdeal = custoUnitario > 0 ? custoUnitario / (1 - 0.5) : null; // 50% margin
-                  const margemPremium = custoUnitario > 0 ? custoUnitario / (1 - 0.65) : null; // 65% margin
+                  // Margin-based prices using selected target margin
+                  const marginFactor = targetMargin / 100;
+                  const margemMinima = custoUnitario > 0 ? custoUnitario / (1 - 0.3) : null;
+                  const margemSelecionada = custoUnitario > 0 ? custoUnitario / (1 - marginFactor) : null;
+                  const margemPremium = custoUnitario > 0 ? custoUnitario / (1 - 0.65) : null;
 
                   // Competitor average
                   const comparison = comparisonData.find((d) => d.produto === prod.nome);
