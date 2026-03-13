@@ -444,7 +444,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label className="input-label">
               <CreditCard className="w-4 h-4 inline mr-1.5" />
-              Forma de Pagamento
+              Como recebeu?
             </Label>
             <Select
               value={formData.formaPagamento}
