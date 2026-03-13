@@ -305,11 +305,11 @@ export function ReportsPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-3">
-        <StatCard icon={Receipt} label="Faturamento" value={`R$ ${stats.totalVendas.toFixed(2)}`} accent />
-        <StatCard icon={ShoppingCart} label="Vendas" value={String(stats.qtdVendas)} />
-        <StatCard icon={DollarSign} label="Custo Produção" value={`R$ ${stats.custoEstimado.toFixed(2)}`} />
-        <StatCard icon={Wallet} label="Despesas Fixas" value={`R$ ${totalMensal.toFixed(2)}`} />
-        <StatCard icon={Package} label="Custo Estoque" value={`R$ ${stats.custoEstoque.toFixed(2)}`} />
+        <StatCard icon={Receipt} label="Quanto faturei" value={`R$ ${stats.totalVendas.toFixed(2)}`} accent />
+        <StatCard icon={ShoppingCart} label="Nº de vendas" value={String(stats.qtdVendas)} />
+        <StatCard icon={DollarSign} label="Custo dos produtos" value={`R$ ${stats.custoEstimado.toFixed(2)}`} />
+        <StatCard icon={Wallet} label="Gastos fixos" value={`R$ ${totalMensal.toFixed(2)}`} />
+        <StatCard icon={Package} label="Gasto com estoque" value={`R$ ${stats.custoEstoque.toFixed(2)}`} />
         <StatCard
           icon={TrendingUp}
           label="Resultado Líquido"
