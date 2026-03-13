@@ -351,7 +351,7 @@ export function ProductManager() {
           </div>
 
           <div className="flex items-center justify-between py-1">
-            <Label className="text-sm text-foreground">Produto ativo</Label>
+            <Label className="text-sm text-foreground">Produto à venda?</Label>
             <Switch checked={ativo} onCheckedChange={setAtivo} />
           </div>
 
