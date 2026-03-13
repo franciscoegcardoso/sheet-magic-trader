@@ -108,9 +108,9 @@ export function PriceSimulator() {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Simulador de Preço
+            Calculadora de Preço
           </h2>
-          <p className="text-sm text-muted-foreground">Monte o DRE do seu produto e descubra seu lucro real</p>
+          <p className="text-sm text-muted-foreground">Descubra quanto cobrar para ter lucro de verdade</p>
         </div>
       </div>
 
