@@ -80,6 +80,7 @@ export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerPro
 
   const scanInvoice = async (imageBase64: string) => {
     setIsScanning(true);
+    onScanningChange?.(true);
 
     try {
       const { data, error } = await supabase.functions.invoke("scan-invoice", {
