@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import AdminPanel from "./pages/AdminPanel";
+import CatalogoPublico from "./pages/CatalogoPublico";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
