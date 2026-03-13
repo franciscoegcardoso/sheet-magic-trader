@@ -295,8 +295,6 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         <p className="text-sm text-muted-foreground mt-1">O que deseja registrar?</p>
       </div>
 
-      {/* Notifications */}
-      <NotificacoesPanel />
 
       <div className="grid grid-cols-2 gap-3">
         {quickActions.map((action) => {
