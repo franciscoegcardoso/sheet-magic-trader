@@ -369,7 +369,7 @@ export function SalesPlanning() {
         <TabsContent value="elasticidade" className="space-y-4">
           {/* Product selector */}
           <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-            <Label className="text-xs font-semibold text-foreground">Selecionar Produto</Label>
+            <Label className="text-xs font-semibold text-foreground">Qual produto quer testar?</Label>
             <select
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
