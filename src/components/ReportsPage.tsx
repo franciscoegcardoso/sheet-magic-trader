@@ -282,8 +282,8 @@ export function ReportsPage() {
           <BarChart3 className="w-5 h-5 text-accent-foreground" />
         </div>
         <div>
-          <h2 className="text-lg font-display font-semibold text-foreground">Relatórios</h2>
-          <p className="text-sm text-muted-foreground">Visão geral do negócio</p>
+          <h2 className="text-lg font-display font-semibold text-foreground">Resultados do Negócio</h2>
+          <p className="text-sm text-muted-foreground">Veja como está indo seu negócio</p>
         </div>
       </div>
 
