@@ -67,6 +67,9 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
   const { products, isLoading: loadingProducts } = useProducts();
   const { clientes, isLoading: loadingClientes } = useClientes();
   const { produtos, findByBarcode } = useProdutos();
+  const isMobile = useIsMobile();
+  const [mode, setMode] = useState<"scanner" | "manual">("manual");
+  const [hasInitialized, setHasInitialized] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [formData, setFormData] = useState<SaleData>({
     cliente: "",
