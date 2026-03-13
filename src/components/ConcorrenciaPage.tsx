@@ -254,10 +254,13 @@ export function ConcorrenciaPage() {
             <Users className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Concorrentes
           </TabsTrigger>
           <TabsTrigger value="comparacao" className="text-[10px] sm:text-xs flex-1">
-            <BarChart3 className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Comparar Preços
+            <BarChart3 className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Comparar
+          </TabsTrigger>
+          <TabsTrigger value="preco-ideal" className="text-[10px] sm:text-xs flex-1">
+            <Target className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Preço Ideal
           </TabsTrigger>
           <TabsTrigger value="insights" className="text-[10px] sm:text-xs flex-1">
-            <Lightbulb className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Insights IA
+            <Lightbulb className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Insights
           </TabsTrigger>
         </TabsList>
 
