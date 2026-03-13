@@ -184,7 +184,7 @@ export function RecipeForm() {
           <div>
             <Label className="input-label">
               <Hash className="w-4 h-4 inline mr-1" />
-              Rendimento
+              Quantas unidades rende?
             </Label>
             <Input
               type="number"
