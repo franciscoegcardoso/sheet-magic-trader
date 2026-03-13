@@ -570,6 +570,29 @@ export function ConcorrenciaPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Target margin selector */}
+              <div className="p-3 rounded-xl border border-border bg-accent/20 space-y-2">
+                <Label className="text-xs font-medium text-foreground">Margem-alvo desejada</Label>
+                <div className="flex gap-2">
+                  {[30, 50, 65].map((margin) => (
+                    <Button
+                      key={margin}
+                      variant={targetMargin === margin ? "default" : "outline"}
+                      size="sm"
+                      className="flex-1 text-xs"
+                      onClick={() => setTargetMargin(margin as 30 | 50 | 65)}
+                    >
+                      {margin}%
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  {targetMargin === 30 && "Margem mínima recomendada para operação sustentável"}
+                  {targetMargin === 50 && "Margem ideal para balancear lucratividade e competitividade"}
+                  {targetMargin === 65 && "Margem premium para produtos de alto valor agregado"}
+                </p>
+              </div>
+
               {topProducts.length === 0 ? (
                 <div className="text-center py-8 border border-dashed rounded-xl">
                   <Package className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
