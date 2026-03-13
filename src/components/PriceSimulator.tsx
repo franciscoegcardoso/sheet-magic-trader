@@ -209,7 +209,7 @@ export function PriceSimulator() {
                 />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Entrega (R$)</Label>
+                <Label className="text-xs text-muted-foreground">Custo da entrega (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
