@@ -53,6 +53,9 @@ export function ConcorrenciaPage() {
   const [novoConcorrente, setNovoConcorrente] = useState("");
   const [insights, setInsights] = useState<string | null>(null);
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
+  
+  // Target margin state (default 50%)
+  const [targetMargin, setTargetMargin] = useState<30 | 50 | 65>(50);
 
   // Price form state
   const [addingPriceFor, setAddingPriceFor] = useState<{ concorrenteId: string; produtoNome: string } | null>(null);
@@ -567,6 +570,29 @@ export function ConcorrenciaPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Target margin selector */}
+              <div className="p-3 rounded-xl border border-border bg-accent/20 space-y-2">
+                <Label className="text-xs font-medium text-foreground">Margem-alvo desejada</Label>
+                <div className="flex gap-2">
+                  {[30, 50, 65].map((margin) => (
+                    <Button
+                      key={margin}
+                      variant={targetMargin === margin ? "default" : "outline"}
+                      size="sm"
+                      className="flex-1 text-xs"
+                      onClick={() => setTargetMargin(margin as 30 | 50 | 65)}
+                    >
+                      {margin}%
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  {targetMargin === 30 && "Margem mínima recomendada para operação sustentável"}
+                  {targetMargin === 50 && "Margem ideal para balancear lucratividade e competitividade"}
+                  {targetMargin === 65 && "Margem premium para produtos de alto valor agregado"}
+                </p>
+              </div>
+
               {topProducts.length === 0 ? (
                 <div className="text-center py-8 border border-dashed rounded-xl">
                   <Package className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
@@ -583,21 +609,22 @@ export function ConcorrenciaPage() {
                   const rendimento = receita?.rendimento || 1;
                   const custoUnitario = rendimento > 0 ? custoReceita / rendimento : 0;
 
-                  // Margin-based prices (different targets)
-                  const margemMinima = custoUnitario > 0 ? custoUnitario / (1 - 0.3) : null; // 30% margin
-                  const margemIdeal = custoUnitario > 0 ? custoUnitario / (1 - 0.5) : null; // 50% margin
-                  const margemPremium = custoUnitario > 0 ? custoUnitario / (1 - 0.65) : null; // 65% margin
+                  // Margin-based prices using selected target margin
+                  const marginFactor = targetMargin / 100;
+                  const margemMinima = custoUnitario > 0 ? custoUnitario / (1 - 0.3) : null;
+                  const margemSelecionada = custoUnitario > 0 ? custoUnitario / (1 - marginFactor) : null;
+                  const margemPremium = custoUnitario > 0 ? custoUnitario / (1 - 0.65) : null;
 
                   // Competitor average
                   const comparison = comparisonData.find((d) => d.produto === prod.nome);
                   const mediaConc = comparison?.mediaConc || null;
 
-                  // Suggested price: weighted blend (60% margin-ideal + 40% competitor avg)
+                  // Suggested price: weighted blend (60% selected margin + 40% competitor avg)
                   let precoSugerido: number | null = null;
-                  if (margemIdeal && mediaConc) {
-                    precoSugerido = margemIdeal * 0.6 + mediaConc * 0.4;
-                  } else if (margemIdeal) {
-                    precoSugerido = margemIdeal;
+                  if (margemSelecionada && mediaConc) {
+                    precoSugerido = margemSelecionada * 0.6 + mediaConc * 0.4;
+                  } else if (margemSelecionada) {
+                    precoSugerido = margemSelecionada;
                   } else if (mediaConc) {
                     precoSugerido = mediaConc;
                   }
@@ -641,8 +668,8 @@ export function ConcorrenciaPage() {
                             <span className="text-foreground">R$ {margemMinima!.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">Margem ideal (50%)</span>
-                            <span className="font-semibold text-primary">R$ {margemIdeal!.toFixed(2)}</span>
+                            <span className="text-muted-foreground">Margem selecionada ({targetMargin}%)</span>
+                            <span className="font-semibold text-primary">R$ {margemSelecionada!.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-xs">
                             <span className="text-muted-foreground">Margem premium (65%)</span>
@@ -683,10 +710,10 @@ export function ConcorrenciaPage() {
                             R$ {precoSugerido.toFixed(2)}
                           </div>
                           <p className="text-[10px] text-muted-foreground">
-                            {hasCost && hasComp
-                              ? "Baseado em 60% margem ideal + 40% média de mercado"
+                          {hasCost && hasComp
+                              ? `Baseado em 60% margem de ${targetMargin}% + 40% média de mercado`
                               : hasCost
-                              ? "Baseado na margem ideal de 50% sobre o custo"
+                              ? `Baseado na margem de ${targetMargin}% sobre o custo`
                               : "Baseado na média dos concorrentes"}
                           </p>
                           {diffAtual !== null && (
