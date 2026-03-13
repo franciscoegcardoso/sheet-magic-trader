@@ -122,7 +122,7 @@ export function ContasPage() {
           <div className={`text-lg font-bold mt-1 ${summary.saldo >= 0 ? "text-emerald-600" : "text-destructive"}`}>R$ {summary.saldo.toFixed(2)}</div>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-1.5 text-yellow-600"><AlertTriangle className="w-4 h-4" /><span className="text-[10px] font-medium">Atrasadas</span></div>
+          <div className="flex items-center gap-1.5 text-yellow-600"><AlertTriangle className="w-4 h-4" /><span className="text-[10px] font-medium">Vencidas</span></div>
           <div className="text-lg font-bold text-yellow-600 mt-1">{summary.atrasadas}</div>
         </div>
       </div>
