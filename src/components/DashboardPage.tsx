@@ -182,32 +182,82 @@ export function DashboardPage() {
 
       {/* Competitor Price Alerts */}
       {priceAlerts.length > 0 && (
-        <div className="rounded-xl border border-yellow-500/30 bg-yellow-50/50 dark:bg-yellow-900/10 p-4 space-y-2">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
-            <h3 className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">
-              Atenção: preços abaixo da concorrência
-            </h3>
-          </div>
-          <p className="text-xs text-yellow-600/80 dark:text-yellow-400/70">
-            Esses produtos estão com preço muito abaixo da média dos concorrentes — você pode estar perdendo dinheiro.
-          </p>
-          <div className="space-y-1.5">
-            {priceAlerts.map((alert) => (
-              <div key={alert.produto} className="flex items-center justify-between p-2 rounded-lg bg-yellow-100/50 dark:bg-yellow-900/20">
-                <div className="flex items-center gap-2">
-                  <Scale className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400" />
-                  <span className="text-xs font-medium text-foreground">{alert.produto}</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-destructive font-semibold">{alert.diff.toFixed(0)}%</span>
-                  <span className="text-[10px] text-muted-foreground ml-1">
-                    (R$ {alert.meuPreco.toFixed(2)} vs R$ {alert.mediaConc.toFixed(2)})
-                  </span>
-                </div>
+        <div className="space-y-3">
+          {/* Low Price Alert */}
+          {priceAlerts.filter(a => a.tipo === "baixo").length > 0 && (
+            <div className="rounded-xl border border-yellow-500/30 bg-yellow-50/50 dark:bg-yellow-900/10 p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                <h3 className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">
+                  Atenção: preços abaixo da concorrência
+                </h3>
               </div>
-            ))}
-          </div>
+              <p className="text-xs text-yellow-600/80 dark:text-yellow-400/70">
+                Esses produtos estão com preço muito abaixo da média dos concorrentes — você pode estar perdendo dinheiro.
+              </p>
+              <div className="space-y-1.5">
+                {priceAlerts.filter(a => a.tipo === "baixo").map((alert) => (
+                  <div key={alert.produto} className="flex items-center justify-between p-2 rounded-lg bg-yellow-100/50 dark:bg-yellow-900/20">
+                    <div className="flex items-center gap-2">
+                      <Scale className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400" />
+                      <span className="text-xs font-medium text-foreground">{alert.produto}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs text-destructive font-semibold">{alert.diff.toFixed(0)}%</span>
+                      <span className="text-[10px] text-muted-foreground ml-1">
+                        (R$ {alert.meuPreco.toFixed(2)} vs R$ {alert.mediaConc.toFixed(2)})
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => navigate("/concorrencia")}
+                className="flex items-center gap-1 text-xs font-medium text-yellow-700 dark:text-yellow-400 hover:underline mt-2"
+              >
+                Ver comparativo completo
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+
+          {/* High Price Alert */}
+          {priceAlerts.filter(a => a.tipo === "alto").length > 0 && (
+            <div className="rounded-xl border border-red-500/30 bg-red-50/50 dark:bg-red-900/10 p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                <h3 className="text-sm font-semibold text-red-700 dark:text-red-400">
+                  Risco: preços acima da concorrência
+                </h3>
+              </div>
+              <p className="text-xs text-red-600/80 dark:text-red-400/70">
+                Esses produtos estão com preço acima da média dos concorrentes — risco de perder clientes.
+              </p>
+              <div className="space-y-1.5">
+                {priceAlerts.filter(a => a.tipo === "alto").map((alert) => (
+                  <div key={alert.produto} className="flex items-center justify-between p-2 rounded-lg bg-red-100/50 dark:bg-red-900/20">
+                    <div className="flex items-center gap-2">
+                      <Scale className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+                      <span className="text-xs font-medium text-foreground">{alert.produto}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs text-red-600 dark:text-red-400 font-semibold">+{alert.diff.toFixed(0)}%</span>
+                      <span className="text-[10px] text-muted-foreground ml-1">
+                        (R$ {alert.meuPreco.toFixed(2)} vs R$ {alert.mediaConc.toFixed(2)})
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => navigate("/concorrencia")}
+                className="flex items-center gap-1 text-xs font-medium text-red-700 dark:text-red-400 hover:underline mt-2"
+              >
+                Ajustar preços na Concorrência
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          )}
         </div>
       )}
 
