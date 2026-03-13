@@ -411,9 +411,19 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
             />
           </div>
 
-          <div className="md:col-span-2">
-            <Button type="submit" className="w-full mt-2">
+          <div className="md:col-span-2 flex gap-2">
+            <Button type="submit" className="flex-1 mt-2">
               Registrar Venda
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-2"
+              disabled={!formData.valorVenda || Number(formData.valorVenda) <= 0}
+              onClick={() => setShowPaymentModal(true)}
+            >
+              <CreditCard className="w-4 h-4" />
+              <span className="hidden sm:inline ml-1">Mercado Pago</span>
             </Button>
           </div>
         </div>
