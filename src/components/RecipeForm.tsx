@@ -135,10 +135,10 @@ export function RecipeForm() {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Cadastro de Receita
+            Nova Receita
           </h2>
           <p className="text-sm text-muted-foreground">
-            Monte receitas e calcule custos automaticamente
+            Cadastre suas receitas para calcular o custo de cada produto
           </p>
         </div>
       </div>
