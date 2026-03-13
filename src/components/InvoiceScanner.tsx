@@ -120,6 +120,7 @@ export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerPro
       });
     } finally {
       setIsScanning(false);
+      onScanningChange?.(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
