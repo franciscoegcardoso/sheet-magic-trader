@@ -315,7 +315,7 @@ export function ProductManager() {
                 className="text-xs"
                 onClick={() => { setCodigoTipo("interno"); setCodigoBarras(""); }}
               >
-                Código Interno
+                Gerar automático
               </Button>
               <Button
                 type="button"
@@ -324,7 +324,7 @@ export function ProductManager() {
                 className="text-xs"
                 onClick={() => { setCodigoTipo("gtin"); setCodigoBarras(""); }}
               >
-                GTIN Oficial
+                Já tenho o código
               </Button>
             </div>
             {codigoTipo === "gtin" ? (
