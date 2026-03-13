@@ -43,6 +43,7 @@ interface TopProduct {
 export function ConcorrenciaPage() {
   const { toast } = useToast();
   const { vendas } = useVendas();
+  const { produtos } = useProdutos();
   const [concorrentes, setConcorrentes] = useState<Concorrente[]>([]);
   const [precos, setPrecos] = useState<ConcorrentePreco[]>([]);
   const [isLoading, setIsLoading] = useState(true);
