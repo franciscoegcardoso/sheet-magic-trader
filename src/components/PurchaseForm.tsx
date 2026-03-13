@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Calendar, DollarSign, Package, Hash, Loader2 } from "lucide-react";
-import { InvoiceScanner } from "./InvoiceScanner";
+import { ShoppingCart, Calendar, DollarSign, Package, Hash, Loader2, Camera, Image, ArrowLeft } from "lucide-react";
+import { InvoiceScanner, type InvoiceScannerHandle } from "./InvoiceScanner";
 import { useInsumos } from "@/hooks/useInsumos";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,11 @@ interface PurchaseFormProps {
 export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   const { toast } = useToast();
   const { insumos, isLoading: isLoadingInsumos } = useInsumos();
+  const isMobile = useIsMobile();
+  const [mode, setMode] = useState<"scanner" | "manual">(isMobile ? "scanner" : "manual");
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const scannerRef = useRef<InvoiceScannerHandle>(null);
   const [formData, setFormData] = useState<PurchaseData>({
     insumo: "",
     quantidade: "",
@@ -37,6 +43,17 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
     dataCompra: new Date().toISOString().split("T")[0],
     valorCompra: "",
   });
+
+  // On mobile, auto-trigger camera on mount
+  useEffect(() => {
+    if (isMobile && mode === "scanner") {
+      // Small delay to let the component mount
+      const timer = setTimeout(() => {
+        cameraInputRef.current?.click();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, []); // only on mount
 
   const handleInsumoChange = (value: string) => {
     const selectedInsumo = insumos.find((i) => i.nome === value);
@@ -76,7 +93,6 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   };
 
   const handleScannedItems = (items: Array<{ produto: string; dataCompra: string; valorCompra: string }>) => {
-    // Submit all scanned items - convert to PurchaseData format
     items.forEach((item) => {
       onSubmit({
         insumo: item.produto,
@@ -87,6 +103,92 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
       });
     });
   };
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (scannerRef.current) {
+      scannerRef.current.scanFile(file);
+    }
+    e.target.value = "";
+  };
+
+  // Mobile scanner mode
+  if (isMobile && mode === "scanner") {
+    return (
+      <div className="animate-fade-in flex flex-col items-center justify-center py-8 px-4">
+        <div className="p-4 rounded-2xl bg-accent mb-6">
+          <Camera className="w-10 h-10 text-accent-foreground" />
+        </div>
+        <h2 className="text-lg font-display font-semibold text-foreground mb-1">Escanear Nota Fiscal</h2>
+        <p className="text-sm text-muted-foreground text-center mb-8">
+          Tire uma foto da nota ou escolha da galeria
+        </p>
+
+        {/* Hidden file inputs */}
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handleFileSelected}
+          className="hidden"
+        />
+        <input
+          ref={galleryInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileSelected}
+          className="hidden"
+        />
+
+        <div className="w-full space-y-3">
+          <Button
+            type="button"
+            onClick={() => cameraInputRef.current?.click()}
+            className="w-full gap-2 h-12"
+          >
+            <Camera className="w-5 h-5" />
+            Tirar Foto
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => galleryInputRef.current?.click()}
+            className="w-full gap-2 h-12"
+          >
+            <Image className="w-5 h-5" />
+            Buscar na Galeria
+          </Button>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">ou</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setMode("manual")}
+            className="w-full gap-2 text-muted-foreground"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Inserir dados manualmente
+          </Button>
+        </div>
+
+        {/* Hidden scanner component for processing */}
+        <div className="hidden">
+          <InvoiceScanner ref={scannerRef} onConfirm={handleScannedItems} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="form-section animate-fade-in">
@@ -116,6 +218,18 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
           </span>
         </div>
       </div>
+
+      {isMobile && (
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setMode("scanner")}
+          className="w-full gap-2 mb-4"
+        >
+          <Camera className="w-4 h-4" />
+          Voltar ao escaneador
+        </Button>
+      )}
 
       <div className="space-y-4">
         <div>

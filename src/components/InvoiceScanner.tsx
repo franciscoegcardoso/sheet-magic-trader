@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,13 +27,32 @@ interface InvoiceScannerProps {
   onConfirm: (items: Array<{ produto: string; dataCompra: string; valorCompra: string }>) => void;
 }
 
-export function InvoiceScanner({ onConfirm }: InvoiceScannerProps) {
+export interface InvoiceScannerHandle {
+  scanFile: (file: File) => void;
+}
+
+export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerProps>(function InvoiceScanner({ onConfirm }, ref) {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
   const [items, setItems] = useState<InvoiceItem[]>([]);
   const [invoiceTotal, setInvoiceTotal] = useState(0);
+
+  const scanFileFromExternal = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Arquivo inválido", description: "Selecione uma imagem.", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      await scanInvoice(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  useImperativeHandle(ref, () => ({ scanFile: scanFileFromExternal }));
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -292,4 +311,4 @@ export function InvoiceScanner({ onConfirm }: InvoiceScannerProps) {
       </Dialog>
     </>
   );
-}
+});
