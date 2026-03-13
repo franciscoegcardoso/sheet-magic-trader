@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UNIT_GROUPS } from "@/lib/units";
 
 interface PurchaseData {
   insumo: string;
@@ -166,14 +167,28 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
             <Label htmlFor="unidade" className="input-label">
               Unidade
             </Label>
-            <Input
-              id="unidade"
-              placeholder="kg, un, L..."
+            <Select
               value={formData.unidade}
-              onChange={(e) =>
-                setFormData({ ...formData, unidade: e.target.value })
-              }
-            />
+              onValueChange={(v) => setFormData({ ...formData, unidade: v })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[280px]">
+                {UNIT_GROUPS.map((group) => (
+                  <div key={group.group}>
+                    <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                      {group.group}
+                    </div>
+                    {group.units.map((u) => (
+                      <SelectItem key={u.value} value={u.value}>
+                        {u.abbr} — {u.label}
+                      </SelectItem>
+                    ))}
+                  </div>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
