@@ -32,10 +32,19 @@ export function DashboardPage() {
       return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
     });
 
+    // MTD: same day range in previous month
+    const dayOfMonth = now.getDate();
+    const vendasMTDAnterior = vendasMesAnterior.filter(v => {
+      const d = new Date(v.data_venda + "T00:00:00");
+      return d.getDate() <= dayOfMonth;
+    });
+
     const faturamentoMes = vendasMes.reduce((s, v) => s + Number(v.valor_venda), 0);
     const faturamentoAnterior = vendasMesAnterior.reduce((s, v) => s + Number(v.valor_venda), 0);
+    const faturamentoMTDAnterior = vendasMTDAnterior.reduce((s, v) => s + Number(v.valor_venda), 0);
     const ticketMedio = vendasMes.length > 0 ? faturamentoMes / vendasMes.length : 0;
     const ticketAnterior = vendasMesAnterior.length > 0 ? faturamentoAnterior / vendasMesAnterior.length : 0;
+    const ticketMTDAnterior = vendasMTDAnterior.length > 0 ? faturamentoMTDAnterior / vendasMTDAnterior.length : 0;
 
     const comprasMes = compras.filter(c => {
       const d = new Date(c.data_compra + "T00:00:00");
@@ -43,7 +52,19 @@ export function DashboardPage() {
     });
     const custosMes = comprasMes.reduce((s, c) => s + Number(c.valor_compra), 0);
     const despesasMes = despesas.filter(d => d.ativo).reduce((s, d) => s + Number(d.valor), 0);
+    const cmvPct = faturamentoMes > 0 ? ((custosMes + despesasMes) / faturamentoMes) * 100 : 0;
     const lucroMes = faturamentoMes - custosMes - despesasMes;
+    const margemLucro = faturamentoMes > 0 ? (lucroMes / faturamentoMes) * 100 : 0;
+
+    // Previous month lucro
+    const comprasAnterior = compras.filter(c => {
+      const d = new Date(c.data_compra + "T00:00:00");
+      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
+    });
+    const custosAnterior = comprasAnterior.reduce((s, c) => s + Number(c.valor_compra), 0);
+    const lucroAnterior = faturamentoAnterior - custosAnterior - despesasMes;
 
     const pedidosPendentes = pedidos.filter(p => p.status !== "entregue" && p.status !== "cancelado").length;
 
@@ -70,9 +91,12 @@ export function DashboardPage() {
     const maxRevenue = Math.max(...dailyRevenue.map(d => d.valor), 1);
 
     return {
-      faturamentoMes, faturamentoAnterior, ticketMedio, ticketAnterior,
+      faturamentoMes, faturamentoAnterior, faturamentoMTDAnterior,
+      ticketMedio, ticketAnterior, ticketMTDAnterior,
       vendasMes: vendasMes.length, vendasAnterior: vendasMesAnterior.length,
-      custosMes, despesasMes, lucroMes, pedidosPendentes,
+      vendasMTDAnterior: vendasMTDAnterior.length,
+      custosMes, despesasMes, lucroMes, lucroAnterior,
+      cmvPct, margemLucro, pedidosPendentes,
       totalClientes: clientes.length, topProdutos, dailyRevenue, maxRevenue,
     };
   }, [vendas, compras, despesas, clientes, pedidos, currentMonth, currentYear]);
@@ -87,8 +111,12 @@ export function DashboardPage() {
   }
 
   const faturamentoPct = pctChange(metrics.faturamentoMes, metrics.faturamentoAnterior);
+  const faturamentoMTDPct = pctChange(metrics.faturamentoMes, metrics.faturamentoMTDAnterior);
   const vendasPct = pctChange(metrics.vendasMes, metrics.vendasAnterior);
+  const vendasMTDPct = pctChange(metrics.vendasMes, metrics.vendasMTDAnterior);
   const ticketPct = pctChange(metrics.ticketMedio, metrics.ticketAnterior);
+  const ticketMTDPct = pctChange(metrics.ticketMedio, metrics.ticketMTDAnterior);
+  const lucroPct = pctChange(metrics.lucroMes, metrics.lucroAnterior);
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -97,17 +125,45 @@ export function DashboardPage() {
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">Dashboard</h2>
           <p className="text-sm text-muted-foreground">
-            {now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+            {now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })} · Dia {now.getDate()}
           </p>
         </div>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <KPICard title="Faturamento" value={`R$ ${metrics.faturamentoMes.toFixed(2)}`} change={faturamentoPct} icon={DollarSign} />
-        <KPICard title="Vendas" value={String(metrics.vendasMes)} change={vendasPct} icon={ShoppingBag} />
-        <KPICard title="Ticket Médio" value={`R$ ${metrics.ticketMedio.toFixed(2)}`} change={ticketPct} icon={TrendingUp} />
-        <KPICard title="Lucro Estimado" value={`R$ ${metrics.lucroMes.toFixed(2)}`} positive={metrics.lucroMes >= 0} icon={metrics.lucroMes >= 0 ? TrendingUp : TrendingDown} />
+        <KPICard
+          title="Faturamento"
+          value={`R$ ${metrics.faturamentoMes.toFixed(2)}`}
+          formula="Ticket Médio × Vendas"
+          change={faturamentoPct}
+          mtdChange={faturamentoMTDPct}
+          icon={DollarSign}
+        />
+        <KPICard
+          title="Vendas"
+          value={String(metrics.vendasMes)}
+          formula={`${metrics.vendasMes} un. no mês`}
+          change={vendasPct}
+          mtdChange={vendasMTDPct}
+          icon={ShoppingBag}
+        />
+        <KPICard
+          title="Ticket Médio"
+          value={`R$ ${metrics.ticketMedio.toFixed(2)}`}
+          formula="Faturamento ÷ Nº Vendas"
+          change={ticketPct}
+          mtdChange={ticketMTDPct}
+          icon={TrendingUp}
+        />
+        <KPICard
+          title="Lucro Estimado"
+          value={`R$ ${metrics.lucroMes.toFixed(2)}`}
+          formula={`Fat. × ${(100 - metrics.cmvPct).toFixed(0)}% margem (CMV ${metrics.cmvPct.toFixed(0)}%)`}
+          change={lucroPct}
+          positive={metrics.lucroMes >= 0}
+          icon={metrics.lucroMes >= 0 ? TrendingUp : TrendingDown}
+        />
       </div>
 
       {/* Mini stats */}
@@ -184,23 +240,35 @@ export function DashboardPage() {
   );
 }
 
-function KPICard({ title, value, change, positive, icon: Icon }: {
-  title: string; value: string; change?: number; positive?: boolean; icon: any;
+function KPICard({ title, value, formula, change, mtdChange, positive, icon: Icon }: {
+  title: string; value: string; formula?: string; change?: number; mtdChange?: number; positive?: boolean; icon: any;
 }) {
   const isPositive = positive ?? (change !== undefined && change >= 0);
+  const isMTDPositive = positive ?? (mtdChange !== undefined && mtdChange >= 0);
   return (
     <div className="p-3.5 rounded-xl bg-card border border-border">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-1.5">
         <span className="text-[11px] font-medium text-muted-foreground">{title}</span>
         <Icon className="w-4 h-4 text-muted-foreground" />
       </div>
       <div className="text-lg font-bold text-foreground">{value}</div>
-      {change !== undefined && (
-        <div className={`flex items-center gap-0.5 mt-1 text-[10px] font-medium ${isPositive ? "text-emerald-600" : "text-destructive"}`}>
-          {isPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
-          {Math.abs(change).toFixed(1)}% vs mês anterior
-        </div>
+      {formula && (
+        <div className="text-[9px] text-muted-foreground/70 mt-0.5 italic">{formula}</div>
       )}
+      <div className="mt-1.5 space-y-0.5">
+        {change !== undefined && (
+          <div className={`flex items-center gap-0.5 text-[10px] font-medium ${isPositive ? "text-emerald-600" : "text-destructive"}`}>
+            {isPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+            {Math.abs(change).toFixed(1)}% vs mês anterior
+          </div>
+        )}
+        {mtdChange !== undefined && (
+          <div className={`flex items-center gap-0.5 text-[10px] font-medium ${isMTDPositive ? "text-emerald-600" : "text-destructive"}`}>
+            {isMTDPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+            {Math.abs(mtdChange).toFixed(1)}% MTD vs mesmo período
+          </div>
+        )}
+      </div>
     </div>
   );
 }
