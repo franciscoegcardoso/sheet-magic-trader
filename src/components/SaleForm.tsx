@@ -22,6 +22,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { useClientes } from "@/hooks/useClientes";
 import { useProdutos } from "@/hooks/useProdutos";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
+import { MercadoPagoPaymentModal } from "@/components/MercadoPagoPaymentModal";
 
 const EMBALAGENS = [
   "Marmitex P (500ml)",
@@ -78,6 +79,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
   });
 
   const [showNewClientDialog, setShowNewClientDialog] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [newClientData, setNewClientData] = useState({ nome: "", telefone: "" });
   const [localClientes, setLocalClientes] = useState<{ nome: string; telefone: string }[]>([]);
 
@@ -409,9 +411,19 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
             />
           </div>
 
-          <div className="md:col-span-2">
-            <Button type="submit" className="w-full mt-2">
+          <div className="md:col-span-2 flex gap-2">
+            <Button type="submit" className="flex-1 mt-2">
               Registrar Venda
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-2"
+              disabled={!formData.valorVenda || Number(formData.valorVenda) <= 0}
+              onClick={() => setShowPaymentModal(true)}
+            >
+              <CreditCard className="w-4 h-4" />
+              <span className="hidden sm:inline ml-1">Mercado Pago</span>
             </Button>
           </div>
         </div>
@@ -462,6 +474,14 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <MercadoPagoPaymentModal
+        open={showPaymentModal}
+        onOpenChange={setShowPaymentModal}
+        productName={formData.produto}
+        amount={Number(formData.valorVenda) || 0}
+        clientName={formData.cliente}
+      />
     </>
   );
 }
