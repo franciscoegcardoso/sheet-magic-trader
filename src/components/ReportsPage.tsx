@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -37,6 +39,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Download,
+  History,
 } from "lucide-react";
 
 const COLORS = [
@@ -161,7 +164,52 @@ export function ReportsPage() {
     return { totalVendas, qtdVendas, lucro, custoEstimado, custoEstoque };
   }, [vendasFiltradas, produtos, receitasComCustoMedio, custoMedioPorInsumo]);
 
-  // Expense pie data
+  // Monthly history: faturamento, custo, margem (last 12 months from all data)
+  const historicoMensal = useMemo(() => {
+    const meses = new Map<string, { faturamento: number; custo: number }>();
+    
+    // Process all sales (not just filtered)
+    vendas.forEach((v) => {
+      const d = new Date(v.data_venda + "T00:00:00");
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const curr = meses.get(key) || { faturamento: 0, custo: 0 };
+      curr.faturamento += Number(v.valor_venda);
+      
+      // Estimate cost per sale
+      const prod = produtos.find(
+        (p) => v.produto.toLowerCase().includes(p.nome.toLowerCase()) || p.nome.toLowerCase().includes(v.produto.toLowerCase())
+      );
+      if (prod) {
+        const receita = receitasComCustoMedio.find((r) => r.id === prod.receita_id);
+        if (receita) {
+          const custoPorUn = receita.rendimento && receita.rendimento > 0
+            ? receita.custo_calculado / receita.rendimento
+            : receita.custo_calculado;
+          curr.custo += custoPorUn;
+        }
+      }
+      meses.set(key, curr);
+    });
+
+    return Array.from(meses.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-12)
+      .map(([key, data]) => {
+        const [year, month] = key.split("-");
+        const label = new Date(Number(year), Number(month) - 1).toLocaleDateString("pt-BR", { month: "short", year: "2-digit" });
+        const margem = data.faturamento - data.custo;
+        const margemPercent = data.faturamento > 0 ? (margem / data.faturamento) * 100 : 0;
+        return {
+          label,
+          faturamento: Number(data.faturamento.toFixed(2)),
+          custo: Number(data.custo.toFixed(2)),
+          margem: Number(margem.toFixed(2)),
+          margemPercent: Number(margemPercent.toFixed(1)),
+        };
+      });
+  }, [vendas, produtos, receitasComCustoMedio]);
+
+
   const despesasPieData = useMemo(() => {
     return despesas
       .filter((d) => d.ativo)
@@ -320,13 +368,95 @@ export function ReportsPage() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="vendas" className="w-full">
-        <TabsList className="w-full grid grid-cols-4">
+      <Tabs defaultValue="evolucao" className="w-full">
+        <TabsList className="w-full grid grid-cols-5">
+          <TabsTrigger value="evolucao" className="text-[10px] sm:text-xs">Evolução</TabsTrigger>
           <TabsTrigger value="vendas" className="text-[10px] sm:text-xs">Vendas</TabsTrigger>
           <TabsTrigger value="margem" className="text-[10px] sm:text-xs">Lucro</TabsTrigger>
           <TabsTrigger value="custos" className="text-[10px] sm:text-xs">Ingredientes</TabsTrigger>
-          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Gastos Fixos</TabsTrigger>
+          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Gastos</TabsTrigger>
         </TabsList>
+
+        {/* Evolution Tab */}
+        <TabsContent value="evolucao" className="space-y-4">
+          <ReportCard title="Faturamento vs Custo (Mensal)">
+            {historicoMensal.length === 0 ? (
+              <EmptyState text="Registre vendas para ver o histórico" />
+            ) : (
+              <div className="px-2 pt-4 pb-2">
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={historicoMensal}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="label" tick={{ fontSize: 9 }} className="fill-muted-foreground" />
+                    <YAxis tick={{ fontSize: 10 }} className="fill-muted-foreground" />
+                    <Tooltip
+                      contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                      formatter={(value: number, name: string) => [
+                        `R$ ${value.toFixed(2)}`,
+                        name === "faturamento" ? "Faturamento" : name === "custo" ? "Custo" : "Margem",
+                      ]}
+                    />
+                    <Legend formatter={(v) => v === "faturamento" ? "Faturamento" : v === "custo" ? "Custo" : "Margem"} />
+                    <Bar dataKey="faturamento" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="custo" fill="hsl(var(--destructive) / 0.6)" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </ReportCard>
+
+          <ReportCard title="Evolução da Margem (%)">
+            {historicoMensal.length === 0 ? (
+              <EmptyState text="Registre vendas para ver o histórico" />
+            ) : (
+              <div className="px-2 pt-4 pb-2">
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={historicoMensal}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="label" tick={{ fontSize: 9 }} className="fill-muted-foreground" />
+                    <YAxis tick={{ fontSize: 10 }} className="fill-muted-foreground" unit="%" />
+                    <Tooltip
+                      contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                      formatter={(value: number) => [`${value.toFixed(1)}%`, "Margem"]}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="margemPercent"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      dot={{ fill: "hsl(var(--primary))", r: 4 }}
+                      name="Margem %"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </ReportCard>
+
+          {/* Monthly summary table */}
+          {historicoMensal.length > 0 && (
+            <ReportCard title="Resumo Mensal">
+              <div className="divide-y divide-border">
+                <div className="grid grid-cols-4 px-4 py-2 bg-accent/30">
+                  <span className="text-[10px] font-semibold text-muted-foreground">Mês</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Faturou</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Custo</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Margem</span>
+                </div>
+                {historicoMensal.map((m) => (
+                  <div key={m.label} className="grid grid-cols-4 px-4 py-2.5">
+                    <span className="text-xs font-medium text-foreground">{m.label}</span>
+                    <span className="text-xs text-foreground text-right">R$ {m.faturamento.toFixed(0)}</span>
+                    <span className="text-xs text-foreground text-right">R$ {m.custo.toFixed(0)}</span>
+                    <span className={`text-xs font-semibold text-right ${m.margem >= 0 ? "text-primary" : "text-destructive"}`}>
+                      {m.margemPercent.toFixed(0)}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </ReportCard>
+          )}
+        </TabsContent>
 
         {/* Sales Tab */}
         <TabsContent value="vendas" className="space-y-4">
