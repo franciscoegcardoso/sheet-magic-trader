@@ -337,7 +337,7 @@ export function CRMPage() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5 flex-wrap">
                       {c.telefone && (
                         <span className="flex items-center gap-1">
                           <Phone className="w-3 h-3" /> {c.telefone}
@@ -363,6 +363,21 @@ export function CRMPage() {
                           <Clock className="w-3 h-3" />
                           Última: {new Date(c.lastDate + "T00:00:00").toLocaleDateString("pt-BR")}
                         </span>
+                      )}
+                      {/* Ticket médio and frequency metrics */}
+                      {c.vendasCliente.length > 0 && (
+                        <>
+                          <span className="flex items-center gap-0.5 bg-secondary/50 px-1.5 py-0.5 rounded">
+                            <TrendingUp className="w-3 h-3" />
+                            Ticket: R$ {c.ticketMedio.toFixed(2)}
+                          </span>
+                          {c.frequenciaCompra !== null && (
+                            <span className="flex items-center gap-0.5 bg-secondary/50 px-1.5 py-0.5 rounded">
+                              <Clock className="w-3 h-3" />
+                              A cada {c.frequenciaCompra} dias
+                            </span>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
