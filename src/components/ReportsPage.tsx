@@ -401,14 +401,26 @@ export function ReportsPage() {
                     <YAxis tick={{ fontSize: 10 }} className="fill-muted-foreground" />
                     <Tooltip
                       contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                      formatter={(value: number, name: string) => [
-                        `R$ ${value.toFixed(2)}`,
-                        name === "faturamento" ? "Faturamento" : name === "custo" ? "Custo" : "Margem",
-                      ]}
+                      formatter={(value: number, name: string) => {
+                        const labels: Record<string, string> = {
+                          faturamento: "Faturamento",
+                          custoInsumos: "Custo Insumos",
+                          despesasFixas: "Despesas Fixas",
+                        };
+                        return [`R$ ${value.toFixed(2)}`, labels[name] || name];
+                      }}
                     />
-                    <Legend formatter={(v) => v === "faturamento" ? "Faturamento" : v === "custo" ? "Custo" : "Margem"} />
+                    <Legend formatter={(v) => {
+                      const labels: Record<string, string> = {
+                        faturamento: "Faturamento",
+                        custoInsumos: "Custo Insumos",
+                        despesasFixas: "Despesas Fixas",
+                      };
+                      return labels[v] || v;
+                    }} />
                     <Bar dataKey="faturamento" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="custo" fill="hsl(var(--destructive) / 0.6)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="custoInsumos" fill="hsl(var(--destructive) / 0.5)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="despesasFixas" fill="hsl(var(--destructive) / 0.8)" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -427,15 +439,28 @@ export function ReportsPage() {
                     <YAxis tick={{ fontSize: 10 }} className="fill-muted-foreground" unit="%" />
                     <Tooltip
                       contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                      formatter={(value: number) => [`${value.toFixed(1)}%`, "Margem"]}
+                      formatter={(value: number, name: string) => [
+                        `${value.toFixed(1)}%`,
+                        name === "margemBruta" ? "Margem Bruta" : "Margem Líquida",
+                      ]}
+                    />
+                    <Legend formatter={(v) => v === "margemBruta" ? "Margem Bruta" : "Margem Líquida"} />
+                    <Line
+                      type="monotone"
+                      dataKey="margemBruta"
+                      stroke="hsl(var(--primary) / 0.5)"
+                      strokeWidth={1.5}
+                      strokeDasharray="5 5"
+                      dot={{ fill: "hsl(var(--primary) / 0.5)", r: 3 }}
+                      name="margemBruta"
                     />
                     <Line
                       type="monotone"
-                      dataKey="margemPercent"
+                      dataKey="margemLiquida"
                       stroke="hsl(var(--primary))"
                       strokeWidth={2}
                       dot={{ fill: "hsl(var(--primary))", r: 4 }}
-                      name="Margem %"
+                      name="margemLiquida"
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -447,19 +472,21 @@ export function ReportsPage() {
           {historicoMensal.length > 0 && (
             <ReportCard title="Resumo Mensal">
               <div className="divide-y divide-border">
-                <div className="grid grid-cols-4 px-4 py-2 bg-accent/30">
+                <div className="grid grid-cols-5 px-4 py-2 bg-accent/30">
                   <span className="text-[10px] font-semibold text-muted-foreground">Mês</span>
                   <span className="text-[10px] font-semibold text-muted-foreground text-right">Faturou</span>
                   <span className="text-[10px] font-semibold text-muted-foreground text-right">Custo</span>
-                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Margem</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Desp.</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground text-right">Líquida</span>
                 </div>
                 {historicoMensal.map((m) => (
-                  <div key={m.label} className="grid grid-cols-4 px-4 py-2.5">
+                  <div key={m.label} className="grid grid-cols-5 px-4 py-2.5">
                     <span className="text-xs font-medium text-foreground">{m.label}</span>
                     <span className="text-xs text-foreground text-right">R$ {m.faturamento.toFixed(0)}</span>
-                    <span className="text-xs text-foreground text-right">R$ {m.custo.toFixed(0)}</span>
-                    <span className={`text-xs font-semibold text-right ${m.margem >= 0 ? "text-primary" : "text-destructive"}`}>
-                      {m.margemPercent.toFixed(0)}%
+                    <span className="text-xs text-foreground text-right">R$ {m.custoInsumos.toFixed(0)}</span>
+                    <span className="text-xs text-foreground text-right">R$ {m.despesasFixas.toFixed(0)}</span>
+                    <span className={`text-xs font-semibold text-right ${m.lucroLiquido >= 0 ? "text-primary" : "text-destructive"}`}>
+                      {m.margemLiquida.toFixed(0)}%
                     </span>
                   </div>
                 ))}
