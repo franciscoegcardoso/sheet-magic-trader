@@ -408,7 +408,7 @@ export function StockReport() {
           {/* Recent production entries */}
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             <div className="px-4 py-3 border-b border-border">
-              <h3 className="font-display font-semibold text-sm text-foreground">Lançamentos Recentes</h3>
+              <h3 className="font-display font-semibold text-sm text-foreground">Últimas produções</h3>
             </div>
             {producoes.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">Nenhum lançamento registrado</p>

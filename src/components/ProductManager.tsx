@@ -369,7 +369,7 @@ export function ProductManager() {
       {/* Product list */}
       {produtos.length === 0 && !showForm ? (
         <div className="text-center py-8 text-sm text-muted-foreground border border-dashed rounded-xl">
-          Nenhum produto cadastrado. Clique em "Novo" para começar.
+          Nenhum produto cadastrado. Clique em "Novo" para adicionar seu primeiro produto.
         </div>
       ) : (
         <div className="space-y-3">
