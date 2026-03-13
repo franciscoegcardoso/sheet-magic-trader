@@ -22,6 +22,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { useClientes } from "@/hooks/useClientes";
 import { useProdutos } from "@/hooks/useProdutos";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
+import { MercadoPagoPaymentModal } from "@/components/MercadoPagoPaymentModal";
 
 const EMBALAGENS = [
   "Marmitex P (500ml)",
