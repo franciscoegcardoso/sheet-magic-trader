@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
