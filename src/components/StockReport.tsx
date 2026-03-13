@@ -281,7 +281,7 @@ export function StockReport() {
             </div>
             {estoque.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">
-                Registre compras e vincule receitas aos produtos para calcular o estoque
+                Registre compras e cadastre receitas com ingredientes para ver seu estoque aqui
               </p>
             ) : (
               <div className="divide-y divide-border">
