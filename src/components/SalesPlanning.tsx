@@ -274,7 +274,7 @@ export function SalesPlanning() {
             )}
           </ReportCard>
 
-          <ReportCard title="Top Produtos por Faturamento">
+          <ReportCard title="Produtos que mais vendem">
             {topProducts.length === 0 ? (
               <EmptyState text="Nenhum produto vendido ainda" />
             ) : (
