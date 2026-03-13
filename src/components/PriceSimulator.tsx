@@ -192,7 +192,7 @@ export function PriceSimulator() {
                   className="h-9 mt-1 text-sm"
                   placeholder="3.5"
                 />
-                <p className="text-[9px] text-muted-foreground mt-0.5">Cartão, marketplace</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Maquininha, iFood, etc.</p>
               </div>
             </div>
 
