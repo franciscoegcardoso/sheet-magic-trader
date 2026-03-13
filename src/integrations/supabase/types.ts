@@ -77,6 +77,48 @@ export type Database = {
         }
         Relationships: []
       }
+      contas: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          data_pagamento: string | null
+          data_vencimento: string
+          descricao: string
+          id: string
+          observacoes: string | null
+          status: Database["public"]["Enums"]["conta_status"]
+          tipo: Database["public"]["Enums"]["conta_tipo"]
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento: string
+          descricao: string
+          id?: string
+          observacoes?: string | null
+          status?: Database["public"]["Enums"]["conta_status"]
+          tipo: Database["public"]["Enums"]["conta_tipo"]
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento?: string
+          descricao?: string
+          id?: string
+          observacoes?: string | null
+          status?: Database["public"]["Enums"]["conta_status"]
+          tipo?: Database["public"]["Enums"]["conta_tipo"]
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: []
+      }
       despesas_fixas: {
         Row: {
           ativo: boolean
@@ -139,6 +181,62 @@ export type Database = {
           quantidade_sistema?: number
         }
         Relationships: []
+      }
+      pedidos: {
+        Row: {
+          cliente_id: string | null
+          cliente_nome: string
+          created_at: string
+          data_entrega: string
+          data_pedido: string
+          descricao: string | null
+          id: string
+          observacoes: string | null
+          produto: string
+          quantidade: number
+          status: Database["public"]["Enums"]["pedido_status"]
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          cliente_id?: string | null
+          cliente_nome: string
+          created_at?: string
+          data_entrega: string
+          data_pedido?: string
+          descricao?: string | null
+          id?: string
+          observacoes?: string | null
+          produto: string
+          quantidade?: number
+          status?: Database["public"]["Enums"]["pedido_status"]
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          cliente_id?: string | null
+          cliente_nome?: string
+          created_at?: string
+          data_entrega?: string
+          data_pedido?: string
+          descricao?: string | null
+          id?: string
+          observacoes?: string | null
+          produto?: string
+          quantidade?: number
+          status?: Database["public"]["Enums"]["pedido_status"]
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       producao: {
         Row: {
@@ -484,6 +582,14 @@ export type Database = {
       account_plan: "free" | "pro" | "premium"
       account_type: "pessoa_fisica" | "pessoa_juridica"
       app_role: "admin" | "user"
+      conta_status: "pendente" | "pago" | "atrasado"
+      conta_tipo: "pagar" | "receber"
+      pedido_status:
+        | "pendente"
+        | "em_producao"
+        | "pronto"
+        | "entregue"
+        | "cancelado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -614,6 +720,15 @@ export const Constants = {
       account_plan: ["free", "pro", "premium"],
       account_type: ["pessoa_fisica", "pessoa_juridica"],
       app_role: ["admin", "user"],
+      conta_status: ["pendente", "pago", "atrasado"],
+      conta_tipo: ["pagar", "receber"],
+      pedido_status: [
+        "pendente",
+        "em_producao",
+        "pronto",
+        "entregue",
+        "cancelado",
+      ],
     },
   },
 } as const

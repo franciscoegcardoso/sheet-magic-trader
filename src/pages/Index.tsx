@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
-// SheetsConfig is now inside SettingsPage
 import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { ReportsPage } from "@/components/ReportsPage";
@@ -16,6 +15,11 @@ import { PriceSimulator } from "@/components/PriceSimulator";
 import { SettingsPage } from "@/components/SettingsPage";
 import { MarketingPage } from "@/components/MarketingPage";
 import { HelpButton } from "@/components/HelpButton";
+import { PedidosPage } from "@/components/PedidosPage";
+import { CatalogoPage } from "@/components/CatalogoPage";
+import { ContasPage } from "@/components/ContasPage";
+import { DashboardPage } from "@/components/DashboardPage";
+import { NotificacoesPanel } from "@/components/NotificacoesPanel";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -34,13 +38,17 @@ import {
   BookOpen,
   Calculator,
   Wallet,
+  CalendarDays,
+  Store,
+  CreditCard,
+  LayoutDashboard,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
-  "home", "compra", "venda", "produto", "receita", "crm",
-  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "docs", "configuracoes",
+  "home", "dashboard", "compra", "venda", "produto", "receita", "crm", "pedidos", "catalogo",
+  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "contas", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
@@ -121,9 +129,12 @@ export default function Index() {
 
   const allTabs = [
     { id: "home" as TabType, label: "Início", icon: Home, mobile: true, desktop: false },
+    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard, mobile: false, desktop: true },
     { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true },
     { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true },
+    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays, mobile: false, desktop: true },
     { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true },
+    { id: "catalogo" as TabType, label: "Catálogo", icon: Store, mobile: false, desktop: true },
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true },
     { id: "crm" as TabType, label: "CRM", icon: Users, mobile: false, desktop: true },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true },
@@ -132,6 +143,7 @@ export default function Index() {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
+    { id: "contas" as TabType, label: "Contas", icon: CreditCard, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
   ];
@@ -141,9 +153,12 @@ export default function Index() {
 
   const renderContent = () => {
     if (activeTab === "home") return <MobileHome onNavigate={setActiveTab} />;
+    if (activeTab === "dashboard") return <DashboardPage />;
     if (activeTab === "compra") return <PurchaseForm onSubmit={handlePurchaseSubmit} />;
     if (activeTab === "venda") return <SaleForm onSubmit={handleSaleSubmit} />;
+    if (activeTab === "pedidos") return <PedidosPage />;
     if (activeTab === "produto") return <ProductManager />;
+    if (activeTab === "catalogo") return <CatalogoPage />;
     if (activeTab === "receita") return <div className="space-y-6"><RecipeForm /><RecipeList /></div>;
     if (activeTab === "crm") return <CRMPage />;
     if (activeTab === "estoque") return <StockReport />;
@@ -152,6 +167,7 @@ export default function Index() {
     if (activeTab === "marketing") return <MarketingPage />;
     if (activeTab === "relatorios") return <ReportsPage />;
     if (activeTab === "despesas") return <DespesasPage />;
+    if (activeTab === "contas") return <ContasPage />;
     if (activeTab === "docs") return <DocsPage />;
     if (activeTab === "configuracoes") return <SettingsPage />;
     return null;
@@ -250,7 +266,10 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
   ];
 
   const menuItems = [
+    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard },
+    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays },
     { id: "produto" as TabType, label: "Produtos", icon: Package },
+    { id: "catalogo" as TabType, label: "Catálogo", icon: Store },
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
     { id: "crm" as TabType, label: "Clientes", icon: Users },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
@@ -259,6 +278,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
+    { id: "contas" as TabType, label: "Contas", icon: CreditCard },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
   ];
@@ -269,6 +289,9 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         <h1 className="text-2xl font-display font-bold text-foreground">Controle Financeiro</h1>
         <p className="text-sm text-muted-foreground mt-1">O que deseja registrar?</p>
       </div>
+
+      {/* Notifications */}
+      <NotificacoesPanel />
 
       <div className="grid grid-cols-2 gap-3">
         {quickActions.map((action) => {
