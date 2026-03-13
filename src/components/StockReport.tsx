@@ -316,8 +316,8 @@ export function StockReport() {
                       </span>
                       <span>
                         {item.consumoDiario > 0
-                          ? `~${item.diasEstoque === 999 ? "∞" : Math.round(item.diasEstoque)} dias`
-                          : "Sem consumo recente"}
+                          ? `~${item.diasEstoque === 999 ? "∞" : Math.round(item.diasEstoque)} dias de estoque`
+                          : "Sem uso recente"}
                       </span>
                     </div>
                   </div>
