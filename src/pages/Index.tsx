@@ -8,6 +8,7 @@ import { ReportsPage } from "@/components/ReportsPage";
 import { DespesasPage } from "@/components/DespesasPage";
 import { ProductManager } from "@/components/ProductManager";
 import { CRMPage } from "@/components/CRMPage";
+import { ConcorrenciaPage } from "@/components/ConcorrenciaPage";
 import { StockReport } from "@/components/StockReport";
 import { SalesPlanning } from "@/components/SalesPlanning";
 import { DocsPage } from "@/components/DocsPage";
@@ -27,6 +28,7 @@ import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
 import {
   ShoppingCart,
+  Scale,
   Receipt,
   ChefHat,
   BarChart3,
@@ -52,7 +54,7 @@ import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
   "home", "dashboard", "compra", "venda", "produto", "receita", "crm", "pedidos", "catalogo",
-  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "contas", "docs", "configuracoes",
+  "estoque", "planejamento", "simulador", "concorrencia", "marketing", "relatorios", "despesas", "contas", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
@@ -147,6 +149,7 @@ export default function Index() {
     { id: "contas" as TabType, label: "Contas a Pagar/Receber", icon: CreditCard, mobile: false, desktop: true, group: "financeiro" },
     { id: "planejamento" as TabType, label: "Metas de Venda", icon: Target, mobile: false, desktop: true, group: "financeiro" },
     { id: "simulador" as TabType, label: "Calculadora de Preço", icon: Calculator, mobile: false, desktop: true, group: "financeiro" },
+    { id: "concorrencia" as TabType, label: "Concorrentes", icon: Scale, mobile: false, desktop: true, group: "financeiro" },
     { id: "marketing" as TabType, label: "Divulgação", icon: Megaphone, mobile: false, desktop: true, group: "marketing" },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true, group: "sistema" },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true, group: "sistema" },
@@ -176,6 +179,7 @@ export default function Index() {
     if (activeTab === "estoque") return <StockReport />;
     if (activeTab === "planejamento") return <SalesPlanning />;
     if (activeTab === "simulador") return <PriceSimulator />;
+    if (activeTab === "concorrencia") return <ConcorrenciaPage />;
     if (activeTab === "marketing") return <MarketingPage />;
     if (activeTab === "relatorios") return <ReportsPage />;
     if (activeTab === "despesas") return <DespesasPage />;
@@ -276,6 +280,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         { id: "contas" as TabType, label: "Contas", icon: CreditCard },
         { id: "planejamento" as TabType, label: "Metas de Venda", icon: Target },
         { id: "simulador" as TabType, label: "Calc. de Preço", icon: Calculator },
+        { id: "concorrencia" as TabType, label: "Concorrentes", icon: Scale },
       ],
     },
     {
