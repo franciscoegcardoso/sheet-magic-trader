@@ -208,7 +208,7 @@ export function ContasPage() {
                       {c.tipo === "receber" ? "+" : "-"} R$ {Number(c.valor).toFixed(2)}
                     </span>
                     {c.status !== "pago" && (
-                      <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={() => handlePagar(c.id)}>Pagar</Button>
+                      <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={() => handlePagar(c.id)}>Já paguei</Button>
                     )}
                     <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive" onClick={() => handleDelete(c.id)}>
                       <Trash2 className="w-3.5 h-3.5" />

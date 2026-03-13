@@ -95,7 +95,7 @@ export function DespesasPage() {
 
       {/* Total card */}
       <div className="p-4 bg-card border border-border rounded-xl flex items-center justify-between">
-        <span className="text-sm font-medium text-muted-foreground">Total Mensal (ativas)</span>
+        <span className="text-sm font-medium text-muted-foreground">Quanto gasto por mês</span>
         <span className="text-xl font-display font-bold text-primary">R$ {totalMensal.toFixed(2)}</span>
       </div>
 
