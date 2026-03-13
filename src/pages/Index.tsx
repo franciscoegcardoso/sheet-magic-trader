@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
-// SheetsConfig is now inside SettingsPage
 import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { ReportsPage } from "@/components/ReportsPage";
@@ -16,6 +15,11 @@ import { PriceSimulator } from "@/components/PriceSimulator";
 import { SettingsPage } from "@/components/SettingsPage";
 import { MarketingPage } from "@/components/MarketingPage";
 import { HelpButton } from "@/components/HelpButton";
+import { PedidosPage } from "@/components/PedidosPage";
+import { CatalogoPage } from "@/components/CatalogoPage";
+import { ContasPage } from "@/components/ContasPage";
+import { DashboardPage } from "@/components/DashboardPage";
+import { NotificacoesPanel } from "@/components/NotificacoesPanel";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -34,13 +38,17 @@ import {
   BookOpen,
   Calculator,
   Wallet,
+  CalendarDays,
+  Store,
+  CreditCard,
+  LayoutDashboard,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
-  "home", "compra", "venda", "produto", "receita", "crm",
-  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "docs", "configuracoes",
+  "home", "dashboard", "compra", "venda", "produto", "receita", "crm", "pedidos", "catalogo",
+  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "contas", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
