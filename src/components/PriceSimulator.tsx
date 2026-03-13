@@ -140,10 +140,11 @@ export function PriceSimulator() {
         <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-destructive">CMV não definido</p>
+            <p className="text-sm font-semibold text-destructive">Custo do produto não definido</p>
             <p className="text-xs text-destructive/80 mt-1">
-              Sem o CMV é impossível simular preço. Vincule uma receita ao produto e registre
-              compras dos ingredientes para calcular automaticamente.
+              Para calcular o preço ideal, precisamos saber quanto custa produzir. 
+              Vá em "Minhas Receitas", cadastre uma receita com os ingredientes e vincule ao produto.
+              Depois registre as compras desses ingredientes em "Compras".
             </p>
           </div>
         </div>
