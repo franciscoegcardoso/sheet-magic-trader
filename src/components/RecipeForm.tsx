@@ -24,6 +24,7 @@ import {
   UtensilsCrossed,
   Package,
 } from "lucide-react";
+import { UNIT_GROUPS, RENDIMENTO_UNITS } from "@/lib/units";
 
 export function RecipeForm() {
   const { toast } = useToast();
