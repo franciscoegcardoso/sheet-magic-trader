@@ -164,7 +164,52 @@ export function ReportsPage() {
     return { totalVendas, qtdVendas, lucro, custoEstimado, custoEstoque };
   }, [vendasFiltradas, produtos, receitasComCustoMedio, custoMedioPorInsumo]);
 
-  // Expense pie data
+  // Monthly history: faturamento, custo, margem (last 12 months from all data)
+  const historicoMensal = useMemo(() => {
+    const meses = new Map<string, { faturamento: number; custo: number }>();
+    
+    // Process all sales (not just filtered)
+    vendas.forEach((v) => {
+      const d = new Date(v.data_venda + "T00:00:00");
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const curr = meses.get(key) || { faturamento: 0, custo: 0 };
+      curr.faturamento += Number(v.valor_venda);
+      
+      // Estimate cost per sale
+      const prod = produtos.find(
+        (p) => v.produto.toLowerCase().includes(p.nome.toLowerCase()) || p.nome.toLowerCase().includes(v.produto.toLowerCase())
+      );
+      if (prod) {
+        const receita = receitasComCustoMedio.find((r) => r.id === prod.receita_id);
+        if (receita) {
+          const custoPorUn = receita.rendimento && receita.rendimento > 0
+            ? receita.custo_calculado / receita.rendimento
+            : receita.custo_calculado;
+          curr.custo += custoPorUn;
+        }
+      }
+      meses.set(key, curr);
+    });
+
+    return Array.from(meses.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-12)
+      .map(([key, data]) => {
+        const [year, month] = key.split("-");
+        const label = new Date(Number(year), Number(month) - 1).toLocaleDateString("pt-BR", { month: "short", year: "2-digit" });
+        const margem = data.faturamento - data.custo;
+        const margemPercent = data.faturamento > 0 ? (margem / data.faturamento) * 100 : 0;
+        return {
+          label,
+          faturamento: Number(data.faturamento.toFixed(2)),
+          custo: Number(data.custo.toFixed(2)),
+          margem: Number(margem.toFixed(2)),
+          margemPercent: Number(margemPercent.toFixed(1)),
+        };
+      });
+  }, [vendas, produtos, receitasComCustoMedio]);
+
+
   const despesasPieData = useMemo(() => {
     return despesas
       .filter((d) => d.ativo)
