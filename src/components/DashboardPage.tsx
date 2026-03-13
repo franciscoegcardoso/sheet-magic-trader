@@ -240,23 +240,35 @@ export function DashboardPage() {
   );
 }
 
-function KPICard({ title, value, change, positive, icon: Icon }: {
-  title: string; value: string; change?: number; positive?: boolean; icon: any;
+function KPICard({ title, value, formula, change, mtdChange, positive, icon: Icon }: {
+  title: string; value: string; formula?: string; change?: number; mtdChange?: number; positive?: boolean; icon: any;
 }) {
   const isPositive = positive ?? (change !== undefined && change >= 0);
+  const isMTDPositive = positive ?? (mtdChange !== undefined && mtdChange >= 0);
   return (
     <div className="p-3.5 rounded-xl bg-card border border-border">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-1.5">
         <span className="text-[11px] font-medium text-muted-foreground">{title}</span>
         <Icon className="w-4 h-4 text-muted-foreground" />
       </div>
       <div className="text-lg font-bold text-foreground">{value}</div>
-      {change !== undefined && (
-        <div className={`flex items-center gap-0.5 mt-1 text-[10px] font-medium ${isPositive ? "text-emerald-600" : "text-destructive"}`}>
-          {isPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
-          {Math.abs(change).toFixed(1)}% vs mês anterior
-        </div>
+      {formula && (
+        <div className="text-[9px] text-muted-foreground/70 mt-0.5 italic">{formula}</div>
       )}
+      <div className="mt-1.5 space-y-0.5">
+        {change !== undefined && (
+          <div className={`flex items-center gap-0.5 text-[10px] font-medium ${isPositive ? "text-emerald-600" : "text-destructive"}`}>
+            {isPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+            {Math.abs(change).toFixed(1)}% vs mês anterior
+          </div>
+        )}
+        {mtdChange !== undefined && (
+          <div className={`flex items-center gap-0.5 text-[10px] font-medium ${isMTDPositive ? "text-emerald-600" : "text-destructive"}`}>
+            {isMTDPositive ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+            {Math.abs(mtdChange).toFixed(1)}% MTD vs mesmo período
+          </div>
+        )}
+      </div>
     </div>
   );
 }
