@@ -709,10 +709,10 @@ export function ConcorrenciaPage() {
                             R$ {precoSugerido.toFixed(2)}
                           </div>
                           <p className="text-[10px] text-muted-foreground">
-                            {hasCost && hasComp
-                              ? "Baseado em 60% margem ideal + 40% média de mercado"
+                          {hasCost && hasComp
+                              ? `Baseado em 60% margem de ${targetMargin}% + 40% média de mercado`
                               : hasCost
-                              ? "Baseado na margem ideal de 50% sobre o custo"
+                              ? `Baseado na margem de ${targetMargin}% sobre o custo`
                               : "Baseado na média dos concorrentes"}
                           </p>
                           {diffAtual !== null && (
