@@ -132,7 +132,6 @@ export default function Index() {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
-    { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
   ];
