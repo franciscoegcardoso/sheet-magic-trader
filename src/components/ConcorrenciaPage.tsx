@@ -667,7 +667,7 @@ export function ConcorrenciaPage() {
                             <span className="text-foreground">R$ {margemMinima!.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">Margem ideal (50%)</span>
+                            <span className="text-muted-foreground">Margem selecionada ({targetMargin}%)</span>
                             <span className="font-semibold text-primary">R$ {margemIdeal!.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-xs">
