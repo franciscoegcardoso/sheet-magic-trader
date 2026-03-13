@@ -308,6 +308,50 @@ export function ProductManager() {
             </Select>
           </div>
 
+          {/* Peso / Medida */}
+          <div className="space-y-2 p-3 rounded-lg border border-border bg-secondary/20">
+            <Label className="text-xs text-muted-foreground flex items-center gap-1">
+              <Scale className="w-3.5 h-3.5" />
+              Peso ou tamanho do produto
+            </Label>
+            <p className="text-[10px] text-muted-foreground">
+              Usado para comparar automaticamente com preços da concorrência
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Quantidade</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  value={pesoQuantidade}
+                  onChange={(e) => setPesoQuantidade(e.target.value)}
+                  placeholder="1"
+                />
+              </div>
+              <div>
+                <Label className="text-[10px] text-muted-foreground">Medida</Label>
+                <Select value={unidade} onValueChange={setUnidade}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Unidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="un">Unidade</SelectItem>
+                    <SelectItem value="kg">Kg</SelectItem>
+                    <SelectItem value="g">Gramas</SelectItem>
+                    <SelectItem value="L">Litros</SelectItem>
+                    <SelectItem value="ml">mL</SelectItem>
+                    <SelectItem value="fatia">Fatia</SelectItem>
+                    <SelectItem value="porcao">Porção</SelectItem>
+                    <SelectItem value="dz">Dúzia</SelectItem>
+                    <SelectItem value="cx">Caixa</SelectItem>
+                    <SelectItem value="pct">Pacote</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
           {/* GTIN / Código de Barras */}
           <div className="space-y-2 p-3 rounded-lg border border-border bg-secondary/20">
             <Label className="text-xs text-muted-foreground flex items-center gap-1">
