@@ -198,7 +198,7 @@ export function PriceSimulator() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground">Embalagem (R$)</Label>
+                <Label className="text-xs text-muted-foreground">Custo da embalagem (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
