@@ -378,7 +378,7 @@ export function SalesPlanning() {
               <option value="">Escolha um produto...</option>
               {productsWithCMV.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.nome} {p.hasCMV ? `(CMV: R$${p.cmv.toFixed(2)})` : "(sem CMV)"}
+                  {p.nome} {p.hasCMV ? `(custo: R$${p.cmv.toFixed(2)})` : "(sem custo definido)"}
                 </option>
               ))}
             </select>
