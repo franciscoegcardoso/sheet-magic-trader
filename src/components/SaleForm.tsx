@@ -354,7 +354,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label className="input-label">
               <Package className="w-4 h-4 inline mr-1.5" />
-              Produto
+              O que vendeu?
             </Label>
             <Select
               value={formData.produto}
