@@ -235,15 +235,15 @@ export function SalesPlanning() {
         <TabsList className="w-full grid grid-cols-3">
           <TabsTrigger value="historico" className="text-xs">
             <BarChart3 className="w-3.5 h-3.5 mr-1" />
-            Histórico
+            Como foi
           </TabsTrigger>
           <TabsTrigger value="projecao" className="text-xs">
             <TrendingUp className="w-3.5 h-3.5 mr-1" />
-            Projeção
+            Previsão
           </TabsTrigger>
           <TabsTrigger value="elasticidade" className="text-xs">
             <Calculator className="w-3.5 h-3.5 mr-1" />
-            Preço
+            Teste de Preço
           </TabsTrigger>
         </TabsList>
 
