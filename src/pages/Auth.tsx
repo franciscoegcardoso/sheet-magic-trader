@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Mail, Lock, User } from "lucide-react";
+import { lovable } from "@/integrations/lovable/index";
 import logo from "@/assets/logo.png";
 
 export default function Auth() {
