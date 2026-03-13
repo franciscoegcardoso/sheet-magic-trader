@@ -1,12 +1,13 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useVendas } from "@/hooks/useVendas";
 import { useCompras } from "@/hooks/useCompras";
 import { useDespesasFixas } from "@/hooks/useDespesasFixas";
 import { useClientesDB } from "@/hooks/useClientesDB";
 import { usePedidos } from "@/hooks/usePedidos";
+import { supabase } from "@/integrations/supabase/client";
 import {
   BarChart3, TrendingUp, TrendingDown, ShoppingBag, Users, DollarSign,
-  Package, ArrowUp, ArrowDown, Loader2,
+  Package, ArrowUp, ArrowDown, Loader2, AlertTriangle, Scale,
 } from "lucide-react";
 
 export function DashboardPage() {
@@ -15,6 +16,42 @@ export function DashboardPage() {
   const { despesas } = useDespesasFixas();
   const { clientes } = useClientesDB();
   const { pedidos } = usePedidos();
+
+  // Competitor price alerts
+  const [priceAlerts, setPriceAlerts] = useState<{ produto: string; meuPreco: number; mediaConc: number; diff: number }[]>([]);
+
+  useEffect(() => {
+    async function checkCompetitorPrices() {
+      const { data: concPrecos } = await supabase.from("concorrente_precos").select("*");
+      if (!concPrecos || concPrecos.length === 0) return;
+
+      // Build average price per product from sales
+      const prodMap = new Map<string, { total: number; count: number }>();
+      vendas.forEach((v) => {
+        const curr = prodMap.get(v.produto) || { total: 0, count: 0 };
+        curr.total += Number(v.valor_venda);
+        curr.count += 1;
+        prodMap.set(v.produto, curr);
+      });
+
+      const alerts: typeof priceAlerts = [];
+      prodMap.forEach((data, prodNome) => {
+        const myPrice = data.total / data.count;
+        const concPrices = concPrecos
+          .filter((p) => p.produto_nome === prodNome)
+          .map((p) => Number(p.preco) / (Number(p.peso_quantidade) || 1));
+        if (concPrices.length === 0) return;
+        const avg = concPrices.reduce((s, p) => s + p, 0) / concPrices.length;
+        const diff = ((myPrice - avg) / avg) * 100;
+        // Alert if price is more than 20% below competitors
+        if (diff < -20) {
+          alerts.push({ produto: prodNome, meuPreco: myPrice, mediaConc: avg, diff });
+        }
+      });
+      setPriceAlerts(alerts);
+    }
+    if (vendas.length > 0) checkCompetitorPrices();
+  }, [vendas]);
 
   const now = new Date();
   const currentMonth = now.getMonth();
@@ -129,6 +166,37 @@ export function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* Competitor Price Alerts */}
+      {priceAlerts.length > 0 && (
+        <div className="rounded-xl border border-yellow-500/30 bg-yellow-50/50 dark:bg-yellow-900/10 p-4 space-y-2">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+            <h3 className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">
+              Atenção: preços abaixo da concorrência
+            </h3>
+          </div>
+          <p className="text-xs text-yellow-600/80 dark:text-yellow-400/70">
+            Esses produtos estão com preço muito abaixo da média dos concorrentes — você pode estar perdendo dinheiro.
+          </p>
+          <div className="space-y-1.5">
+            {priceAlerts.map((alert) => (
+              <div key={alert.produto} className="flex items-center justify-between p-2 rounded-lg bg-yellow-100/50 dark:bg-yellow-900/20">
+                <div className="flex items-center gap-2">
+                  <Scale className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400" />
+                  <span className="text-xs font-medium text-foreground">{alert.produto}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-destructive font-semibold">{alert.diff.toFixed(0)}%</span>
+                  <span className="text-[10px] text-muted-foreground ml-1">
+                    (R$ {alert.meuPreco.toFixed(2)} vs R$ {alert.mediaConc.toFixed(2)})
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
