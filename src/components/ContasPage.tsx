@@ -100,8 +100,8 @@ export function ContasPage() {
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-lg bg-accent"><Wallet className="w-5 h-5 text-accent-foreground" /></div>
           <div>
-            <h2 className="text-lg font-display font-semibold text-foreground">Contas</h2>
-            <p className="text-sm text-muted-foreground">Contas a pagar e receber</p>
+            <h2 className="text-lg font-display font-semibold text-foreground">Contas a Pagar e Receber</h2>
+            <p className="text-sm text-muted-foreground">Controle o que entra e sai do seu caixa</p>
           </div>
         </div>
         {!showForm && <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> Nova</Button>}
