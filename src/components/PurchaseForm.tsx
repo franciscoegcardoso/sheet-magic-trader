@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Calendar, DollarSign, Package, Hash, Loader2, Camera, Image, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Calendar, DollarSign, Package, Hash, Loader2, Camera, Image, ArrowLeft, FileText } from "lucide-react";
 import { InvoiceScanner, type InvoiceScannerHandle } from "./InvoiceScanner";
 import { useInsumos } from "@/hooks/useInsumos";
 import { useIsMobile } from "@/hooks/use-mobile";
