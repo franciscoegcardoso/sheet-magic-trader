@@ -35,7 +35,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   const [mode, setMode] = useState<"scanner" | "manual">(isMobile ? "scanner" : "manual");
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
-  const scannerRef = useRef<{ scanFile: (file: File) => void }>(null);
+  const scannerRef = useRef<InvoiceScannerHandle>(null);
   const [formData, setFormData] = useState<PurchaseData>({
     insumo: "",
     quantidade: "",
