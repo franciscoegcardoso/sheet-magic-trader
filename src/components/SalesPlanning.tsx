@@ -402,10 +402,10 @@ export function SalesPlanning() {
             <>
               {/* Current product info */}
               <div className="grid grid-cols-3 gap-2">
-                <MiniCard label="Preço Médio" value={`R$ ${selectedProd.precoMedioVenda.toFixed(2)}`} />
-                <MiniCard label="CMV" value={`R$ ${selectedProd.cmv.toFixed(2)}`} />
+                <MiniCard label="Preço atual" value={`R$ ${selectedProd.precoMedioVenda.toFixed(2)}`} />
+                <MiniCard label="Custo" value={`R$ ${selectedProd.cmv.toFixed(2)}`} />
                 <MiniCard
-                  label="Margem"
+                  label="Lucro"
                   value={`${selectedProd.margemPercent.toFixed(0)}%`}
                   accent={selectedProd.margemPercent > 0}
                 />
