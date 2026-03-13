@@ -269,10 +269,10 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           </div>
           <div>
             <h2 className="text-lg font-display font-semibold text-foreground">
-              Lançamento de Venda
+              Registrar Venda
             </h2>
             <p className="text-sm text-muted-foreground">
-              Registre suas vendas de produtos
+              Anote o que você vendeu e para quem
             </p>
           </div>
         </div>
