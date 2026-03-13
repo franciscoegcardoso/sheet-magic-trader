@@ -129,27 +129,35 @@ export default function Index() {
 
   const allTabs = [
     { id: "home" as TabType, label: "Início", icon: Home, mobile: true, desktop: false },
-    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard, mobile: false, desktop: true },
-    { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true },
-    { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true },
-    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays, mobile: false, desktop: true },
-    { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true },
-    { id: "catalogo" as TabType, label: "Catálogo", icon: Store, mobile: false, desktop: true },
-    { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true },
-    { id: "crm" as TabType, label: "CRM", icon: Users, mobile: false, desktop: true },
-    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true },
-    { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true },
-    { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true },
-    { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
-    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
-    { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
-    { id: "contas" as TabType, label: "Contas", icon: CreditCard, mobile: false, desktop: true },
-    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
-    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
+    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard, mobile: false, desktop: true, group: "geral" },
+    { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true, group: "producao" },
+    { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true, group: "vendas" },
+    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays, mobile: false, desktop: true, group: "vendas" },
+    { id: "crm" as TabType, label: "Clientes", icon: Users, mobile: false, desktop: true, group: "vendas" },
+    { id: "catalogo" as TabType, label: "Catálogo", icon: Store, mobile: false, desktop: true, group: "vendas" },
+    { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true, group: "producao" },
+    { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true, group: "producao" },
+    { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true, group: "producao" },
+    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true, group: "financeiro" },
+    { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true, group: "financeiro" },
+    { id: "contas" as TabType, label: "Contas", icon: CreditCard, mobile: false, desktop: true, group: "financeiro" },
+    { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true, group: "financeiro" },
+    { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true, group: "financeiro" },
+    { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true, group: "marketing" },
+    { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true, group: "sistema" },
+    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true, group: "sistema" },
   ];
 
   const mobileBottomTabs = allTabs.filter((t) => t.mobile);
-  const desktopSidebarTabs = allTabs.filter((t) => t.desktop);
+
+  const sidebarGroups = [
+    { key: "geral", label: "" },
+    { key: "vendas", label: "Vendas" },
+    { key: "producao", label: "Produção" },
+    { key: "financeiro", label: "Financeiro" },
+    { key: "marketing", label: "Marketing" },
+    { key: "sistema", label: "Sistema" },
+  ];
 
   const renderContent = () => {
     if (activeTab === "home") return <MobileHome onNavigate={setActiveTab} />;
@@ -172,47 +180,6 @@ export default function Index() {
     if (activeTab === "configuracoes") return <SettingsPage />;
     return null;
   };
-
-  return (
-    <div className="min-h-screen bg-background">
-      {activeTab !== "docs" && <HelpButton onClick={() => setActiveTab("docs")} />}
-      {/* ===== DESKTOP / TABLET LAYOUT (md+) ===== */}
-      <div className="hidden md:flex min-h-screen">
-        {/* Sidebar */}
-        <aside className="w-56 lg:w-64 border-r border-border bg-card flex flex-col shrink-0">
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-2.5">
-              <img src={logo} alt="Logo" className="h-7" />
-              <div>
-                <h1 className="text-sm font-display font-bold text-foreground leading-tight">
-                  Controle Financeiro
-                </h1>
-                <p className="text-[10px] text-muted-foreground">Gestão completa</p>
-              </div>
-            </div>
-          </div>
-
-
-          <nav className="flex-1 py-2 overflow-y-auto">
-            {desktopSidebarTabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-accent text-accent-foreground border-r-2 border-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </nav>
 
           <div className="p-3 border-t border-border">
             <img src={logo} alt="Vértice Soluções" className="h-6 opacity-50 mx-auto" />
