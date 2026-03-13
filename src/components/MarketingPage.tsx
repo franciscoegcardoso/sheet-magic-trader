@@ -15,21 +15,51 @@ import {
   Loader2,
   Trash2,
   CheckCircle2,
-  ExternalLink,
   Search,
   X,
   MessageSquare,
+  Sparkles,
+  Upload,
+  Image as ImageIcon,
+  Package,
+  FileText,
+  Stamp,
 } from "lucide-react";
+
+type ImageMode = "ready" | "ai";
 
 export function MarketingPage() {
   const { toast } = useToast();
   const { clientes, isLoading: loadingClientes } = useClientesDB();
   const fileRef = useRef<HTMLInputElement>(null);
+  const logoRef = useRef<HTMLInputElement>(null);
+  const productPhotoRef = useRef<HTMLInputElement>(null);
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
+  // Image mode
+  const [imageMode, setImageMode] = useState<ImageMode>("ai");
+
+  // Ready image (direct upload)
+  const [readyImageFile, setReadyImageFile] = useState<File | null>(null);
+  const [readyImagePreview, setReadyImagePreview] = useState<string | null>(null);
+  const [readyImageUrl, setReadyImageUrl] = useState<string | null>(null);
+  const [uploadingReady, setUploadingReady] = useState(false);
+
+  // AI generation fields
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  const [productPhotoFile, setProductPhotoFile] = useState<File | null>(null);
+  const [productPhotoPreview, setProductPhotoPreview] = useState<string | null>(null);
+  const [productPhotoUrl, setProductPhotoUrl] = useState<string | null>(null);
+
+  const [productName, setProductName] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [generatingAI, setGeneratingAI] = useState(false);
+  const [aiImageUrl, setAiImageUrl] = useState<string | null>(null);
+  const [aiImagePreview, setAiImagePreview] = useState<string | null>(null);
+
+  // Common
   const [mensagem, setMensagem] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,40 +81,117 @@ export function MarketingPage() {
     );
   }, [activeClientes, searchQuery]);
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-    setImageUrl(null);
+  // The final image URL to send
+  const finalImageUrl = imageMode === "ready" ? readyImageUrl : aiImageUrl;
+
+  // --- Upload helpers ---
+  const uploadToStorage = async (file: File, folder: string): Promise<string> => {
+    const ext = file.name.split(".").pop();
+    const path = `${folder}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("marketing")
+      .upload(path, file, { upsert: true });
+    if (error) throw error;
+    const { data } = supabase.storage.from("marketing").getPublicUrl(path);
+    return data.publicUrl;
   };
 
-  const handleUploadImage = async () => {
-    if (!imageFile) return;
-    setUploading(true);
+  // --- Ready image handlers ---
+  const handleReadyImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setReadyImageFile(file);
+    setReadyImagePreview(URL.createObjectURL(file));
+    setReadyImageUrl(null);
+  };
+
+  const handleUploadReadyImage = async () => {
+    if (!readyImageFile) return;
+    setUploadingReady(true);
     try {
-      const ext = imageFile.name.split(".").pop();
-      const path = `campaigns/${Date.now()}.${ext}`;
-      const { error } = await supabase.storage
-        .from("marketing")
-        .upload(path, imageFile, { upsert: true });
-      if (error) throw error;
-      const { data } = supabase.storage.from("marketing").getPublicUrl(path);
-      setImageUrl(data.publicUrl);
+      const url = await uploadToStorage(readyImageFile, "campaigns");
+      setReadyImageUrl(url);
       toast({ title: "Imagem enviada!" });
     } catch (err: any) {
       toast({ title: "Erro ao enviar imagem", description: err.message, variant: "destructive" });
     } finally {
-      setUploading(false);
+      setUploadingReady(false);
     }
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
-    setImageUrl(null);
+  const removeReadyImage = () => {
+    setReadyImageFile(null);
+    setReadyImagePreview(null);
+    setReadyImageUrl(null);
   };
 
+  // --- AI image handlers ---
+  const handleFileSelect = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setFile: (f: File | null) => void,
+    setPreview: (p: string | null) => void,
+    setUrl: (u: string | null) => void
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFile(file);
+    setPreview(URL.createObjectURL(file));
+    setUrl(null);
+  };
+
+  const handleGenerateAIImage = async () => {
+    if (!productName.trim()) {
+      toast({ title: "Informe o nome do produto", variant: "destructive" });
+      return;
+    }
+
+    setGeneratingAI(true);
+    try {
+      // Upload logo and product photo if provided
+      let uploadedLogoUrl = logoUrl;
+      let uploadedProductPhotoUrl = productPhotoUrl;
+
+      if (logoFile && !logoUrl) {
+        uploadedLogoUrl = await uploadToStorage(logoFile, "logos");
+        setLogoUrl(uploadedLogoUrl);
+      }
+      if (productPhotoFile && !productPhotoUrl) {
+        uploadedProductPhotoUrl = await uploadToStorage(productPhotoFile, "product-photos-mkt");
+        setProductPhotoUrl(uploadedProductPhotoUrl);
+      }
+
+      const { data, error } = await supabase.functions.invoke("generate-marketing-image", {
+        body: {
+          productName,
+          productDescription,
+          logoUrl: uploadedLogoUrl || null,
+          productPhotoUrl: uploadedProductPhotoUrl || null,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      setAiImageUrl(data.imageUrl);
+      setAiImagePreview(data.imageUrl);
+      toast({ title: "Imagem gerada com sucesso!", description: "A IA criou sua imagem de marketing." });
+    } catch (err: any) {
+      toast({
+        title: "Erro ao gerar imagem",
+        description: err.message || "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingAI(false);
+    }
+  };
+
+  const removeAiImage = () => {
+    setAiImageUrl(null);
+    setAiImagePreview(null);
+  };
+
+  // --- Contact & Send ---
   const toggleClient = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -103,9 +210,7 @@ export function MarketingPage() {
   };
 
   const formatPhone = (phone: string) => {
-    // Remove tudo que não é número
     let digits = phone.replace(/\D/g, "");
-    // Adiciona código do Brasil se não tiver
     if (!digits.startsWith("55")) digits = "55" + digits;
     return digits;
   };
@@ -113,8 +218,8 @@ export function MarketingPage() {
   const buildWhatsAppUrl = (phone: string) => {
     const formattedPhone = formatPhone(phone);
     let text = mensagem;
-    if (imageUrl) {
-      text += `\n\n📷 ${imageUrl}`;
+    if (finalImageUrl) {
+      text += `\n\n📷 ${finalImageUrl}`;
     }
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(text)}`;
   };
@@ -129,23 +234,15 @@ export function MarketingPage() {
       return;
     }
 
-    // Upload image first if not uploaded yet
-    if (imageFile && !imageUrl) {
-      toast({ title: "Envie a imagem antes de disparar", variant: "destructive" });
-      return;
-    }
-
     setSending(true);
-
     const selected = activeClientes.filter((c) => selectedIds.has(c.id));
-    
-    // Open first link immediately, rest with small delay
+
     selected.forEach((client, i) => {
       setTimeout(() => {
         const url = buildWhatsAppUrl(client.telefone!);
         window.open(url, "_blank");
         setSentIds((prev) => new Set(prev).add(client.id));
-        
+
         if (i === selected.length - 1) {
           setSending(false);
           toast({
@@ -166,68 +263,262 @@ export function MarketingPage() {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">Marketing</h2>
-          <p className="text-sm text-muted-foreground">Envie mensagens para sua lista de clientes</p>
+          <p className="text-sm text-muted-foreground">Crie campanhas visuais e envie para seus clientes</p>
         </div>
       </div>
 
-      {/* Step 1: Image */}
-      <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+      {/* Step 1: Image Mode Selector */}
+      <div className="bg-card border border-border rounded-xl p-5 space-y-4">
         <div className="flex items-center gap-2">
           <ImagePlus className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-semibold text-foreground">1. Imagem (opcional)</h3>
+          <h3 className="text-sm font-semibold text-foreground">1. Imagem da Campanha</h3>
         </div>
 
-        {imagePreview ? (
-          <div className="relative">
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-full max-h-48 object-cover rounded-lg border border-border"
-            />
-            <div className="absolute top-2 right-2 flex gap-1">
-              {imageUrl ? (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/20 text-primary flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> Enviada
-                </span>
-              ) : (
-                <Button
-                  size="sm"
-                  className="h-7 text-xs"
-                  onClick={handleUploadImage}
-                  disabled={uploading}
-                >
-                  {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : "Enviar"}
-                </Button>
-              )}
-              <Button
-                variant="destructive"
-                size="sm"
-                className="h-7 w-7 p-0"
-                onClick={removeImage}
-              >
-                <Trash2 className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
-        ) : (
+        {/* Mode tabs */}
+        <div className="grid grid-cols-2 gap-2">
           <button
-            onClick={() => fileRef.current?.click()}
-            className="w-full h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
+            onClick={() => setImageMode("ready")}
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
+              imageMode === "ready"
+                ? "border-primary bg-primary/5 text-primary"
+                : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+            }`}
           >
-            <ImagePlus className="w-6 h-6" />
-            <span className="text-xs">Clique para selecionar uma imagem</span>
+            <Upload className="w-4 h-4" />
+            Inserir imagem pronta
           </button>
+          <button
+            onClick={() => setImageMode("ai")}
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
+              imageMode === "ai"
+                ? "border-primary bg-primary/5 text-primary"
+                : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            Criar imagem com IA
+          </button>
+        </div>
+
+        {/* Ready image mode */}
+        {imageMode === "ready" && (
+          <div className="space-y-3 animate-fade-in">
+            {readyImagePreview ? (
+              <div className="relative">
+                <img
+                  src={readyImagePreview}
+                  alt="Preview"
+                  className="w-full max-h-56 object-cover rounded-lg border border-border"
+                />
+                <div className="absolute top-2 right-2 flex gap-1">
+                  {readyImageUrl ? (
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/20 text-primary flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Enviada
+                    </span>
+                  ) : (
+                    <Button
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={handleUploadReadyImage}
+                      disabled={uploadingReady}
+                    >
+                      {uploadingReady ? <Loader2 className="w-3 h-3 animate-spin" /> : "Enviar"}
+                    </Button>
+                  )}
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={removeReadyImage}
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="w-full h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
+              >
+                <Upload className="w-6 h-6" />
+                <span className="text-xs">Clique para selecionar sua imagem pronta</span>
+              </button>
+            )}
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleReadyImageSelect}
+            />
+          </div>
         )}
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleImageSelect}
-        />
-        <p className="text-[10px] text-muted-foreground">
-          💡 A imagem será enviada como link junto à mensagem. O cliente verá o link e poderá abrir a imagem.
-        </p>
+
+        {/* AI image mode */}
+        {imageMode === "ai" && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Logo + Product Photo row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Logo */}
+              <div className="space-y-2">
+                <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                  <Stamp className="w-3.5 h-3.5 text-primary" />
+                  Logo da marca (opcional)
+                </Label>
+                {logoPreview ? (
+                  <div className="relative h-28 border border-border rounded-lg overflow-hidden bg-muted/30 flex items-center justify-center">
+                    <img src={logoPreview} alt="Logo" className="max-h-full max-w-full object-contain p-2" />
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-1 right-1 h-6 w-6 p-0"
+                      onClick={() => {
+                        setLogoFile(null);
+                        setLogoPreview(null);
+                        setLogoUrl(null);
+                      }}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => logoRef.current?.click()}
+                    className="w-full h-28 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-1.5 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
+                  >
+                    <Stamp className="w-5 h-5" />
+                    <span className="text-[10px]">Adicionar logo</span>
+                  </button>
+                )}
+                <input
+                  ref={logoRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, setLogoFile, setLogoPreview, setLogoUrl)}
+                />
+              </div>
+
+              {/* Product Photo */}
+              <div className="space-y-2">
+                <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                  <ImageIcon className="w-3.5 h-3.5 text-primary" />
+                  Foto do produto (opcional)
+                </Label>
+                {productPhotoPreview ? (
+                  <div className="relative h-28 border border-border rounded-lg overflow-hidden bg-muted/30 flex items-center justify-center">
+                    <img src={productPhotoPreview} alt="Produto" className="max-h-full max-w-full object-contain p-2" />
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-1 right-1 h-6 w-6 p-0"
+                      onClick={() => {
+                        setProductPhotoFile(null);
+                        setProductPhotoPreview(null);
+                        setProductPhotoUrl(null);
+                      }}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => productPhotoRef.current?.click()}
+                    className="w-full h-28 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-1.5 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
+                  >
+                    <ImageIcon className="w-5 h-5" />
+                    <span className="text-[10px]">Adicionar foto</span>
+                  </button>
+                )}
+                <input
+                  ref={productPhotoRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, setProductPhotoFile, setProductPhotoPreview, setProductPhotoUrl)}
+                />
+              </div>
+            </div>
+
+            {/* Product name */}
+            <div>
+              <Label className="text-xs font-medium text-foreground flex items-center gap-1.5 mb-1.5">
+                <Package className="w-3.5 h-3.5 text-primary" />
+                Nome do produto *
+              </Label>
+              <Input
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                placeholder="Ex: Bolo de Chocolate Artesanal"
+              />
+            </div>
+
+            {/* Product description */}
+            <div>
+              <Label className="text-xs font-medium text-foreground flex items-center gap-1.5 mb-1.5">
+                <FileText className="w-3.5 h-3.5 text-primary" />
+                Descrição do produto (opcional)
+              </Label>
+              <Textarea
+                value={productDescription}
+                onChange={(e) => setProductDescription(e.target.value)}
+                placeholder="Ex: Bolo artesanal feito com chocolate belga, cobertura ganache e decoração personalizada..."
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+
+            {/* Generate button */}
+            <Button
+              onClick={handleGenerateAIImage}
+              disabled={generatingAI || !productName.trim()}
+              className="w-full"
+              size="lg"
+            >
+              {generatingAI ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Gerando imagem com IA...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  Gerar imagem com IA
+                </>
+              )}
+            </Button>
+
+            {/* AI generated result */}
+            {aiImagePreview && (
+              <div className="relative animate-fade-in">
+                <div className="absolute top-2 left-2 z-10">
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/90 text-primary-foreground flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" /> Gerado por IA
+                  </span>
+                </div>
+                <img
+                  src={aiImagePreview}
+                  alt="Imagem gerada"
+                  className="w-full max-h-72 object-cover rounded-lg border border-border"
+                />
+                <div className="absolute top-2 right-2 flex gap-1">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={removeAiImage}
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <p className="text-[10px] text-muted-foreground">
+              💡 A IA usará o nome, descrição, logo e foto do produto para criar uma imagem profissional de marketing.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Step 2: Message */}
@@ -245,6 +536,7 @@ export function MarketingPage() {
         />
         <p className="text-[10px] text-muted-foreground">
           {mensagem.length} caracteres
+          {finalImageUrl && " · 📷 A imagem será incluída como link na mensagem"}
         </p>
       </div>
 
