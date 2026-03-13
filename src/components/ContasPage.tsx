@@ -110,7 +110,7 @@ export function ContasPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         <div className="p-3 rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-1.5 text-emerald-600"><ArrowDownCircle className="w-4 h-4" /><span className="text-[10px] font-medium">A Receber</span></div>
+          <div className="flex items-center gap-1.5 text-emerald-600"><ArrowDownCircle className="w-4 h-4" /><span className="text-[10px] font-medium">Vou Receber</span></div>
           <div className="text-lg font-bold text-emerald-600 mt-1">R$ {summary.aReceber.toFixed(2)}</div>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
