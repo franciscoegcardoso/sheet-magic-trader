@@ -1,12 +1,13 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useVendas } from "@/hooks/useVendas";
 import { useCompras } from "@/hooks/useCompras";
 import { useDespesasFixas } from "@/hooks/useDespesasFixas";
 import { useClientesDB } from "@/hooks/useClientesDB";
 import { usePedidos } from "@/hooks/usePedidos";
+import { supabase } from "@/integrations/supabase/client";
 import {
   BarChart3, TrendingUp, TrendingDown, ShoppingBag, Users, DollarSign,
-  Package, ArrowUp, ArrowDown, Loader2,
+  Package, ArrowUp, ArrowDown, Loader2, AlertTriangle, Scale,
 } from "lucide-react";
 
 export function DashboardPage() {
