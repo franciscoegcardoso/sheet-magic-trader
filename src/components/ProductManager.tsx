@@ -64,6 +64,8 @@ export function ProductManager() {
     setReceitaId("");
     setCodigoBarras("");
     setCodigoTipo("interno");
+    setPesoQuantidade("1");
+    setUnidade("un");
     setEditingId(null);
     setShowForm(false);
   };
