@@ -480,7 +480,10 @@ export function ConcorrenciaPage() {
                               </div>
                             </div>
                             <p className="text-[10px] text-muted-foreground">
-                              💡 Se o tamanho for diferente do seu, colocamos o peso aqui para calcular o preço equivalente
+                              💡 Seu produto está cadastrado como {(() => {
+                                const produtoData = produtos.find((p) => p.nome === prod.nome);
+                                return produtoData ? `${produtoData.peso_quantidade} ${produtoData.unidade || "un"}` : "1 un";
+                              })()}. Se o concorrente vende em tamanho diferente, ajuste para calcular o preço equivalente.
                             </p>
                             <div className="flex gap-2">
                               <Button size="sm" onClick={handleAddPreco}>Salvar</Button>
