@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
@@ -20,6 +20,7 @@ import { CatalogoPage } from "@/components/CatalogoPage";
 import { ContasPage } from "@/components/ContasPage";
 import { DashboardPage } from "@/components/DashboardPage";
 import { NotificacoesPanel } from "@/components/NotificacoesPanel";
+import { SidebarNav } from "@/components/SidebarNav";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
@@ -42,6 +43,8 @@ import {
   Store,
   CreditCard,
   LayoutDashboard,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
@@ -187,59 +190,12 @@ export default function Index() {
       {/* ===== DESKTOP / TABLET LAYOUT (md+) ===== */}
       <div className="hidden md:flex min-h-screen">
         {/* Sidebar */}
-        <aside className="w-56 lg:w-64 border-r border-border bg-card flex flex-col shrink-0">
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-2.5">
-              <img src={logo} alt="Logo" className="h-7" />
-              <div>
-                <h1 className="text-sm font-display font-bold text-foreground leading-tight">
-                  Controle Financeiro
-                </h1>
-                <p className="text-[10px] text-muted-foreground">Gestão completa</p>
-              </div>
-            </div>
-          </div>
-
-          <nav className="flex-1 py-1 overflow-y-auto">
-            {sidebarGroups.map((group) => {
-              const groupTabs = allTabs.filter(t => t.desktop && (t as any).group === group.key);
-              if (groupTabs.length === 0) return null;
-              return (
-                <div key={group.key} className={group.label ? "mt-3" : ""}>
-                  {group.label && (
-                    <div className="px-4 py-1.5">
-                      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                        {group.label}
-                      </span>
-                    </div>
-                  )}
-                  {groupTabs.map((tab) => {
-                    const Icon = tab.icon;
-                    const isActive = activeTab === tab.id;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`w-full flex items-center gap-2.5 px-4 py-2 text-[13px] font-medium transition-colors ${
-                          isActive
-                            ? "bg-accent text-accent-foreground border-r-2 border-primary"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="w-4 h-4 shrink-0" />
-                        {tab.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </nav>
-
-          <div className="p-3 border-t border-border">
-            <img src={logo} alt="Vértice Soluções" className="h-6 opacity-50 mx-auto" />
-          </div>
-        </aside>
+        <SidebarNav
+          allTabs={allTabs}
+          sidebarGroups={sidebarGroups}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
 
         {/* Main content */}
         <main className="flex-1 overflow-y-auto">
