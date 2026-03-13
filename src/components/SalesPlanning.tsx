@@ -304,7 +304,7 @@ export function SalesPlanning() {
 
         {/* ===== PROJECTION ===== */}
         <TabsContent value="projecao" className="space-y-4">
-          <ReportCard title="Projeção de Vendas (próximos 3 meses)">
+          <ReportCard title="Quanto vou vender nos próximos meses">
             {salesByMonth.length < 2 ? (
               <EmptyState text="São necessários pelo menos 2 meses de histórico para projetar" />
             ) : (
