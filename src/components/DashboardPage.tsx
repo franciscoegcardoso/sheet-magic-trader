@@ -20,7 +20,13 @@ export function DashboardPage() {
   const { pedidos } = usePedidos();
 
   // Competitor price alerts
-  const [priceAlerts, setPriceAlerts] = useState<{ produto: string; meuPreco: number; mediaConc: number; diff: number }[]>([]);
+  const [priceAlerts, setPriceAlerts] = useState<{
+    produto: string;
+    meuPreco: number;
+    mediaConc: number;
+    diff: number;
+    tipo: "baixo" | "alto";
+  }[]>([]);
 
   useEffect(() => {
     async function checkCompetitorPrices() {
@@ -45,9 +51,13 @@ export function DashboardPage() {
         if (concPrices.length === 0) return;
         const avg = concPrices.reduce((s, p) => s + p, 0) / concPrices.length;
         const diff = ((myPrice - avg) / avg) * 100;
-        // Alert if price is more than 20% below competitors
+        // Alert if price is more than 20% below competitors (losing money)
         if (diff < -20) {
-          alerts.push({ produto: prodNome, meuPreco: myPrice, mediaConc: avg, diff });
+          alerts.push({ produto: prodNome, meuPreco: myPrice, mediaConc: avg, diff, tipo: "baixo" });
+        }
+        // Alert if price is more than 30% above competitors (risk of losing customers)
+        if (diff > 30) {
+          alerts.push({ produto: prodNome, meuPreco: myPrice, mediaConc: avg, diff, tipo: "alto" });
         }
       });
       setPriceAlerts(alerts);
