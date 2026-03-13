@@ -165,8 +165,8 @@ export function ContasPage() {
             <div><Label className="text-xs text-muted-foreground">Data limite *</Label>
               <Input type="date" value={dataVencimento} onChange={e => setDataVencimento(e.target.value)} /></div>
           </div>
-          <div><Label className="text-xs text-muted-foreground">Observações</Label>
-            <Input value={observacoes} onChange={e => setObservacoes(e.target.value)} placeholder="Opcional..." /></div>
+          <div><Label className="text-xs text-muted-foreground">Alguma anotação?</Label>
+            <Input value={observacoes} onChange={e => setObservacoes(e.target.value)} placeholder="Qualquer detalhe extra..." /></div>
           <div className="flex gap-2 pt-1">
             <Button type="submit" size="sm" disabled={isSubmitting} className="flex-1">
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cadastrar"}
