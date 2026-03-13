@@ -14,6 +14,7 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [nome, setNome] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
