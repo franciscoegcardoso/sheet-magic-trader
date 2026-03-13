@@ -276,8 +276,8 @@ export function StockReport() {
         <TabsContent value="estoque" className="space-y-3">
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             <div className="px-4 py-3 border-b border-border">
-              <h3 className="font-display font-semibold text-sm text-foreground">Estoque Virtual por Insumo</h3>
-              <p className="text-[11px] text-muted-foreground">Comprado − Consumido (via vendas × receitas)</p>
+              <h3 className="font-display font-semibold text-sm text-foreground">Quanto tenho de cada ingrediente</h3>
+              <p className="text-[11px] text-muted-foreground">Calculado automaticamente: o que comprou menos o que usou</p>
             </div>
             {estoque.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">
