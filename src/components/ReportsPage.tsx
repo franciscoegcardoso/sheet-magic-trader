@@ -282,8 +282,8 @@ export function ReportsPage() {
           <BarChart3 className="w-5 h-5 text-accent-foreground" />
         </div>
         <div>
-          <h2 className="text-lg font-display font-semibold text-foreground">Relatórios</h2>
-          <p className="text-sm text-muted-foreground">Visão geral do negócio</p>
+          <h2 className="text-lg font-display font-semibold text-foreground">Resultados do Negócio</h2>
+          <p className="text-sm text-muted-foreground">Veja como está indo seu negócio</p>
         </div>
       </div>
 
@@ -305,14 +305,14 @@ export function ReportsPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-3">
-        <StatCard icon={Receipt} label="Faturamento" value={`R$ ${stats.totalVendas.toFixed(2)}`} accent />
-        <StatCard icon={ShoppingCart} label="Vendas" value={String(stats.qtdVendas)} />
-        <StatCard icon={DollarSign} label="Custo Produção" value={`R$ ${stats.custoEstimado.toFixed(2)}`} />
-        <StatCard icon={Wallet} label="Despesas Fixas" value={`R$ ${totalMensal.toFixed(2)}`} />
-        <StatCard icon={Package} label="Custo Estoque" value={`R$ ${stats.custoEstoque.toFixed(2)}`} />
+        <StatCard icon={Receipt} label="Quanto faturei" value={`R$ ${stats.totalVendas.toFixed(2)}`} accent />
+        <StatCard icon={ShoppingCart} label="Nº de vendas" value={String(stats.qtdVendas)} />
+        <StatCard icon={DollarSign} label="Custo dos produtos" value={`R$ ${stats.custoEstimado.toFixed(2)}`} />
+        <StatCard icon={Wallet} label="Gastos fixos" value={`R$ ${totalMensal.toFixed(2)}`} />
+        <StatCard icon={Package} label="Gasto com estoque" value={`R$ ${stats.custoEstoque.toFixed(2)}`} />
         <StatCard
           icon={TrendingUp}
-          label="Resultado Líquido"
+          label="Quanto sobrou"
           value={`R$ ${lucroPeriodo.toFixed(2)}`}
           accent={lucroPeriodo >= 0}
           negative={lucroPeriodo < 0}
@@ -323,9 +323,9 @@ export function ReportsPage() {
       <Tabs defaultValue="vendas" className="w-full">
         <TabsList className="w-full grid grid-cols-4">
           <TabsTrigger value="vendas" className="text-[10px] sm:text-xs">Vendas</TabsTrigger>
-          <TabsTrigger value="margem" className="text-[10px] sm:text-xs">Margem</TabsTrigger>
-          <TabsTrigger value="custos" className="text-[10px] sm:text-xs">Custos</TabsTrigger>
-          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Despesas</TabsTrigger>
+          <TabsTrigger value="margem" className="text-[10px] sm:text-xs">Lucro</TabsTrigger>
+          <TabsTrigger value="custos" className="text-[10px] sm:text-xs">Ingredientes</TabsTrigger>
+          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Gastos Fixos</TabsTrigger>
         </TabsList>
 
         {/* Sales Tab */}
@@ -402,7 +402,7 @@ export function ReportsPage() {
               <Download className="w-4 h-4 mr-1" /> Exportar CSV
             </Button>
           </div>
-          <ReportCard title="Margem por Produto">
+          <ReportCard title="Lucro por Produto">
             {margemPorProduto.length === 0 ? (
               <EmptyState text="Cadastre produtos com receita vinculada" />
             ) : (

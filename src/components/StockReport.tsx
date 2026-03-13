@@ -247,8 +247,8 @@ export function StockReport() {
           <Warehouse className="w-5 h-5 text-accent-foreground" />
         </div>
         <div>
-          <h2 className="text-lg font-display font-semibold text-foreground">Estoque & Pedidos</h2>
-          <p className="text-sm text-muted-foreground">Controle de estoque virtual e sugestão de pedido</p>
+          <h2 className="text-lg font-display font-semibold text-foreground">Controle de Estoque</h2>
+          <p className="text-sm text-muted-foreground">Veja o que tem disponível e o que precisa comprar</p>
         </div>
       </div>
 
@@ -256,19 +256,19 @@ export function StockReport() {
         <TabsList className="w-full grid grid-cols-4">
           <TabsTrigger value="estoque" className="text-[10px] sm:text-xs">
             <Package className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Estoque
+            O que tenho
           </TabsTrigger>
           <TabsTrigger value="producao" className="text-[10px] sm:text-xs">
             <Factory className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Produção
+            Produzir
           </TabsTrigger>
           <TabsTrigger value="pedido" className="text-[10px] sm:text-xs">
             <ShoppingCart className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Sugestão
+            Preciso comprar
           </TabsTrigger>
           <TabsTrigger value="revisao" className="text-[10px] sm:text-xs">
             <ClipboardCheck className="w-3.5 h-3.5 mr-1 hidden sm:inline" />
-            Revisão
+            Conferir
           </TabsTrigger>
         </TabsList>
 
@@ -276,12 +276,12 @@ export function StockReport() {
         <TabsContent value="estoque" className="space-y-3">
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             <div className="px-4 py-3 border-b border-border">
-              <h3 className="font-display font-semibold text-sm text-foreground">Estoque Virtual por Insumo</h3>
-              <p className="text-[11px] text-muted-foreground">Comprado − Consumido (via vendas × receitas)</p>
+              <h3 className="font-display font-semibold text-sm text-foreground">Quanto tenho de cada ingrediente</h3>
+              <p className="text-[11px] text-muted-foreground">Calculado automaticamente: o que comprou menos o que usou</p>
             </div>
             {estoque.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">
-                Registre compras e vincule receitas aos produtos para calcular o estoque
+                Registre compras e cadastre receitas com ingredientes para ver seu estoque aqui
               </p>
             ) : (
               <div className="divide-y divide-border">
@@ -312,12 +312,12 @@ export function StockReport() {
                     </div>
                     <div className="flex items-center justify-between mt-1 text-xs text-muted-foreground">
                       <span>
-                        Comprado: {item.totalComprado.toFixed(2)} | Consumido: {item.totalConsumido.toFixed(2)}
+                        Entrou: {item.totalComprado.toFixed(2)} | Saiu: {item.totalConsumido.toFixed(2)}
                       </span>
                       <span>
                         {item.consumoDiario > 0
-                          ? `~${item.diasEstoque === 999 ? "∞" : Math.round(item.diasEstoque)} dias`
-                          : "Sem consumo recente"}
+                          ? `~${item.diasEstoque === 999 ? "∞" : Math.round(item.diasEstoque)} dias de estoque`
+                          : "Sem uso recente"}
                       </span>
                     </div>
                   </div>
@@ -331,7 +331,7 @@ export function StockReport() {
         <TabsContent value="producao" className="space-y-3">
           {/* Production form */}
           <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-            <h3 className="font-display font-semibold text-sm text-foreground">Lançar Produto Acabado</h3>
+            <h3 className="font-display font-semibold text-sm text-foreground">Registrar o que produziu</h3>
             <div>
               <Label className="text-xs text-muted-foreground">Produto</Label>
               <Select value={produtoSelecionado} onValueChange={setProdutoSelecionado}>
@@ -392,7 +392,7 @@ export function StockReport() {
           {Object.keys(estoqueProdutos).length > 0 && (
             <div className="bg-card border border-border rounded-xl overflow-hidden">
               <div className="px-4 py-3 border-b border-border">
-                <h3 className="font-display font-semibold text-sm text-foreground">Estoque de Produtos Acabados</h3>
+                <h3 className="font-display font-semibold text-sm text-foreground">Produtos prontos em estoque</h3>
               </div>
               <div className="divide-y divide-border">
                 {Object.entries(estoqueProdutos).sort(([,a], [,b]) => b - a).map(([nome, qtd]) => (
@@ -408,7 +408,7 @@ export function StockReport() {
           {/* Recent production entries */}
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             <div className="px-4 py-3 border-b border-border">
-              <h3 className="font-display font-semibold text-sm text-foreground">Lançamentos Recentes</h3>
+              <h3 className="font-display font-semibold text-sm text-foreground">Últimas produções</h3>
             </div>
             {producoes.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">Nenhum lançamento registrado</p>

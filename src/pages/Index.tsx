@@ -133,21 +133,21 @@ export default function Index() {
 
   const allTabs = [
     { id: "home" as TabType, label: "Início", icon: Home, mobile: true, desktop: false },
-    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard, mobile: false, desktop: true, group: "geral" },
-    { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true, group: "producao" },
-    { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true, group: "vendas" },
-    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays, mobile: false, desktop: true, group: "vendas" },
+    { id: "dashboard" as TabType, label: "Painel Geral", icon: LayoutDashboard, mobile: false, desktop: true, group: "geral" },
+    { id: "compra" as TabType, label: "Compras", icon: ShoppingCart, mobile: true, desktop: true, group: "producao" },
+    { id: "venda" as TabType, label: "Vendas", icon: Receipt, mobile: true, desktop: true, group: "vendas" },
+    { id: "pedidos" as TabType, label: "Encomendas", icon: CalendarDays, mobile: false, desktop: true, group: "vendas" },
     { id: "crm" as TabType, label: "Clientes", icon: Users, mobile: false, desktop: true, group: "vendas" },
-    { id: "catalogo" as TabType, label: "Catálogo", icon: Store, mobile: false, desktop: true, group: "vendas" },
-    { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true, group: "producao" },
-    { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true, group: "producao" },
+    { id: "catalogo" as TabType, label: "Vitrine Online", icon: Store, mobile: false, desktop: true, group: "vendas" },
+    { id: "produto" as TabType, label: "Meus Produtos", icon: Package, mobile: false, desktop: true, group: "producao" },
+    { id: "receita" as TabType, label: "Minhas Receitas", icon: ChefHat, mobile: false, desktop: true, group: "producao" },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true, group: "producao" },
-    { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true, group: "financeiro" },
-    { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true, group: "financeiro" },
-    { id: "contas" as TabType, label: "Contas", icon: CreditCard, mobile: false, desktop: true, group: "financeiro" },
-    { id: "planejamento" as TabType, label: "Planejamento", icon: Target, mobile: false, desktop: true, group: "financeiro" },
-    { id: "simulador" as TabType, label: "Simulador", icon: Calculator, mobile: false, desktop: true, group: "financeiro" },
-    { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true, group: "marketing" },
+    { id: "relatorios" as TabType, label: "Resultados", icon: BarChart3, mobile: false, desktop: true, group: "financeiro" },
+    { id: "despesas" as TabType, label: "Gastos Fixos", icon: Wallet, mobile: false, desktop: true, group: "financeiro" },
+    { id: "contas" as TabType, label: "Contas a Pagar/Receber", icon: CreditCard, mobile: false, desktop: true, group: "financeiro" },
+    { id: "planejamento" as TabType, label: "Metas de Venda", icon: Target, mobile: false, desktop: true, group: "financeiro" },
+    { id: "simulador" as TabType, label: "Calculadora de Preço", icon: Calculator, mobile: false, desktop: true, group: "financeiro" },
+    { id: "marketing" as TabType, label: "Divulgação", icon: Megaphone, mobile: false, desktop: true, group: "marketing" },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true, group: "sistema" },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true, group: "sistema" },
   ];
@@ -156,11 +156,11 @@ export default function Index() {
 
   const sidebarGroups = [
     { key: "geral", label: "" },
-    { key: "vendas", label: "Vendas" },
-    { key: "producao", label: "Produção" },
-    { key: "financeiro", label: "Financeiro" },
-    { key: "marketing", label: "Marketing" },
-    { key: "sistema", label: "Sistema" },
+    { key: "vendas", label: "Vender" },
+    { key: "producao", label: "Produzir" },
+    { key: "financeiro", label: "Dinheiro" },
+    { key: "marketing", label: "Divulgar" },
+    { key: "sistema", label: "Ajustes" },
   ];
 
   const renderContent = () => {
@@ -241,47 +241,47 @@ export default function Index() {
 /* ===== Mobile Home Screen ===== */
 function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
   const quickActions = [
-    { id: "compra" as TabType, label: "Nova Compra", icon: ShoppingCart, desc: "Registrar entrada" },
-    { id: "venda" as TabType, label: "Nova Venda", icon: Receipt, desc: "Registrar saída" },
+    { id: "compra" as TabType, label: "Comprei Algo", icon: ShoppingCart, desc: "Registrar o que comprou" },
+    { id: "venda" as TabType, label: "Fiz uma Venda", icon: Receipt, desc: "Registrar o que vendeu" },
   ];
 
   const menuSections = [
     {
       label: "Visão Geral",
       items: [
-        { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard },
+        { id: "dashboard" as TabType, label: "Painel Geral", icon: LayoutDashboard },
       ],
     },
     {
-      label: "Vendas",
+      label: "Vendas e Clientes",
       items: [
-        { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays },
+        { id: "pedidos" as TabType, label: "Encomendas", icon: CalendarDays },
         { id: "crm" as TabType, label: "Clientes", icon: Users },
-        { id: "catalogo" as TabType, label: "Catálogo", icon: Store },
+        { id: "catalogo" as TabType, label: "Vitrine Online", icon: Store },
       ],
     },
     {
-      label: "Produção",
+      label: "O que eu produzo",
       items: [
-        { id: "produto" as TabType, label: "Produtos", icon: Package },
+        { id: "produto" as TabType, label: "Meus Produtos", icon: Package },
         { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
         { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
       ],
     },
     {
-      label: "Financeiro",
+      label: "Dinheiro",
       items: [
-        { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
-        { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
+        { id: "relatorios" as TabType, label: "Resultados", icon: BarChart3 },
+        { id: "despesas" as TabType, label: "Gastos Fixos", icon: Wallet },
         { id: "contas" as TabType, label: "Contas", icon: CreditCard },
-        { id: "planejamento" as TabType, label: "Planejamento", icon: Target },
-        { id: "simulador" as TabType, label: "Simulador", icon: Calculator },
+        { id: "planejamento" as TabType, label: "Metas de Venda", icon: Target },
+        { id: "simulador" as TabType, label: "Calc. de Preço", icon: Calculator },
       ],
     },
     {
-      label: "Marketing & Sistema",
+      label: "Mais",
       items: [
-        { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
+        { id: "marketing" as TabType, label: "Divulgação", icon: Megaphone },
         { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
         { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
       ],
@@ -291,8 +291,8 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="text-center pt-4 pb-2">
-        <h1 className="text-2xl font-display font-bold text-foreground">Controle Financeiro</h1>
-        <p className="text-sm text-muted-foreground mt-1">O que deseja registrar?</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">Olá! 👋</h1>
+        <p className="text-sm text-muted-foreground mt-1">O que você quer fazer agora?</p>
       </div>
 
 

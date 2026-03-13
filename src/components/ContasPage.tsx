@@ -100,8 +100,8 @@ export function ContasPage() {
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-lg bg-accent"><Wallet className="w-5 h-5 text-accent-foreground" /></div>
           <div>
-            <h2 className="text-lg font-display font-semibold text-foreground">Contas</h2>
-            <p className="text-sm text-muted-foreground">Contas a pagar e receber</p>
+            <h2 className="text-lg font-display font-semibold text-foreground">Contas a Pagar e Receber</h2>
+            <p className="text-sm text-muted-foreground">Controle o que entra e sai do seu caixa</p>
           </div>
         </div>
         {!showForm && <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-1" /> Nova</Button>}
@@ -110,19 +110,19 @@ export function ContasPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         <div className="p-3 rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-1.5 text-emerald-600"><ArrowDownCircle className="w-4 h-4" /><span className="text-[10px] font-medium">A Receber</span></div>
+          <div className="flex items-center gap-1.5 text-emerald-600"><ArrowDownCircle className="w-4 h-4" /><span className="text-[10px] font-medium">Vou Receber</span></div>
           <div className="text-lg font-bold text-emerald-600 mt-1">R$ {summary.aReceber.toFixed(2)}</div>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-1.5 text-destructive"><ArrowUpCircle className="w-4 h-4" /><span className="text-[10px] font-medium">A Pagar</span></div>
+          <div className="flex items-center gap-1.5 text-destructive"><ArrowUpCircle className="w-4 h-4" /><span className="text-[10px] font-medium">Tenho que Pagar</span></div>
           <div className="text-lg font-bold text-destructive mt-1">R$ {summary.aPagar.toFixed(2)}</div>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-1.5 text-primary"><Wallet className="w-4 h-4" /><span className="text-[10px] font-medium">Saldo</span></div>
+          <div className="flex items-center gap-1.5 text-primary"><Wallet className="w-4 h-4" /><span className="text-[10px] font-medium">Sobra/Falta</span></div>
           <div className={`text-lg font-bold mt-1 ${summary.saldo >= 0 ? "text-emerald-600" : "text-destructive"}`}>R$ {summary.saldo.toFixed(2)}</div>
         </div>
         <div className="p-3 rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-1.5 text-yellow-600"><AlertTriangle className="w-4 h-4" /><span className="text-[10px] font-medium">Atrasadas</span></div>
+          <div className="flex items-center gap-1.5 text-yellow-600"><AlertTriangle className="w-4 h-4" /><span className="text-[10px] font-medium">Vencidas</span></div>
           <div className="text-lg font-bold text-yellow-600 mt-1">{summary.atrasadas}</div>
         </div>
       </div>
@@ -149,24 +149,24 @@ export function ContasPage() {
         <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl p-4 space-y-3">
           <div className="flex gap-2">
             <Button type="button" variant={tipo === "pagar" ? "default" : "outline"} size="sm" onClick={() => setTipo("pagar")} className="flex-1">
-              <ArrowUpCircle className="w-4 h-4 mr-1" /> A Pagar
+              <ArrowUpCircle className="w-4 h-4 mr-1" /> Tenho que Pagar
             </Button>
             <Button type="button" variant={tipo === "receber" ? "default" : "outline"} size="sm" onClick={() => setTipo("receber")} className="flex-1">
-              <ArrowDownCircle className="w-4 h-4 mr-1" /> A Receber
+              <ArrowDownCircle className="w-4 h-4 mr-1" /> Vou Receber
             </Button>
           </div>
-          <div><Label className="text-xs text-muted-foreground">Descrição *</Label>
-            <Input value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Ex: Fornecedor de farinha" /></div>
+          <div><Label className="text-xs text-muted-foreground">O que é essa conta? *</Label>
+            <Input value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Ex: Pagamento ao fornecedor de farinha" /></div>
           <div className="grid grid-cols-3 gap-3">
-            <div><Label className="text-xs text-muted-foreground">Valor (R$) *</Label>
+            <div><Label className="text-xs text-muted-foreground">Quanto? (R$) *</Label>
               <Input type="number" step="0.01" value={valor} onChange={e => setValor(e.target.value)} /></div>
-            <div><Label className="text-xs text-muted-foreground">Categoria</Label>
+            <div><Label className="text-xs text-muted-foreground">Tipo (opcional)</Label>
               <Input value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Insumos" /></div>
-            <div><Label className="text-xs text-muted-foreground">Vencimento *</Label>
+            <div><Label className="text-xs text-muted-foreground">Data limite *</Label>
               <Input type="date" value={dataVencimento} onChange={e => setDataVencimento(e.target.value)} /></div>
           </div>
-          <div><Label className="text-xs text-muted-foreground">Observações</Label>
-            <Input value={observacoes} onChange={e => setObservacoes(e.target.value)} placeholder="Opcional..." /></div>
+          <div><Label className="text-xs text-muted-foreground">Alguma anotação?</Label>
+            <Input value={observacoes} onChange={e => setObservacoes(e.target.value)} placeholder="Qualquer detalhe extra..." /></div>
           <div className="flex gap-2 pt-1">
             <Button type="submit" size="sm" disabled={isSubmitting} className="flex-1">
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cadastrar"}
@@ -195,7 +195,7 @@ export function ContasPage() {
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-foreground truncate">{c.descricao}</span>
                       {c.categoria && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-muted-foreground">{c.categoria}</span>}
-                      {isOverdue && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive/15 text-destructive font-medium">Atrasado</span>}
+                      {isOverdue && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive/15 text-destructive font-medium">Vencida</span>}
                       {c.status === "pago" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
                     </div>
                     <div className="text-[11px] text-muted-foreground mt-0.5">
@@ -208,7 +208,7 @@ export function ContasPage() {
                       {c.tipo === "receber" ? "+" : "-"} R$ {Number(c.valor).toFixed(2)}
                     </span>
                     {c.status !== "pago" && (
-                      <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={() => handlePagar(c.id)}>Pagar</Button>
+                      <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={() => handlePagar(c.id)}>Já paguei</Button>
                     )}
                     <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive" onClick={() => handleDelete(c.id)}>
                       <Trash2 className="w-3.5 h-3.5" />

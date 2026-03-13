@@ -135,10 +135,10 @@ export function RecipeForm() {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Cadastro de Receita
+            Nova Receita
           </h2>
           <p className="text-sm text-muted-foreground">
-            Monte receitas e calcule custos automaticamente
+            Cadastre suas receitas para calcular o custo de cada produto
           </p>
         </div>
       </div>
@@ -165,7 +165,7 @@ export function RecipeForm() {
         <div>
           <Label className="input-label">
             <Package className="w-4 h-4 inline mr-1" />
-            Produto Vinculado
+            Essa receita é de qual produto?
           </Label>
           <Select value={produtoId} onValueChange={setProdutoId}>
             <SelectTrigger>
@@ -184,7 +184,7 @@ export function RecipeForm() {
           <div>
             <Label className="input-label">
               <Hash className="w-4 h-4 inline mr-1" />
-              Rendimento
+              Quantas unidades rende?
             </Label>
             <Input
               type="number"
@@ -195,7 +195,7 @@ export function RecipeForm() {
             />
           </div>
           <div>
-            <Label className="input-label">Unidade</Label>
+            <Label className="input-label">Medida</Label>
             <Select value={unidadeRendimento} onValueChange={setUnidadeRendimento}>
               <SelectTrigger>
                 <SelectValue />
@@ -337,7 +337,7 @@ export function RecipeForm() {
 
         <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-          Cadastrar Receita
+          Salvar Receita
         </Button>
       </div>
     </form>

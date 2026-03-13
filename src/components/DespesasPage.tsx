@@ -83,8 +83,8 @@ export function DespesasPage() {
             <Wallet className="w-5 h-5 text-accent-foreground" />
           </div>
           <div>
-            <h2 className="text-lg font-display font-semibold text-foreground">Despesas Fixas</h2>
-            <p className="text-sm text-muted-foreground">Gestão de custos recorrentes</p>
+            <h2 className="text-lg font-display font-semibold text-foreground">Gastos Fixos Mensais</h2>
+            <p className="text-sm text-muted-foreground">Tudo que você paga todo mês (aluguel, luz, etc.)</p>
           </div>
         </div>
         <Button size="sm" onClick={() => setShowForm(!showForm)} variant={showForm ? "outline" : "default"}>
@@ -95,7 +95,7 @@ export function DespesasPage() {
 
       {/* Total card */}
       <div className="p-4 bg-card border border-border rounded-xl flex items-center justify-between">
-        <span className="text-sm font-medium text-muted-foreground">Total Mensal (ativas)</span>
+        <span className="text-sm font-medium text-muted-foreground">Quanto gasto por mês</span>
         <span className="text-xl font-display font-bold text-primary">R$ {totalMensal.toFixed(2)}</span>
       </div>
 

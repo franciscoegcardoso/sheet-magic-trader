@@ -201,8 +201,8 @@ export function ProductManager() {
             <Package className="w-5 h-5 text-accent-foreground" />
           </div>
           <div>
-            <h2 className="text-lg font-display font-semibold text-foreground">Produtos</h2>
-            <p className="text-sm text-muted-foreground">Cadastre produtos com foto, variações e receitas</p>
+            <h2 className="text-lg font-display font-semibold text-foreground">Meus Produtos</h2>
+            <p className="text-sm text-muted-foreground">Cadastre o que você vende, com foto e preços</p>
           </div>
         </div>
         {!showForm && (
@@ -286,7 +286,7 @@ export function ProductManager() {
           <div>
             <Label className="text-xs text-muted-foreground">
               <ChefHat className="w-3.5 h-3.5 inline mr-0.5" />
-              Receita Vinculada
+              Qual receita usa para fazer?
             </Label>
             <Select value={receitaId} onValueChange={setReceitaId}>
               <SelectTrigger>
@@ -305,7 +305,7 @@ export function ProductManager() {
           <div className="space-y-2 p-3 rounded-lg border border-border bg-secondary/20">
             <Label className="text-xs text-muted-foreground flex items-center gap-1">
               <Barcode className="w-3.5 h-3.5" />
-              Código de Barras (GTIN / EAN-13)
+              Código de barras (opcional)
             </Label>
             <div className="flex gap-2">
               <Button
@@ -315,7 +315,7 @@ export function ProductManager() {
                 className="text-xs"
                 onClick={() => { setCodigoTipo("interno"); setCodigoBarras(""); }}
               >
-                Código Interno
+                Gerar automático
               </Button>
               <Button
                 type="button"
@@ -324,7 +324,7 @@ export function ProductManager() {
                 className="text-xs"
                 onClick={() => { setCodigoTipo("gtin"); setCodigoBarras(""); }}
               >
-                GTIN Oficial
+                Já tenho o código
               </Button>
             </div>
             {codigoTipo === "gtin" ? (
@@ -337,21 +337,21 @@ export function ProductManager() {
                   className="font-mono"
                 />
                 <p className="text-[10px] text-muted-foreground mt-1">
-                  Código EAN-13 do produto (13 dígitos). Prefixos 789/790 = Brasil.
+                  Digite o código de 13 dígitos que vem na embalagem do produto.
                 </p>
               </div>
             ) : (
               <div>
                 <p className="text-xs text-muted-foreground">
-                  Um código interno (prefixo 2, padrão GS1) será gerado automaticamente ao cadastrar.
-                  Ideal para produtos artesanais ou sem registro GS1.
+                  Vamos criar um código automaticamente para você. 
+                  Ideal para produtos feitos à mão ou artesanais.
                 </p>
               </div>
             )}
           </div>
 
           <div className="flex items-center justify-between py-1">
-            <Label className="text-sm text-foreground">Produto ativo</Label>
+            <Label className="text-sm text-foreground">Produto à venda?</Label>
             <Switch checked={ativo} onCheckedChange={setAtivo} />
           </div>
 
@@ -369,7 +369,7 @@ export function ProductManager() {
       {/* Product list */}
       {produtos.length === 0 && !showForm ? (
         <div className="text-center py-8 text-sm text-muted-foreground border border-dashed rounded-xl">
-          Nenhum produto cadastrado. Clique em "Novo" para começar.
+          Nenhum produto cadastrado. Clique em "Novo" para adicionar seu primeiro produto.
         </div>
       ) : (
         <div className="space-y-3">

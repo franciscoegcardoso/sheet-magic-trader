@@ -269,10 +269,10 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           </div>
           <div>
             <h2 className="text-lg font-display font-semibold text-foreground">
-              Lançamento de Venda
+              Registrar Venda
             </h2>
             <p className="text-sm text-muted-foreground">
-              Registre suas vendas de produtos
+              Anote o que você vendeu e para quem
             </p>
           </div>
         </div>
@@ -305,7 +305,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label className="input-label">
               <User className="w-4 h-4 inline mr-1.5" />
-              Cliente
+              Para quem vendeu?
             </Label>
             <Select
               value={formData.cliente}
@@ -354,7 +354,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label className="input-label">
               <Package className="w-4 h-4 inline mr-1.5" />
-              Produto
+              O que vendeu?
             </Label>
             <Select
               value={formData.produto}
@@ -426,7 +426,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label htmlFor="valorFrete" className="input-label">
               <Truck className="w-4 h-4 inline mr-1.5" />
-              Valor do Frete (R$)
+              Cobrou entrega? (R$)
             </Label>
             <Input
               id="valorFrete"
@@ -444,7 +444,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div>
             <Label className="input-label">
               <CreditCard className="w-4 h-4 inline mr-1.5" />
-              Forma de Pagamento
+              Como recebeu?
             </Label>
             <Select
               value={formData.formaPagamento}
@@ -468,7 +468,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div className="md:col-span-2">
             <Label htmlFor="valorVenda" className="input-label">
               <DollarSign className="w-4 h-4 inline mr-1.5" />
-              Valor da Venda (R$)
+              Quanto cobrou? (R$)
             </Label>
             <Input
               id="valorVenda"
@@ -485,7 +485,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
 
           <div className="md:col-span-2 flex gap-2">
             <Button type="submit" className="flex-1 mt-2">
-              Registrar Venda
+              Salvar Venda
             </Button>
             <Button
               type="button"

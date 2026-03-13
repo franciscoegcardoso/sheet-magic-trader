@@ -223,10 +223,10 @@ export function SalesPlanning() {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Planejamento de Vendas
+            Metas e Planejamento
           </h2>
           <p className="text-sm text-muted-foreground">
-            Histórico, projeções e simulador de preço
+            Analise seu desempenho e teste novos preços
           </p>
         </div>
       </div>
@@ -235,21 +235,21 @@ export function SalesPlanning() {
         <TabsList className="w-full grid grid-cols-3">
           <TabsTrigger value="historico" className="text-xs">
             <BarChart3 className="w-3.5 h-3.5 mr-1" />
-            Histórico
+            Como foi
           </TabsTrigger>
           <TabsTrigger value="projecao" className="text-xs">
             <TrendingUp className="w-3.5 h-3.5 mr-1" />
-            Projeção
+            Previsão
           </TabsTrigger>
           <TabsTrigger value="elasticidade" className="text-xs">
             <Calculator className="w-3.5 h-3.5 mr-1" />
-            Preço
+            Teste de Preço
           </TabsTrigger>
         </TabsList>
 
         {/* ===== HISTORY ===== */}
         <TabsContent value="historico" className="space-y-4">
-          <ReportCard title="Vendas Mensais">
+          <ReportCard title="Vendas por Mês">
             {salesByMonth.length === 0 ? (
               <EmptyState text="Registre vendas para ver o histórico" />
             ) : (
@@ -274,7 +274,7 @@ export function SalesPlanning() {
             )}
           </ReportCard>
 
-          <ReportCard title="Top Produtos por Faturamento">
+          <ReportCard title="Produtos que mais vendem">
             {topProducts.length === 0 ? (
               <EmptyState text="Nenhum produto vendido ainda" />
             ) : (
@@ -304,7 +304,7 @@ export function SalesPlanning() {
 
         {/* ===== PROJECTION ===== */}
         <TabsContent value="projecao" className="space-y-4">
-          <ReportCard title="Projeção de Vendas (próximos 3 meses)">
+          <ReportCard title="Quanto vou vender nos próximos meses">
             {salesByMonth.length < 2 ? (
               <EmptyState text="São necessários pelo menos 2 meses de histórico para projetar" />
             ) : (
@@ -369,7 +369,7 @@ export function SalesPlanning() {
         <TabsContent value="elasticidade" className="space-y-4">
           {/* Product selector */}
           <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-            <Label className="text-xs font-semibold text-foreground">Selecionar Produto</Label>
+            <Label className="text-xs font-semibold text-foreground">Qual produto quer testar?</Label>
             <select
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
@@ -378,7 +378,7 @@ export function SalesPlanning() {
               <option value="">Escolha um produto...</option>
               {productsWithCMV.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.nome} {p.hasCMV ? `(CMV: R$${p.cmv.toFixed(2)})` : "(sem CMV)"}
+                  {p.nome} {p.hasCMV ? `(custo: R$${p.cmv.toFixed(2)})` : "(sem custo definido)"}
                 </option>
               ))}
             </select>
@@ -388,12 +388,12 @@ export function SalesPlanning() {
             <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-destructive">CMV não definido</p>
-                <p className="text-xs text-destructive/80 mt-1">
-                  Para simular elasticidade de preço, é necessário ter o Custo de Mercadoria Vendida
-                  (CMV) definido. Vincule uma receita com ingredientes e registre compras para
-                  calcular automaticamente.
-                </p>
+              <p className="text-sm font-semibold text-destructive">Custo do produto não definido</p>
+              <p className="text-xs text-destructive/80 mt-1">
+                Para testar preços, precisamos saber quanto custa produzir. 
+                Cadastre uma receita com ingredientes e registre as compras para 
+                calcular o custo automaticamente.
+              </p>
               </div>
             </div>
           )}
@@ -402,10 +402,10 @@ export function SalesPlanning() {
             <>
               {/* Current product info */}
               <div className="grid grid-cols-3 gap-2">
-                <MiniCard label="Preço Médio" value={`R$ ${selectedProd.precoMedioVenda.toFixed(2)}`} />
-                <MiniCard label="CMV" value={`R$ ${selectedProd.cmv.toFixed(2)}`} />
+                <MiniCard label="Preço atual" value={`R$ ${selectedProd.precoMedioVenda.toFixed(2)}`} />
+                <MiniCard label="Custo" value={`R$ ${selectedProd.cmv.toFixed(2)}`} />
                 <MiniCard
-                  label="Margem"
+                  label="Lucro"
                   value={`${selectedProd.margemPercent.toFixed(0)}%`}
                   accent={selectedProd.margemPercent > 0}
                 />
@@ -415,7 +415,7 @@ export function SalesPlanning() {
               <div className="bg-card border border-border rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5" /> Preços Concorrentes
+                    <Users className="w-3.5 h-3.5" /> Quanto os concorrentes cobram?
                   </Label>
                   {competitors.length < 5 && (
                     <Button variant="ghost" size="sm" onClick={addCompetitor} className="h-7 text-xs gap-1">

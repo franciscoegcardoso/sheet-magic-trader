@@ -108,15 +108,15 @@ export function PriceSimulator() {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Simulador de Preço
+            Calculadora de Preço
           </h2>
-          <p className="text-sm text-muted-foreground">Monte o DRE do seu produto e descubra seu lucro real</p>
+          <p className="text-sm text-muted-foreground">Descubra quanto cobrar para ter lucro de verdade</p>
         </div>
       </div>
 
       {/* Product selector */}
       <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-        <Label className="text-xs font-semibold text-foreground">Selecione o Produto</Label>
+        <Label className="text-xs font-semibold text-foreground">Qual produto quer calcular?</Label>
         <select
           value={selectedProduct}
           onChange={(e) => {
@@ -129,7 +129,7 @@ export function PriceSimulator() {
           <option value="">Escolha um produto...</option>
           {productsWithCMV.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.nome} {p.hasCMV ? `(CMV: R$${p.cmv.toFixed(2)})` : "(sem CMV)"}
+              {p.nome} {p.hasCMV ? `(custo: R$${p.cmv.toFixed(2)})` : "(sem custo definido)"}
             </option>
           ))}
         </select>
@@ -140,10 +140,11 @@ export function PriceSimulator() {
         <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-destructive">CMV não definido</p>
+            <p className="text-sm font-semibold text-destructive">Custo do produto não definido</p>
             <p className="text-xs text-destructive/80 mt-1">
-              Sem o CMV é impossível simular preço. Vincule uma receita ao produto e registre
-              compras dos ingredientes para calcular automaticamente.
+              Para calcular o preço ideal, precisamos saber quanto custa produzir. 
+              Vá em "Minhas Receitas", cadastre uma receita com os ingredientes e vincule ao produto.
+              Depois registre as compras desses ingredientes em "Compras".
             </p>
           </div>
         </div>
@@ -154,7 +155,7 @@ export function PriceSimulator() {
           {/* Input form */}
           <div className="bg-card border border-border rounded-xl p-4 space-y-4">
             <div>
-              <Label className="text-xs text-muted-foreground">Preço de Venda (Receita Bruta)</Label>
+              <Label className="text-xs text-muted-foreground">Por quanto quer vender?</Label>
               <div className="relative mt-1">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
                 <Input
@@ -179,10 +180,10 @@ export function PriceSimulator() {
                   className="h-9 mt-1 text-sm"
                   placeholder="6"
                 />
-                <p className="text-[9px] text-muted-foreground mt-0.5">Simples, MEI, etc.</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Ex: MEI paga ~5%</p>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Taxas (%)</Label>
+                <Label className="text-xs text-muted-foreground">Taxas de máquina (%)</Label>
                 <Input
                   type="number"
                   step="0.1"
@@ -191,13 +192,13 @@ export function PriceSimulator() {
                   className="h-9 mt-1 text-sm"
                   placeholder="3.5"
                 />
-                <p className="text-[9px] text-muted-foreground mt-0.5">Cartão, marketplace</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Maquininha, iFood, etc.</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground">Embalagem (R$)</Label>
+                <Label className="text-xs text-muted-foreground">Custo da embalagem (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -208,7 +209,7 @@ export function PriceSimulator() {
                 />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Entrega (R$)</Label>
+                <Label className="text-xs text-muted-foreground">Custo da entrega (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -226,15 +227,15 @@ export function PriceSimulator() {
             <div className="bg-card border border-border rounded-xl overflow-hidden">
               <div className="px-4 py-3 border-b border-border">
                 <h3 className="font-display font-semibold text-sm text-foreground">
-                  DRE do Produto — {selectedProd.nome}
+                  Quanto sobra por venda — {selectedProd.nome}
                 </h3>
               </div>
 
               <div className="divide-y divide-border">
-                <DRERow label="Receita Bruta" value={calc.receita} isTotal />
+                <DRERow label="Preço de venda" value={calc.receita} isTotal />
                 <DRERow label="(-) Impostos" value={-calc.impostos} percent={Number(impostoPercent)} />
-                <DRERow label="(-) Taxas" value={-calc.taxas} percent={Number(taxaPercent)} />
-                <DRERow label="(-) CMV" value={-calc.cmv} highlight />
+                <DRERow label="(-) Taxas de máquina" value={-calc.taxas} percent={Number(taxaPercent)} />
+                <DRERow label="(-) Custo do produto" value={-calc.cmv} highlight />
                 {calc.embalagem > 0 && <DRERow label="(-) Embalagem" value={-calc.embalagem} />}
                 {calc.entrega > 0 && <DRERow label="(-) Entrega" value={-calc.entrega} />}
                 <div
@@ -247,7 +248,7 @@ export function PriceSimulator() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-foreground">(=) Lucro Bruto</span>
+                    <span className="text-sm font-bold text-foreground">(=) Seu lucro por unidade</span>
                     <HealthBadge level={healthLevel!} percent={calc.lucroBrutoPercent} />
                   </div>
                   <span
@@ -262,7 +263,7 @@ export function PriceSimulator() {
 
               {/* Visual bar */}
               <div className="px-4 py-3 border-t border-border">
-                <p className="text-[10px] text-muted-foreground mb-2">Composição do preço</p>
+                <p className="text-[10px] text-muted-foreground mb-2">Para onde vai o dinheiro da venda</p>
                 <div className="flex h-6 rounded-full overflow-hidden">
                   {calc.receita > 0 && (
                     <>
@@ -279,7 +280,7 @@ export function PriceSimulator() {
                         style={{ width: `${((calc.cmv / calc.receita) * 100)}%` }}
                       >
                         <span className="text-[8px] text-destructive-foreground font-bold truncate px-1">
-                          {(calc.cmv / calc.receita) * 100 > 8 ? "CMV" : ""}
+                          {(calc.cmv / calc.receita) * 100 > 8 ? "Custo" : ""}
                         </span>
                       </div>
                       <div
@@ -305,7 +306,7 @@ export function PriceSimulator() {
           {calc && (
             <div className="bg-card border border-border rounded-xl p-4 space-y-3">
               <Label className="text-xs font-semibold text-foreground">
-                Ajustar preço rapidamente
+                Teste outros preços arrastando a barra
               </Label>
               <Slider
                 value={[Number(precoVenda) || 0]}
@@ -315,9 +316,9 @@ export function PriceSimulator() {
                 step={0.5}
               />
               <div className="flex justify-between text-[10px] text-muted-foreground">
-                <span>Abaixo CMV ⚠️</span>
-                <span>CMV: R$ {selectedProd.cmv.toFixed(2)}</span>
-                <span>5x CMV</span>
+                <span>Prejuízo ⚠️</span>
+                <span>Custo: R$ {selectedProd.cmv.toFixed(2)}</span>
+                <span>5x o custo</span>
               </div>
             </div>
           )}

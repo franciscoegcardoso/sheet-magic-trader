@@ -224,10 +224,10 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         </div>
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">
-            Lançamento de Insumos
+            Registrar Compra
           </h2>
           <p className="text-sm text-muted-foreground">
-            Registre suas compras de insumos
+            Anote o que você comprou para usar na produção
           </p>
         </div>
       </div>
@@ -261,7 +261,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         <div>
           <Label htmlFor="insumo" className="input-label">
             <Package className="w-4 h-4 inline mr-1.5" />
-            Insumo
+            O que comprou?
           </Label>
           {isLoadingInsumos ? (
             <div className="flex items-center gap-2 h-10 px-3 text-muted-foreground">
@@ -288,7 +288,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
           <div>
             <Label htmlFor="quantidade" className="input-label">
               <Hash className="w-4 h-4 inline mr-1.5" />
-              Quantidade
+              Quanto comprou?
             </Label>
             <Input
               id="quantidade"
@@ -335,7 +335,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         <div>
           <Label htmlFor="dataCompra" className="input-label">
             <Calendar className="w-4 h-4 inline mr-1.5" />
-            Data da Compra
+            Quando comprou?
           </Label>
           <Input
             id="dataCompra"
@@ -350,7 +350,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         <div>
           <Label htmlFor="valorCompra" className="input-label">
             <DollarSign className="w-4 h-4 inline mr-1.5" />
-            Valor da Compra (R$)
+            Quanto pagou? (R$)
           </Label>
           <Input
             id="valorCompra"
@@ -366,7 +366,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         </div>
 
         <Button type="submit" className="w-full mt-6">
-          Registrar Compra
+          Salvar Compra
         </Button>
       </div>
     </form>
