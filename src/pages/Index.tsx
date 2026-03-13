@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
-import { SheetsConfig } from "@/components/SheetsConfig";
+// SheetsConfig is now inside SettingsPage
 import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { ReportsPage } from "@/components/ReportsPage";
