@@ -402,7 +402,7 @@ export function ReportsPage() {
               <Download className="w-4 h-4 mr-1" /> Exportar CSV
             </Button>
           </div>
-          <ReportCard title="Margem por Produto">
+          <ReportCard title="Lucro por Produto">
             {margemPorProduto.length === 0 ? (
               <EmptyState text="Cadastre produtos com receita vinculada" />
             ) : (

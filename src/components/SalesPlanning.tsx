@@ -415,7 +415,7 @@ export function SalesPlanning() {
               <div className="bg-card border border-border rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5" /> Preços Concorrentes
+                    <Users className="w-3.5 h-3.5" /> Quanto os concorrentes cobram?
                   </Label>
                   {competitors.length < 5 && (
                     <Button variant="ghost" size="sm" onClick={addCompetitor} className="h-7 text-xs gap-1">
