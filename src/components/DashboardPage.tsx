@@ -32,10 +32,19 @@ export function DashboardPage() {
       return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
     });
 
+    // MTD: same day range in previous month
+    const dayOfMonth = now.getDate();
+    const vendasMTDAnterior = vendasMesAnterior.filter(v => {
+      const d = new Date(v.data_venda + "T00:00:00");
+      return d.getDate() <= dayOfMonth;
+    });
+
     const faturamentoMes = vendasMes.reduce((s, v) => s + Number(v.valor_venda), 0);
     const faturamentoAnterior = vendasMesAnterior.reduce((s, v) => s + Number(v.valor_venda), 0);
+    const faturamentoMTDAnterior = vendasMTDAnterior.reduce((s, v) => s + Number(v.valor_venda), 0);
     const ticketMedio = vendasMes.length > 0 ? faturamentoMes / vendasMes.length : 0;
     const ticketAnterior = vendasMesAnterior.length > 0 ? faturamentoAnterior / vendasMesAnterior.length : 0;
+    const ticketMTDAnterior = vendasMTDAnterior.length > 0 ? faturamentoMTDAnterior / vendasMTDAnterior.length : 0;
 
     const comprasMes = compras.filter(c => {
       const d = new Date(c.data_compra + "T00:00:00");
@@ -43,7 +52,19 @@ export function DashboardPage() {
     });
     const custosMes = comprasMes.reduce((s, c) => s + Number(c.valor_compra), 0);
     const despesasMes = despesas.filter(d => d.ativo).reduce((s, d) => s + Number(d.valor), 0);
+    const cmvPct = faturamentoMes > 0 ? ((custosMes + despesasMes) / faturamentoMes) * 100 : 0;
     const lucroMes = faturamentoMes - custosMes - despesasMes;
+    const margemLucro = faturamentoMes > 0 ? (lucroMes / faturamentoMes) * 100 : 0;
+
+    // Previous month lucro
+    const comprasAnterior = compras.filter(c => {
+      const d = new Date(c.data_compra + "T00:00:00");
+      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+      return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
+    });
+    const custosAnterior = comprasAnterior.reduce((s, c) => s + Number(c.valor_compra), 0);
+    const lucroAnterior = faturamentoAnterior - custosAnterior - despesasMes;
 
     const pedidosPendentes = pedidos.filter(p => p.status !== "entregue" && p.status !== "cancelado").length;
 
@@ -70,9 +91,12 @@ export function DashboardPage() {
     const maxRevenue = Math.max(...dailyRevenue.map(d => d.valor), 1);
 
     return {
-      faturamentoMes, faturamentoAnterior, ticketMedio, ticketAnterior,
+      faturamentoMes, faturamentoAnterior, faturamentoMTDAnterior,
+      ticketMedio, ticketAnterior, ticketMTDAnterior,
       vendasMes: vendasMes.length, vendasAnterior: vendasMesAnterior.length,
-      custosMes, despesasMes, lucroMes, pedidosPendentes,
+      vendasMTDAnterior: vendasMTDAnterior.length,
+      custosMes, despesasMes, lucroMes, lucroAnterior,
+      cmvPct, margemLucro, pedidosPendentes,
       totalClientes: clientes.length, topProdutos, dailyRevenue, maxRevenue,
     };
   }, [vendas, compras, despesas, clientes, pedidos, currentMonth, currentYear]);
