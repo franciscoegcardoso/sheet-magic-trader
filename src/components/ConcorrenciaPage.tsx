@@ -619,12 +619,12 @@ export function ConcorrenciaPage() {
                   const comparison = comparisonData.find((d) => d.produto === prod.nome);
                   const mediaConc = comparison?.mediaConc || null;
 
-                  // Suggested price: weighted blend (60% margin-ideal + 40% competitor avg)
+                  // Suggested price: weighted blend (60% selected margin + 40% competitor avg)
                   let precoSugerido: number | null = null;
-                  if (margemIdeal && mediaConc) {
-                    precoSugerido = margemIdeal * 0.6 + mediaConc * 0.4;
-                  } else if (margemIdeal) {
-                    precoSugerido = margemIdeal;
+                  if (margemSelecionada && mediaConc) {
+                    precoSugerido = margemSelecionada * 0.6 + mediaConc * 0.4;
+                  } else if (margemSelecionada) {
+                    precoSugerido = margemSelecionada;
                   } else if (mediaConc) {
                     precoSugerido = mediaConc;
                   }
