@@ -32,7 +32,8 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
   const { toast } = useToast();
   const { insumos, isLoading: isLoadingInsumos } = useInsumos();
   const isMobile = useIsMobile();
-  const [mode, setMode] = useState<"scanner" | "manual">(isMobile ? "scanner" : "manual");
+  const [mode, setMode] = useState<"scanner" | "manual">("manual");
+  const [hasInitialized, setHasInitialized] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -45,16 +46,17 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
     valorCompra: "",
   });
 
-  // On mobile, auto-trigger camera on mount
+  // On mobile, switch to scanner mode and auto-trigger camera
   useEffect(() => {
-    if (isMobile && mode === "scanner") {
-      // Small delay to let the component mount
+    if (isMobile && !hasInitialized) {
+      setMode("scanner");
+      setHasInitialized(true);
       const timer = setTimeout(() => {
         cameraInputRef.current?.click();
-      }, 300);
+      }, 400);
       return () => clearTimeout(timer);
     }
-  }, []); // only on mount
+  }, [isMobile, hasInitialized]);
 
   const handleInsumoChange = (value: string) => {
     const selectedInsumo = insumos.find((i) => i.nome === value);
