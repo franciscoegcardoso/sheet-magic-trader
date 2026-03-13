@@ -331,7 +331,7 @@ export function StockReport() {
         <TabsContent value="producao" className="space-y-3">
           {/* Production form */}
           <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-            <h3 className="font-display font-semibold text-sm text-foreground">Lançar Produto Acabado</h3>
+            <h3 className="font-display font-semibold text-sm text-foreground">Registrar o que produziu</h3>
             <div>
               <Label className="text-xs text-muted-foreground">Produto</Label>
               <Select value={produtoSelecionado} onValueChange={setProdutoSelecionado}>
