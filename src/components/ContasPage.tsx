@@ -149,10 +149,10 @@ export function ContasPage() {
         <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl p-4 space-y-3">
           <div className="flex gap-2">
             <Button type="button" variant={tipo === "pagar" ? "default" : "outline"} size="sm" onClick={() => setTipo("pagar")} className="flex-1">
-              <ArrowUpCircle className="w-4 h-4 mr-1" /> A Pagar
+              <ArrowUpCircle className="w-4 h-4 mr-1" /> Tenho que Pagar
             </Button>
             <Button type="button" variant={tipo === "receber" ? "default" : "outline"} size="sm" onClick={() => setTipo("receber")} className="flex-1">
-              <ArrowDownCircle className="w-4 h-4 mr-1" /> A Receber
+              <ArrowDownCircle className="w-4 h-4 mr-1" /> Vou Receber
             </Button>
           </div>
           <div><Label className="text-xs text-muted-foreground">Descrição *</Label>
