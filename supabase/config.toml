@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.mercado-pago]
 verify_jwt = false
+
+[functions.competitor-insights]
+verify_jwt = false
