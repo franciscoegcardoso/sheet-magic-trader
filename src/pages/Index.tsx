@@ -260,7 +260,7 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3 },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet },
-    { id: "config" as TabType, label: "Configurações", icon: FileSpreadsheet },
+    { id: "configuracoes" as TabType, label: "Configurações", icon: Settings },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen },
   ];
 
