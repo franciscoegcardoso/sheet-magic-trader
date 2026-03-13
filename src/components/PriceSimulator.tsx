@@ -263,7 +263,7 @@ export function PriceSimulator() {
 
               {/* Visual bar */}
               <div className="px-4 py-3 border-t border-border">
-                <p className="text-[10px] text-muted-foreground mb-2">Composição do preço</p>
+                <p className="text-[10px] text-muted-foreground mb-2">Para onde vai o dinheiro da venda</p>
                 <div className="flex h-6 rounded-full overflow-hidden">
                   {calc.receita > 0 && (
                     <>
