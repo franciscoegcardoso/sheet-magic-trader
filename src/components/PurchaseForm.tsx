@@ -288,7 +288,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
           <div>
             <Label htmlFor="quantidade" className="input-label">
               <Hash className="w-4 h-4 inline mr-1.5" />
-              Quantidade
+              Quanto comprou?
             </Label>
             <Input
               id="quantidade"
