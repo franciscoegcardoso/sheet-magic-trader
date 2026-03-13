@@ -156,11 +156,11 @@ export default function Index() {
 
   const sidebarGroups = [
     { key: "geral", label: "" },
-    { key: "vendas", label: "Vendas" },
-    { key: "producao", label: "Produção" },
-    { key: "financeiro", label: "Financeiro" },
-    { key: "marketing", label: "Marketing" },
-    { key: "sistema", label: "Sistema" },
+    { key: "vendas", label: "Vender" },
+    { key: "producao", label: "Produzir" },
+    { key: "financeiro", label: "Dinheiro" },
+    { key: "marketing", label: "Divulgar" },
+    { key: "sistema", label: "Ajustes" },
   ];
 
   const renderContent = () => {
