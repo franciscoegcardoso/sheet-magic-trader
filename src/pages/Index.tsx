@@ -179,6 +179,7 @@ export default function Index() {
     if (activeTab === "estoque") return <StockReport />;
     if (activeTab === "planejamento") return <SalesPlanning />;
     if (activeTab === "simulador") return <PriceSimulator />;
+    if (activeTab === "concorrencia") return <ConcorrenciaPage />;
     if (activeTab === "marketing") return <MarketingPage />;
     if (activeTab === "relatorios") return <ReportsPage />;
     if (activeTab === "despesas") return <DespesasPage />;
