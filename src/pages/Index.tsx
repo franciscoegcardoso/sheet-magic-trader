@@ -206,8 +206,9 @@ export default function Index() {
         </main>
       </div>
 
-      {/* ===== MOBILE LAYOUT (< md) ===== */}
+      {/* ===== MOBILE / TABLET LAYOUT (< md) ===== */}
       <div className="md:hidden flex flex-col min-h-screen pb-16">
+        <MobileHeader />
         <main className="flex-1 px-4 pt-4 pb-4 overflow-y-auto">
           {renderContent()}
         </main>
