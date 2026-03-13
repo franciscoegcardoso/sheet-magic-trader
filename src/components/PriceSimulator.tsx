@@ -248,7 +248,7 @@ export function PriceSimulator() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-foreground">(=) Lucro Bruto</span>
+                    <span className="text-sm font-bold text-foreground">(=) Seu lucro por unidade</span>
                     <HealthBadge level={healthLevel!} percent={calc.lucroBrutoPercent} />
                   </div>
                   <span
