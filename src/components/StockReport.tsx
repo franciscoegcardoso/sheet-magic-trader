@@ -312,7 +312,7 @@ export function StockReport() {
                     </div>
                     <div className="flex items-center justify-between mt-1 text-xs text-muted-foreground">
                       <span>
-                        Comprado: {item.totalComprado.toFixed(2)} | Consumido: {item.totalConsumido.toFixed(2)}
+                        Entrou: {item.totalComprado.toFixed(2)} | Saiu: {item.totalConsumido.toFixed(2)}
                       </span>
                       <span>
                         {item.consumoDiario > 0
