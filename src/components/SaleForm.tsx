@@ -468,7 +468,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
           <div className="md:col-span-2">
             <Label htmlFor="valorVenda" className="input-label">
               <DollarSign className="w-4 h-4 inline mr-1.5" />
-              Valor da Venda (R$)
+              Quanto cobrou? (R$)
             </Label>
             <Input
               id="valorVenda"
