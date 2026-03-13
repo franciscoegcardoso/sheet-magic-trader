@@ -253,7 +253,7 @@ export function DashboardPage() {
                 onClick={() => navigate("/concorrencia")}
                 className="flex items-center gap-1 text-xs font-medium text-red-700 dark:text-red-400 hover:underline mt-2"
               >
-                Ajustar preços na Concorrência
+                Ver sugestão de preço ideal
                 <ArrowRight className="w-3 h-3" />
               </button>
             </div>
