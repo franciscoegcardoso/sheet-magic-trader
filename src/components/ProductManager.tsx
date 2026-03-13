@@ -337,7 +337,7 @@ export function ProductManager() {
                   className="font-mono"
                 />
                 <p className="text-[10px] text-muted-foreground mt-1">
-                  Código EAN-13 do produto (13 dígitos). Prefixos 789/790 = Brasil.
+                  Digite o código de 13 dígitos que vem na embalagem do produto.
                 </p>
               </div>
             ) : (
