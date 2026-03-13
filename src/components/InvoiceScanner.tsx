@@ -311,4 +311,4 @@ export const InvoiceScanner = forwardRef<InvoiceScannerHandle, InvoiceScannerPro
       </Dialog>
     </>
   );
-}
+});
