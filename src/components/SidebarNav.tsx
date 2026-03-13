@@ -49,9 +49,9 @@ export function SidebarNav({ allTabs, sidebarGroups, activeTab, onTabChange }: S
           <img src={logo} alt="Logo" className="h-7" />
           <div>
             <h1 className="text-sm font-display font-bold text-foreground leading-tight">
-              Controle Financeiro
+              VerticeA
             </h1>
-            <p className="text-[10px] text-muted-foreground">Gestão completa</p>
+            <p className="text-[10px] text-muted-foreground">Seu negócio na mão</p>
           </div>
         </div>
       </div>
