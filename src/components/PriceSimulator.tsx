@@ -183,7 +183,7 @@ export function PriceSimulator() {
                 <p className="text-[9px] text-muted-foreground mt-0.5">Ex: MEI paga ~5%</p>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Taxas (%)</Label>
+                <Label className="text-xs text-muted-foreground">Taxas de máquina (%)</Label>
                 <Input
                   type="number"
                   step="0.1"
