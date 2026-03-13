@@ -20,6 +20,7 @@ import { CatalogoPage } from "@/components/CatalogoPage";
 import { ContasPage } from "@/components/ContasPage";
 import { DashboardPage } from "@/components/DashboardPage";
 import { NotificacoesPanel } from "@/components/NotificacoesPanel";
+import { MobileHeader } from "@/components/MobileHeader";
 import { SidebarNav } from "@/components/SidebarNav";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
