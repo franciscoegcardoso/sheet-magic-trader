@@ -280,7 +280,7 @@ export function PriceSimulator() {
                         style={{ width: `${((calc.cmv / calc.receita) * 100)}%` }}
                       >
                         <span className="text-[8px] text-destructive-foreground font-bold truncate px-1">
-                          {(calc.cmv / calc.receita) * 100 > 8 ? "CMV" : ""}
+                          {(calc.cmv / calc.receita) * 100 > 8 ? "Custo" : ""}
                         </span>
                       </div>
                       <div
