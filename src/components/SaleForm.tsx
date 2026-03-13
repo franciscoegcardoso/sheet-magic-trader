@@ -79,6 +79,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
   });
 
   const [showNewClientDialog, setShowNewClientDialog] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [newClientData, setNewClientData] = useState({ nome: "", telefone: "" });
   const [localClientes, setLocalClientes] = useState<{ nome: string; telefone: string }[]>([]);
 
