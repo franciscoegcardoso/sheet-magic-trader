@@ -195,7 +195,7 @@ export function RecipeForm() {
             />
           </div>
           <div>
-            <Label className="input-label">Unidade</Label>
+            <Label className="input-label">Medida</Label>
             <Select value={unidadeRendimento} onValueChange={setUnidadeRendimento}>
               <SelectTrigger>
                 <SelectValue />
