@@ -42,6 +42,8 @@ import {
   Store,
   CreditCard,
   LayoutDashboard,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
