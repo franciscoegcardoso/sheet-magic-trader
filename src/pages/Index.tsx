@@ -41,7 +41,7 @@ import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
   "home", "compra", "venda", "produto", "receita", "crm",
-  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "config", "docs", "configuracoes",
+  "estoque", "planejamento", "simulador", "marketing", "relatorios", "despesas", "docs", "configuracoes",
 ] as const;
 
 type TabType = (typeof VALID_TABS)[number];
