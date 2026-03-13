@@ -149,6 +149,7 @@ export default function Index() {
     { id: "contas" as TabType, label: "Contas a Pagar/Receber", icon: CreditCard, mobile: false, desktop: true, group: "financeiro" },
     { id: "planejamento" as TabType, label: "Metas de Venda", icon: Target, mobile: false, desktop: true, group: "financeiro" },
     { id: "simulador" as TabType, label: "Calculadora de Preço", icon: Calculator, mobile: false, desktop: true, group: "financeiro" },
+    { id: "concorrencia" as TabType, label: "Concorrentes", icon: Scale, mobile: false, desktop: true, group: "financeiro" },
     { id: "marketing" as TabType, label: "Divulgação", icon: Megaphone, mobile: false, desktop: true, group: "marketing" },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true, group: "sistema" },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true, group: "sistema" },
