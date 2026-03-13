@@ -323,9 +323,9 @@ export function ReportsPage() {
       <Tabs defaultValue="vendas" className="w-full">
         <TabsList className="w-full grid grid-cols-4">
           <TabsTrigger value="vendas" className="text-[10px] sm:text-xs">Vendas</TabsTrigger>
-          <TabsTrigger value="margem" className="text-[10px] sm:text-xs">Margem</TabsTrigger>
-          <TabsTrigger value="custos" className="text-[10px] sm:text-xs">Custos</TabsTrigger>
-          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Despesas</TabsTrigger>
+          <TabsTrigger value="margem" className="text-[10px] sm:text-xs">Lucro</TabsTrigger>
+          <TabsTrigger value="custos" className="text-[10px] sm:text-xs">Ingredientes</TabsTrigger>
+          <TabsTrigger value="despesas" className="text-[10px] sm:text-xs">Gastos Fixos</TabsTrigger>
         </TabsList>
 
         {/* Sales Tab */}
