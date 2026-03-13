@@ -20,6 +20,7 @@ import { CatalogoPage } from "@/components/CatalogoPage";
 import { ContasPage } from "@/components/ContasPage";
 import { DashboardPage } from "@/components/DashboardPage";
 import { NotificacoesPanel } from "@/components/NotificacoesPanel";
+import { MobileHeader } from "@/components/MobileHeader";
 import { SidebarNav } from "@/components/SidebarNav";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
@@ -205,8 +206,9 @@ export default function Index() {
         </main>
       </div>
 
-      {/* ===== MOBILE LAYOUT (< md) ===== */}
+      {/* ===== MOBILE / TABLET LAYOUT (< md) ===== */}
       <div className="md:hidden flex flex-col min-h-screen pb-16">
+        <MobileHeader />
         <main className="flex-1 px-4 pt-4 pb-4 overflow-y-auto">
           {renderContent()}
         </main>
