@@ -180,7 +180,7 @@ export function PriceSimulator() {
                   className="h-9 mt-1 text-sm"
                   placeholder="6"
                 />
-                <p className="text-[9px] text-muted-foreground mt-0.5">Simples, MEI, etc.</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Ex: MEI paga ~5%</p>
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground">Taxas (%)</Label>
