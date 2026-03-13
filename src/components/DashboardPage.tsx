@@ -111,8 +111,12 @@ export function DashboardPage() {
   }
 
   const faturamentoPct = pctChange(metrics.faturamentoMes, metrics.faturamentoAnterior);
+  const faturamentoMTDPct = pctChange(metrics.faturamentoMes, metrics.faturamentoMTDAnterior);
   const vendasPct = pctChange(metrics.vendasMes, metrics.vendasAnterior);
+  const vendasMTDPct = pctChange(metrics.vendasMes, metrics.vendasMTDAnterior);
   const ticketPct = pctChange(metrics.ticketMedio, metrics.ticketAnterior);
+  const ticketMTDPct = pctChange(metrics.ticketMedio, metrics.ticketMTDAnterior);
+  const lucroPct = pctChange(metrics.lucroMes, metrics.lucroAnterior);
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -121,17 +125,45 @@ export function DashboardPage() {
         <div>
           <h2 className="text-lg font-display font-semibold text-foreground">Dashboard</h2>
           <p className="text-sm text-muted-foreground">
-            {now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+            {now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })} · Dia {now.getDate()}
           </p>
         </div>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <KPICard title="Faturamento" value={`R$ ${metrics.faturamentoMes.toFixed(2)}`} change={faturamentoPct} icon={DollarSign} />
-        <KPICard title="Vendas" value={String(metrics.vendasMes)} change={vendasPct} icon={ShoppingBag} />
-        <KPICard title="Ticket Médio" value={`R$ ${metrics.ticketMedio.toFixed(2)}`} change={ticketPct} icon={TrendingUp} />
-        <KPICard title="Lucro Estimado" value={`R$ ${metrics.lucroMes.toFixed(2)}`} positive={metrics.lucroMes >= 0} icon={metrics.lucroMes >= 0 ? TrendingUp : TrendingDown} />
+        <KPICard
+          title="Faturamento"
+          value={`R$ ${metrics.faturamentoMes.toFixed(2)}`}
+          formula="Ticket Médio × Vendas"
+          change={faturamentoPct}
+          mtdChange={faturamentoMTDPct}
+          icon={DollarSign}
+        />
+        <KPICard
+          title="Vendas"
+          value={String(metrics.vendasMes)}
+          formula={`${metrics.vendasMes} un. no mês`}
+          change={vendasPct}
+          mtdChange={vendasMTDPct}
+          icon={ShoppingBag}
+        />
+        <KPICard
+          title="Ticket Médio"
+          value={`R$ ${metrics.ticketMedio.toFixed(2)}`}
+          formula="Faturamento ÷ Nº Vendas"
+          change={ticketPct}
+          mtdChange={ticketMTDPct}
+          icon={TrendingUp}
+        />
+        <KPICard
+          title="Lucro Estimado"
+          value={`R$ ${metrics.lucroMes.toFixed(2)}`}
+          formula={`Fat. × ${(100 - metrics.cmvPct).toFixed(0)}% margem (CMV ${metrics.cmvPct.toFixed(0)}%)`}
+          change={lucroPct}
+          positive={metrics.lucroMes >= 0}
+          icon={metrics.lucroMes >= 0 ? TrendingUp : TrendingDown}
+        />
       </div>
 
       {/* Mini stats */}
