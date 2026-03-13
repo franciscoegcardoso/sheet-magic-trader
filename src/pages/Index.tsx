@@ -129,9 +129,12 @@ export default function Index() {
 
   const allTabs = [
     { id: "home" as TabType, label: "Início", icon: Home, mobile: true, desktop: false },
+    { id: "dashboard" as TabType, label: "Dashboard", icon: LayoutDashboard, mobile: false, desktop: true },
     { id: "compra" as TabType, label: "Compra", icon: ShoppingCart, mobile: true, desktop: true },
     { id: "venda" as TabType, label: "Venda", icon: Receipt, mobile: true, desktop: true },
+    { id: "pedidos" as TabType, label: "Pedidos", icon: CalendarDays, mobile: false, desktop: true },
     { id: "produto" as TabType, label: "Produtos", icon: Package, mobile: false, desktop: true },
+    { id: "catalogo" as TabType, label: "Catálogo", icon: Store, mobile: false, desktop: true },
     { id: "receita" as TabType, label: "Receitas", icon: ChefHat, mobile: false, desktop: true },
     { id: "crm" as TabType, label: "CRM", icon: Users, mobile: false, desktop: true },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true },
@@ -140,6 +143,7 @@ export default function Index() {
     { id: "marketing" as TabType, label: "Marketing", icon: Megaphone, mobile: false, desktop: true },
     { id: "relatorios" as TabType, label: "Relatórios", icon: BarChart3, mobile: false, desktop: true },
     { id: "despesas" as TabType, label: "Despesas", icon: Wallet, mobile: false, desktop: true },
+    { id: "contas" as TabType, label: "Contas", icon: CreditCard, mobile: false, desktop: true },
     { id: "docs" as TabType, label: "Ajuda", icon: BookOpen, mobile: false, desktop: true },
     { id: "configuracoes" as TabType, label: "Configurações", icon: Settings, mobile: true, desktop: true },
   ];
@@ -149,9 +153,12 @@ export default function Index() {
 
   const renderContent = () => {
     if (activeTab === "home") return <MobileHome onNavigate={setActiveTab} />;
+    if (activeTab === "dashboard") return <DashboardPage />;
     if (activeTab === "compra") return <PurchaseForm onSubmit={handlePurchaseSubmit} />;
     if (activeTab === "venda") return <SaleForm onSubmit={handleSaleSubmit} />;
+    if (activeTab === "pedidos") return <PedidosPage />;
     if (activeTab === "produto") return <ProductManager />;
+    if (activeTab === "catalogo") return <CatalogoPage />;
     if (activeTab === "receita") return <div className="space-y-6"><RecipeForm /><RecipeList /></div>;
     if (activeTab === "crm") return <CRMPage />;
     if (activeTab === "estoque") return <StockReport />;
@@ -160,6 +167,7 @@ export default function Index() {
     if (activeTab === "marketing") return <MarketingPage />;
     if (activeTab === "relatorios") return <ReportsPage />;
     if (activeTab === "despesas") return <DespesasPage />;
+    if (activeTab === "contas") return <ContasPage />;
     if (activeTab === "docs") return <DocsPage />;
     if (activeTab === "configuracoes") return <SettingsPage />;
     return null;
