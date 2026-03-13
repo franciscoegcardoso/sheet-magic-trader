@@ -247,8 +247,8 @@ export function StockReport() {
           <Warehouse className="w-5 h-5 text-accent-foreground" />
         </div>
         <div>
-          <h2 className="text-lg font-display font-semibold text-foreground">Estoque & Pedidos</h2>
-          <p className="text-sm text-muted-foreground">Controle de estoque virtual e sugestão de pedido</p>
+          <h2 className="text-lg font-display font-semibold text-foreground">Controle de Estoque</h2>
+          <p className="text-sm text-muted-foreground">Veja o que tem disponível e o que precisa comprar</p>
         </div>
       </div>
 
