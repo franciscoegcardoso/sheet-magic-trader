@@ -287,21 +287,19 @@ export function RecipeForm() {
                     <SelectTrigger className="h-9 text-sm">
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="g">g (gramas)</SelectItem>
-                      <SelectItem value="kg">kg (quilos)</SelectItem>
-                      <SelectItem value="mg">mg (miligramas)</SelectItem>
-                      <SelectItem value="ml">ml (mililitros)</SelectItem>
-                      <SelectItem value="L">L (litros)</SelectItem>
-                      <SelectItem value="un">un (unidades)</SelectItem>
-                      <SelectItem value="m">m (metros)</SelectItem>
-                      <SelectItem value="cm">cm (centímetros)</SelectItem>
-                      <SelectItem value="colher_sopa">colher de sopa</SelectItem>
-                      <SelectItem value="colher_cha">colher de chá</SelectItem>
-                      <SelectItem value="xicara">xícara</SelectItem>
-                      <SelectItem value="fatia">fatia</SelectItem>
-                      <SelectItem value="pct">pacote</SelectItem>
-                      <SelectItem value="cx">caixa</SelectItem>
+                    <SelectContent className="max-h-[280px]">
+                      {UNIT_GROUPS.map((group) => (
+                        <div key={group.group}>
+                          <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                            {group.group}
+                          </div>
+                          {group.units.map((u) => (
+                            <SelectItem key={u.value} value={u.value}>
+                              {u.abbr} — {u.label}
+                            </SelectItem>
+                          ))}
+                        </div>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
