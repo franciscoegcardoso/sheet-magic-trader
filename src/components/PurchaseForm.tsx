@@ -350,7 +350,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
         <div>
           <Label htmlFor="valorCompra" className="input-label">
             <DollarSign className="w-4 h-4 inline mr-1.5" />
-            Valor da Compra (R$)
+            Quanto pagou? (R$)
           </Label>
           <Input
             id="valorCompra"
