@@ -260,7 +260,7 @@ export default function Index() {
 }
 
 /* ===== Mobile Home Screen ===== */
-function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
+function MobileHome({ onNavigate, userPlan }: { onNavigate: (tab: TabType) => void; userPlan: PlanId }) {
   const quickActions = [
     { id: "compra" as TabType, label: "Comprei Algo", icon: ShoppingCart, desc: "Registrar o que comprou" },
     { id: "venda" as TabType, label: "Fiz uma Venda", icon: Receipt, desc: "Registrar o que vendeu" },
@@ -317,7 +317,6 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
         <p className="text-sm text-muted-foreground mt-1">O que você quer fazer agora?</p>
       </div>
 
-
       <div className="grid grid-cols-2 gap-3">
         {quickActions.map((action) => {
           const Icon = action.icon;
@@ -347,14 +346,24 @@ function MobileHome({ onNavigate }: { onNavigate: (tab: TabType) => void }) {
           <div className="grid grid-cols-3 gap-2">
             {section.items.map((item) => {
               const Icon = item.icon;
+              const hasAccess = canAccessTab(userPlan, item.id);
               return (
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border active:bg-accent transition-colors"
+                  className={`relative flex flex-col items-center gap-1.5 p-3 rounded-xl border active:bg-accent transition-colors ${
+                    hasAccess
+                      ? "bg-card border-border"
+                      : "bg-muted/30 border-border/50"
+                  }`}
                 >
-                  <Icon className="w-5 h-5 text-primary" />
-                  <span className="text-[11px] font-medium text-foreground">{item.label}</span>
+                  <Icon className={`w-5 h-5 ${hasAccess ? "text-primary" : "text-muted-foreground/40"}`} />
+                  <span className={`text-[11px] font-medium ${hasAccess ? "text-foreground" : "text-muted-foreground/60"}`}>
+                    {item.label}
+                  </span>
+                  {!hasAccess && (
+                    <Lock className="absolute top-1.5 right-1.5 w-3 h-3 text-muted-foreground/40" />
+                  )}
                 </button>
               );
             })}
