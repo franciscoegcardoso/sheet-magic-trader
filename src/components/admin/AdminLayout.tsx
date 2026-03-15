@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 import { cn } from "@/lib/utils";
 
-export type AdminSection = "dashboard" | "usuarios" | "acessos" | "planos" | "termos";
+export type AdminSection = "dashboard" | "usuarios" | "acessos" | "planos" | "termos" | "auditoria";
 
 interface AdminLayoutProps {
   activeSection: AdminSection;
