@@ -33,6 +33,7 @@ const navItems: { id: AdminSection; label: string; icon: typeof Users; group: st
   { id: "acessos", label: "Controle de Acesso", icon: KeyRound, group: "Gestão" },
   { id: "planos", label: "Planos & Assinaturas", icon: Crown, group: "Gestão" },
   { id: "termos", label: "Termos & Política", icon: FileText, group: "Sistema" },
+  { id: "auditoria", label: "Logs de Auditoria", icon: ScrollText, group: "Sistema" },
 ];
 
 export default function AdminLayout({ activeSection, onSectionChange, onLogout, children }: AdminLayoutProps) {

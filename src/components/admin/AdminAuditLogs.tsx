@@ -59,7 +59,7 @@ export default function AdminAuditLogs() {
 
   const fetchLogs = async () => {
     setLoading(true);
-    let query = supabase
+    let query = (supabase as any)
       .from("audit_logs")
       .select("*")
       .order("created_at", { ascending: false })

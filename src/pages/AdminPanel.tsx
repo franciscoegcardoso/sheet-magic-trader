@@ -58,6 +58,7 @@ export default function AdminPanel() {
       {activeSection === "acessos" && <AdminAccess />}
       {activeSection === "planos" && <AdminPlans />}
       {activeSection === "termos" && <AdminTerms />}
+      {activeSection === "auditoria" && <AdminAuditLogs />}
     </AdminLayout>
   );
 }
