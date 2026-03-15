@@ -3,9 +3,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Mail, Lock, User } from "lucide-react";
 import { lovable } from "@/integrations/lovable/index";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 export default function Auth() {
@@ -15,6 +17,7 @@ export default function Auth() {
   const [nome, setNome] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [aceitouTermos, setAceitouTermos] = useState(false);
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
@@ -33,8 +36,22 @@ export default function Auth() {
           setLoading(false);
           return;
         }
-        const { error } = await signUp(email, password, nome);
+        if (!aceitouTermos) {
+          toast({ title: "Você precisa aceitar os Termos de Uso e Política de Privacidade", variant: "destructive" });
+          setLoading(false);
+          return;
+        }
+        const { data: signUpData, error } = await signUp(email, password, nome);
         if (error) throw error;
+        // Record terms acceptance
+        if (signUpData?.user) {
+          setTimeout(async () => {
+            await (supabase as any)
+              .from("profiles")
+              .update({ termos_aceitos_em: new Date().toISOString() })
+              .eq("user_id", signUpData.user!.id);
+          }, 2000);
+        }
         toast({
           title: "Cadastro realizado!",
           description: "Verifique seu email para confirmar a conta.",
@@ -113,7 +130,28 @@ export default function Auth() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading || googleLoading}>
+          {mode === "signup" && (
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="termos"
+                checked={aceitouTermos}
+                onCheckedChange={(checked) => setAceitouTermos(checked === true)}
+                className="mt-0.5"
+              />
+              <label htmlFor="termos" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                Li e aceito os{" "}
+                <a href="/termos" target="_blank" className="text-primary hover:underline font-medium">
+                  Termos de Uso
+                </a>{" "}
+                e a{" "}
+                <a href="/termos" target="_blank" className="text-primary hover:underline font-medium">
+                  Política de Privacidade
+                </a>
+              </label>
+            </div>
+          )}
+
+          <Button type="submit" className="w-full" disabled={loading || googleLoading || (mode === "signup" && !aceitouTermos)}>
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {mode === "login" ? "Entrar" : "Criar conta"}
           </Button>

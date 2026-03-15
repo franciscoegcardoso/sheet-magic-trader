@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS termos_aceitos_em timestamptz DEFAULT NULL;
