@@ -173,7 +173,17 @@ export default function Index() {
   ];
 
   const renderContent = () => {
-    if (activeTab === "home") return <MobileHome onNavigate={setActiveTab} />;
+    // Check plan access (home, configuracoes, docs always accessible)
+    if (activeTab !== "home" && !canAccessTab(userPlan, activeTab)) {
+      return (
+        <UpgradeGate
+          requiredPlan={getRequiredPlan(activeTab)}
+          onUpgrade={() => setActiveTab("configuracoes")}
+        />
+      );
+    }
+
+    if (activeTab === "home") return <MobileHome onNavigate={setActiveTab} userPlan={userPlan} />;
     if (activeTab === "dashboard") return <DashboardPage />;
     if (activeTab === "compra") return <PurchaseForm onSubmit={handlePurchaseSubmit} />;
     if (activeTab === "venda") return <SaleForm onSubmit={handleSaleSubmit} />;
