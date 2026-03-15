@@ -12,12 +12,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Settings,
+  ScrollText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 import { cn } from "@/lib/utils";
 
-export type AdminSection = "dashboard" | "usuarios" | "acessos" | "planos" | "termos";
+export type AdminSection = "dashboard" | "usuarios" | "acessos" | "planos" | "termos" | "auditoria";
 
 interface AdminLayoutProps {
   activeSection: AdminSection;
@@ -32,6 +33,7 @@ const navItems: { id: AdminSection; label: string; icon: typeof Users; group: st
   { id: "acessos", label: "Controle de Acesso", icon: KeyRound, group: "Gestão" },
   { id: "planos", label: "Planos & Assinaturas", icon: Crown, group: "Gestão" },
   { id: "termos", label: "Termos & Política", icon: FileText, group: "Sistema" },
+  { id: "auditoria", label: "Logs de Auditoria", icon: ScrollText, group: "Sistema" },
 ];
 
 export default function AdminLayout({ activeSection, onSectionChange, onLogout, children }: AdminLayoutProps) {

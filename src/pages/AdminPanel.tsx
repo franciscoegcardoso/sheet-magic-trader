@@ -8,6 +8,7 @@ import AdminUsers from "@/components/admin/AdminUsers";
 import AdminAccess from "@/components/admin/AdminAccess";
 import AdminPlans from "@/components/admin/AdminPlans";
 import AdminTerms from "@/components/admin/AdminTerms";
+import AdminAuditLogs from "@/components/admin/AdminAuditLogs";
 
 export default function AdminPanel() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -57,6 +58,7 @@ export default function AdminPanel() {
       {activeSection === "acessos" && <AdminAccess />}
       {activeSection === "planos" && <AdminPlans />}
       {activeSection === "termos" && <AdminTerms />}
+      {activeSection === "auditoria" && <AdminAuditLogs />}
     </AdminLayout>
   );
 }
