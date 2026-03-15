@@ -86,6 +86,8 @@ export default function Index() {
   const { toast } = useToast();
   const { addCompra } = useCompras();
   const { addVenda } = useVendas();
+  const { profile } = useAuth();
+  const userPlan: PlanId = (profile?.plano as PlanId) || "free";
   const navigate = useNavigate();
   const { tab } = useParams<{ tab?: string }>();
 
