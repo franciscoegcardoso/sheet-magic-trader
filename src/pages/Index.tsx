@@ -216,6 +216,7 @@ export default function Index() {
           sidebarGroups={sidebarGroups}
           activeTab={activeTab}
           onTabChange={setActiveTab}
+          userPlan={userPlan}
         />
 
         {/* Main content */}
