@@ -37,6 +37,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/catalogo/:userId" element={<CatalogoPublico />} />
+          <Route path="/termos" element={<TermosPage />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route
             path="/"

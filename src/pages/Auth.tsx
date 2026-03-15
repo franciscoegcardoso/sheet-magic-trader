@@ -130,7 +130,28 @@ export default function Auth() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading || googleLoading}>
+          {mode === "signup" && (
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="termos"
+                checked={aceitouTermos}
+                onCheckedChange={(checked) => setAceitouTermos(checked === true)}
+                className="mt-0.5"
+              />
+              <label htmlFor="termos" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                Li e aceito os{" "}
+                <a href="/termos" target="_blank" className="text-primary hover:underline font-medium">
+                  Termos de Uso
+                </a>{" "}
+                e a{" "}
+                <a href="/termos" target="_blank" className="text-primary hover:underline font-medium">
+                  Política de Privacidade
+                </a>
+              </label>
+            </div>
+          )}
+
+          <Button type="submit" className="w-full" disabled={loading || googleLoading || (mode === "signup" && !aceitouTermos)}>
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {mode === "login" ? "Entrar" : "Criar conta"}
           </Button>
