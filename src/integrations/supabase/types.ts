@@ -512,6 +512,7 @@ export type Database = {
           nome_empresa: string | null
           plano: Database["public"]["Enums"]["account_plan"]
           telefone: string | null
+          termos_aceitos_em: string | null
           tipo_conta: Database["public"]["Enums"]["account_type"]
           updated_at: string
           user_id: string
@@ -526,6 +527,7 @@ export type Database = {
           nome_empresa?: string | null
           plano?: Database["public"]["Enums"]["account_plan"]
           telefone?: string | null
+          termos_aceitos_em?: string | null
           tipo_conta?: Database["public"]["Enums"]["account_type"]
           updated_at?: string
           user_id: string
@@ -540,6 +542,7 @@ export type Database = {
           nome_empresa?: string | null
           plano?: Database["public"]["Enums"]["account_plan"]
           telefone?: string | null
+          termos_aceitos_em?: string | null
           tipo_conta?: Database["public"]["Enums"]["account_type"]
           updated_at?: string
           user_id?: string
