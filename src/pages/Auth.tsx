@@ -36,8 +36,22 @@ export default function Auth() {
           setLoading(false);
           return;
         }
-        const { error } = await signUp(email, password, nome);
+        if (!aceitouTermos) {
+          toast({ title: "Você precisa aceitar os Termos de Uso e Política de Privacidade", variant: "destructive" });
+          setLoading(false);
+          return;
+        }
+        const { data: signUpData, error } = await signUp(email, password, nome);
         if (error) throw error;
+        // Record terms acceptance
+        if (signUpData?.user) {
+          setTimeout(async () => {
+            await (supabase as any)
+              .from("profiles")
+              .update({ termos_aceitos_em: new Date().toISOString() })
+              .eq("user_id", signUpData.user!.id);
+          }, 2000);
+        }
         toast({
           title: "Cadastro realizado!",
           description: "Verifique seu email para confirmar a conta.",
