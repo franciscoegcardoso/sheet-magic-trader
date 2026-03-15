@@ -23,9 +23,12 @@ import { DashboardPage } from "@/components/DashboardPage";
 import { NotificacoesPanel } from "@/components/NotificacoesPanel";
 import { MobileHeader } from "@/components/MobileHeader";
 import { SidebarNav } from "@/components/SidebarNav";
+import { UpgradeGate } from "@/components/UpgradeGate";
 import { useToast } from "@/hooks/use-toast";
 import { useCompras } from "@/hooks/useCompras";
 import { useVendas } from "@/hooks/useVendas";
+import { useAuth } from "@/hooks/useAuth";
+import { canAccessTab, getRequiredPlan, type PlanId } from "@/lib/planFeatures";
 import {
   ShoppingCart,
   Scale,
@@ -46,6 +49,7 @@ import {
   Store,
   CreditCard,
   LayoutDashboard,
+  Lock,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
