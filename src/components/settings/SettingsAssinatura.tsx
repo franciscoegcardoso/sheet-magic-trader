@@ -1,55 +1,11 @@
 import { useAuth } from "@/hooks/useAuth";
-import { Crown, CheckCircle2, Sparkles } from "lucide-react";
+import { Crown, CheckCircle2, Sparkles, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { plans, PLAN_DISPLAY_NAMES, type PlanId } from "@/lib/planFeatures";
 
 export function SettingsAssinatura() {
   const { profile } = useAuth();
-  const currentPlan = profile?.plano || "free";
-
-  const plans = [
-    {
-      id: "free" as const,
-      name: "Free",
-      price: "R$ 0",
-      period: "/mês",
-      features: [
-        "Registro de compras e vendas",
-        "Até 50 produtos",
-        "Relatórios básicos",
-        "1 usuário",
-      ],
-    },
-    {
-      id: "pro" as const,
-      name: "Pro",
-      price: "R$ 49,90",
-      period: "/mês",
-      highlight: true,
-      features: [
-        "Tudo do Free +",
-        "Produtos ilimitados",
-        "Simulador de preços",
-        "Planejamento de vendas",
-        "CRM completo",
-        "Integração Google Sheets",
-        "Suporte prioritário",
-      ],
-    },
-    {
-      id: "premium" as const,
-      name: "Premium",
-      price: "R$ 99,90",
-      period: "/mês",
-      features: [
-        "Tudo do Pro +",
-        "Multi-usuários",
-        "Relatórios avançados",
-        "API de integração",
-        "Suporte dedicado",
-        "Backup automático",
-      ],
-    },
-  ];
+  const currentPlan: PlanId = (profile?.plano as PlanId) || "free";
 
   return (
     <div className="space-y-5">
@@ -59,18 +15,25 @@ export function SettingsAssinatura() {
           <h3 className="text-sm font-semibold text-foreground">Plano Atual</h3>
         </div>
         <p className="text-xs text-muted-foreground">
-          Você está no plano <strong className="text-foreground">{currentPlan === "free" ? "Free" : currentPlan === "pro" ? "Pro" : "Premium"}</strong>.
+          Você está no plano{" "}
+          <strong className="text-foreground">{PLAN_DISPLAY_NAMES[currentPlan]}</strong>.
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-3">
         {plans.map((plan) => {
           const isCurrent = currentPlan === plan.id;
+          const isDowngrade =
+            plans.findIndex((p) => p.id === currentPlan) >=
+            plans.findIndex((p) => p.id === plan.id);
+
           return (
             <div
               key={plan.id}
               className={`bg-card border rounded-xl p-5 space-y-3 ${
-                plan.highlight ? "border-primary ring-1 ring-primary/20" : "border-border"
+                plan.highlight
+                  ? "border-primary ring-1 ring-primary/20"
+                  : "border-border"
               }`}
             >
               <div className="flex items-center justify-between">
@@ -83,9 +46,12 @@ export function SettingsAssinatura() {
                       </span>
                     )}
                   </div>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{plan.tagline}</p>
                   <p className="text-lg font-bold text-foreground mt-1">
                     {plan.price}
-                    <span className="text-xs font-normal text-muted-foreground">{plan.period}</span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {plan.period}
+                    </span>
                   </p>
                 </div>
                 {isCurrent && (
@@ -97,20 +63,24 @@ export function SettingsAssinatura() {
 
               <ul className="space-y-1.5">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <li
+                    key={f}
+                    className="flex items-start gap-2 text-xs text-muted-foreground"
+                  >
                     <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
                     {f}
                   </li>
                 ))}
               </ul>
 
-              {!isCurrent && (
+              {!isCurrent && !isDowngrade && (
                 <Button
                   variant={plan.highlight ? "default" : "outline"}
                   className="w-full"
                   size="sm"
                   disabled
                 >
+                  <Lock className="w-3.5 h-3.5 mr-1" />
                   Em breve
                 </Button>
               )}

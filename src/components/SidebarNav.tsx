@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Lock } from "lucide-react";
+import { canAccessTab, type PlanId } from "@/lib/planFeatures";
 import logo from "@/assets/logo.png";
 
 interface TabItem {
@@ -21,10 +22,10 @@ interface SidebarNavProps {
   sidebarGroups: SidebarGroup[];
   activeTab: string;
   onTabChange: (id: any) => void;
+  userPlan?: PlanId;
 }
 
-export function SidebarNav({ allTabs, sidebarGroups, activeTab, onTabChange }: SidebarNavProps) {
-  // Initialize all labeled groups as expanded
+export function SidebarNav({ allTabs, sidebarGroups, activeTab, onTabChange, userPlan = "free" }: SidebarNavProps) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   const toggleGroup = (key: string) => {
@@ -42,6 +43,30 @@ export function SidebarNav({ allTabs, sidebarGroups, activeTab, onTabChange }: S
 
   const hasAnyCollapsed = sidebarGroups.some((g) => g.label && collapsed[g.key]);
 
+  const renderTabButton = (tab: TabItem) => {
+    const Icon = tab.icon;
+    const isActive = activeTab === tab.id;
+    const hasAccess = canAccessTab(userPlan, tab.id);
+
+    return (
+      <button
+        key={tab.id}
+        onClick={() => onTabChange(tab.id)}
+        className={`w-full flex items-center gap-2.5 px-4 py-2 text-[13px] font-medium transition-colors ${
+          isActive
+            ? "bg-accent text-accent-foreground border-r-2 border-primary"
+            : hasAccess
+            ? "text-muted-foreground hover:bg-muted hover:text-foreground"
+            : "text-muted-foreground/50 hover:bg-muted/50"
+        }`}
+      >
+        <Icon className="w-4 h-4 shrink-0" />
+        <span className="flex-1 text-left">{tab.label}</span>
+        {!hasAccess && <Lock className="w-3 h-3 text-muted-foreground/50 shrink-0" />}
+      </button>
+    );
+  };
+
   return (
     <aside className="w-56 lg:w-64 border-r border-border bg-card flex flex-col shrink-0">
       <div className="p-4 border-b border-border">
@@ -56,7 +81,6 @@ export function SidebarNav({ allTabs, sidebarGroups, activeTab, onTabChange }: S
         </div>
       </div>
 
-      {/* Expand/Collapse all toggle */}
       <div className="px-4 pt-2 pb-1 flex justify-end">
         <button
           onClick={hasAnyCollapsed ? expandAll : collapseAll}
@@ -74,30 +98,8 @@ export function SidebarNav({ allTabs, sidebarGroups, activeTab, onTabChange }: S
           const isCollapsed = !!collapsed[group.key];
           const hasActiveChild = groupTabs.some((t) => t.id === activeTab);
 
-          // Groups without label (like "geral") are always visible
           if (!group.label) {
-            return (
-              <div key={group.key}>
-                {groupTabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => onTabChange(tab.id)}
-                      className={`w-full flex items-center gap-2.5 px-4 py-2 text-[13px] font-medium transition-colors ${
-                        isActive
-                          ? "bg-accent text-accent-foreground border-r-2 border-primary"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      }`}
-                    >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-            );
+            return <div key={group.key}>{groupTabs.map(renderTabButton)}</div>;
           }
 
           return (
@@ -121,29 +123,9 @@ export function SidebarNav({ allTabs, sidebarGroups, activeTab, onTabChange }: S
               </button>
 
               {!isCollapsed && (
-                <div className="animate-fade-in">
-                  {groupTabs.map((tab) => {
-                    const Icon = tab.icon;
-                    const isActive = activeTab === tab.id;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => onTabChange(tab.id)}
-                        className={`w-full flex items-center gap-2.5 px-4 py-2 text-[13px] font-medium transition-colors ${
-                          isActive
-                            ? "bg-accent text-accent-foreground border-r-2 border-primary"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="w-4 h-4 shrink-0" />
-                        {tab.label}
-                      </button>
-                    );
-                  })}
-                </div>
+                <div className="animate-fade-in">{groupTabs.map(renderTabButton)}</div>
               )}
 
-              {/* Show active item badge when collapsed */}
               {isCollapsed && hasActiveChild && (
                 <div className="px-4 py-1">
                   <span className="text-[10px] text-primary font-medium">

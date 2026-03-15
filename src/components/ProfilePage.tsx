@@ -65,9 +65,9 @@ export function ProfilePage() {
   };
 
   const planLabels: Record<string, { label: string; color: string }> = {
-    free: { label: "Free", color: "bg-muted text-muted-foreground" },
-    pro: { label: "Pro", color: "bg-primary/20 text-primary" },
-    premium: { label: "Premium", color: "bg-warning/20 text-warning" },
+    free: { label: "Starter", color: "bg-muted text-muted-foreground" },
+    pro: { label: "Crescimento", color: "bg-primary/20 text-primary" },
+    premium: { label: "Professional", color: "bg-amber-500/20 text-amber-600 dark:text-amber-400" },
   };
   const plan = planLabels[profile?.plano || "free"];
 
