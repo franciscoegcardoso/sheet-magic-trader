@@ -24,6 +24,7 @@ export type Database = {
           observacoes: string | null
           telefone: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           ativo?: boolean
@@ -34,6 +35,7 @@ export type Database = {
           observacoes?: string | null
           telefone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           ativo?: boolean
@@ -44,6 +46,7 @@ export type Database = {
           observacoes?: string | null
           telefone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -55,6 +58,7 @@ export type Database = {
           insumo_nome: string
           quantidade: number
           unidade: string | null
+          user_id: string | null
           valor_compra: number
         }
         Insert: {
@@ -64,6 +68,7 @@ export type Database = {
           insumo_nome: string
           quantidade?: number
           unidade?: string | null
+          user_id?: string | null
           valor_compra?: number
         }
         Update: {
@@ -73,6 +78,7 @@ export type Database = {
           insumo_nome?: string
           quantidade?: number
           unidade?: string | null
+          user_id?: string | null
           valor_compra?: number
         }
         Relationships: []
@@ -87,6 +93,7 @@ export type Database = {
           produto_nome: string
           unidade: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           concorrente_id: string
@@ -97,6 +104,7 @@ export type Database = {
           produto_nome: string
           unidade?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           concorrente_id?: string
@@ -107,6 +115,7 @@ export type Database = {
           produto_nome?: string
           unidade?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -124,18 +133,21 @@ export type Database = {
           id: string
           nome: string
           observacoes: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           nome: string
           observacoes?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           nome?: string
           observacoes?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -151,6 +163,7 @@ export type Database = {
           status: Database["public"]["Enums"]["conta_status"]
           tipo: Database["public"]["Enums"]["conta_tipo"]
           updated_at: string
+          user_id: string | null
           valor: number
         }
         Insert: {
@@ -164,6 +177,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["conta_status"]
           tipo: Database["public"]["Enums"]["conta_tipo"]
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Update: {
@@ -177,6 +191,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["conta_status"]
           tipo?: Database["public"]["Enums"]["conta_tipo"]
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Relationships: []
@@ -189,6 +204,7 @@ export type Database = {
           descricao: string | null
           id: string
           updated_at: string
+          user_id: string | null
           valor: number
         }
         Insert: {
@@ -198,6 +214,7 @@ export type Database = {
           descricao?: string | null
           id?: string
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Update: {
@@ -207,6 +224,7 @@ export type Database = {
           descricao?: string | null
           id?: string
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Relationships: []
@@ -221,6 +239,7 @@ export type Database = {
           observacao: string | null
           quantidade_contada: number
           quantidade_sistema: number
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -231,6 +250,7 @@ export type Database = {
           observacao?: string | null
           quantidade_contada?: number
           quantidade_sistema?: number
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -241,6 +261,7 @@ export type Database = {
           observacao?: string | null
           quantidade_contada?: number
           quantidade_sistema?: number
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -258,6 +279,7 @@ export type Database = {
           quantidade: number
           status: Database["public"]["Enums"]["pedido_status"]
           updated_at: string
+          user_id: string | null
           valor: number
         }
         Insert: {
@@ -273,6 +295,7 @@ export type Database = {
           quantidade?: number
           status?: Database["public"]["Enums"]["pedido_status"]
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Update: {
@@ -288,6 +311,7 @@ export type Database = {
           quantidade?: number
           status?: Database["public"]["Enums"]["pedido_status"]
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Relationships: [
@@ -309,6 +333,7 @@ export type Database = {
           produto_id: string
           produto_nome: string
           quantidade: number
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -318,6 +343,7 @@ export type Database = {
           produto_id: string
           produto_nome: string
           quantidade?: number
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -327,6 +353,7 @@ export type Database = {
           produto_id?: string
           produto_nome?: string
           quantidade?: number
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -346,6 +373,7 @@ export type Database = {
           preco_venda: number
           produto_id: string
           tamanho: string
+          user_id: string | null
         }
         Insert: {
           ativo?: boolean
@@ -354,6 +382,7 @@ export type Database = {
           preco_venda?: number
           produto_id: string
           tamanho: string
+          user_id?: string | null
         }
         Update: {
           ativo?: boolean
@@ -362,6 +391,7 @@ export type Database = {
           preco_venda?: number
           produto_id?: string
           tamanho?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -388,6 +418,7 @@ export type Database = {
           tamanho: string | null
           unidade: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           ativo?: boolean
@@ -403,6 +434,7 @@ export type Database = {
           tamanho?: string | null
           unidade?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           ativo?: boolean
@@ -418,6 +450,7 @@ export type Database = {
           tamanho?: string | null
           unidade?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -483,6 +516,7 @@ export type Database = {
           quantidade: number
           receita_id: string
           unidade: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -492,6 +526,7 @@ export type Database = {
           quantidade?: number
           receita_id: string
           unidade?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -501,6 +536,7 @@ export type Database = {
           quantidade?: number
           receita_id?: string
           unidade?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -524,6 +560,7 @@ export type Database = {
           rendimento: number | null
           unidade_rendimento: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -536,6 +573,7 @@ export type Database = {
           rendimento?: number | null
           unidade_rendimento?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -548,6 +586,7 @@ export type Database = {
           rendimento?: number | null
           unidade_rendimento?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -589,6 +628,7 @@ export type Database = {
           produto: string
           tamanho: string | null
           telefone_cliente: string | null
+          user_id: string | null
           valor_frete: number | null
           valor_venda: number
         }
@@ -603,6 +643,7 @@ export type Database = {
           produto: string
           tamanho?: string | null
           telefone_cliente?: string | null
+          user_id?: string | null
           valor_frete?: number | null
           valor_venda?: number
         }
@@ -617,6 +658,7 @@ export type Database = {
           produto?: string
           tamanho?: string | null
           telefone_cliente?: string | null
+          user_id?: string | null
           valor_frete?: number | null
           valor_venda?: number
         }
