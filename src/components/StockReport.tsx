@@ -77,6 +77,7 @@ export function StockReport() {
   const [adjustOpen, setAdjustOpen] = useState(false);
   const [adjustProduto, setAdjustProduto] = useState<{ nome: string; deficit: number } | null>(null);
   const [adjustQtd, setAdjustQtd] = useState("");
+  const [adjustMotivo, setAdjustMotivo] = useState("");
   const [adjustObs, setAdjustObs] = useState("");
   const [savingAdjust, setSavingAdjust] = useState(false);
 
