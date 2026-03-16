@@ -21,7 +21,7 @@ import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, 
 import { useProdutos } from "@/hooks/useProdutos";
 import { useClientesDB } from "@/hooks/useClientesDB";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
-import { MercadoPagoPaymentModal } from "@/components/MercadoPagoPaymentModal";
+import { PaymentModal } from "@/components/PaymentModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const EMBALAGENS = [
