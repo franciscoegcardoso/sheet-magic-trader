@@ -388,13 +388,29 @@ export function StockReport() {
             </Button>
           </div>
 
-          {/* Stock summary */}
+          {/* Stock summary with negative stock alert */}
           {Object.keys(estoqueProdutos).length > 0 && (
             <div className="bg-card border border-border rounded-xl overflow-hidden">
               <div className="px-4 py-3 border-b border-border">
                 <h3 className="font-display font-semibold text-sm text-foreground">Produtos prontos em estoque</h3>
                 <p className="text-[11px] text-muted-foreground">Produzido − Vendido = Saldo</p>
               </div>
+              
+              {/* Alert for negative stock */}
+              {Object.entries(estoqueProdutos).some(([,saldo]) => saldo < 0) && (
+                <div className="px-4 py-3 bg-destructive/10 border-b border-destructive/20">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-medium text-destructive">Atenção: Estoque negativo detectado</p>
+                      <p className="text-[11px] text-destructive/80 mt-0.5">
+                        Os itens destacados em vermelho indicam possíveis roubos, perdas ou erro/falta de registro de produção.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div className="divide-y divide-border">
                 <div className="grid grid-cols-4 gap-2 px-4 py-2 bg-muted/50 text-[11px] font-medium text-muted-foreground">
                   <span>Produto</span>
@@ -405,12 +421,16 @@ export function StockReport() {
                 {Object.entries(estoqueProdutos).sort(([,a], [,b]) => b - a).map(([nome, saldo]) => {
                   const qtdProduzido = produzido[nome] || 0;
                   const qtdVendido = vendido[nome] || 0;
+                  const isNegative = saldo < 0;
                   return (
-                    <div key={nome} className="grid grid-cols-4 gap-2 px-4 py-3 items-center">
-                      <span className="text-sm font-medium text-foreground truncate">{nome}</span>
-                      <span className="text-sm text-right text-muted-foreground">{qtdProduzido}</span>
-                      <span className="text-sm text-right text-muted-foreground">{qtdVendido}</span>
-                      <span className={`text-sm font-bold text-right ${saldo <= 0 ? 'text-destructive' : saldo < 5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
+                    <div key={nome} className={`grid grid-cols-4 gap-2 px-4 py-3 items-center ${isNegative ? 'bg-destructive/5' : ''}`}>
+                      <div className="flex items-center gap-1.5">
+                        {isNegative && <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0" />}
+                        <span className={`text-sm font-medium truncate ${isNegative ? 'text-destructive' : 'text-foreground'}`}>{nome}</span>
+                      </div>
+                      <span className={`text-sm text-right ${isNegative ? 'text-destructive/70' : 'text-muted-foreground'}`}>{qtdProduzido}</span>
+                      <span className={`text-sm text-right ${isNegative ? 'text-destructive/70' : 'text-muted-foreground'}`}>{qtdVendido}</span>
+                      <span className={`text-sm font-bold text-right ${isNegative ? 'text-destructive' : saldo < 5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
                         {saldo}
                       </span>
                     </div>
