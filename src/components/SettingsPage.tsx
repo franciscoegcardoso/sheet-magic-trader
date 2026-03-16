@@ -170,9 +170,6 @@ export function SettingsPage() {
       </AnimatePresence>
     );
   }
-      </div>
-    );
-  }
 
   // Desktop: original tab layout
   return (
