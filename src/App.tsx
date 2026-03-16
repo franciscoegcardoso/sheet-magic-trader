@@ -40,6 +40,7 @@ const App = () => (
         <Routes>
           <Route path="/catalogo/:userId" element={<CatalogoPublico />} />
           <Route path="/termos" element={<TermosPage />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route
