@@ -8,7 +8,7 @@ export interface Venda {
   produto: string;
   tamanho: string | null;
   embalagem: string | null;
-  valor_frete: number;
+  valor_frete: number | null;
   forma_pagamento: string | null;
   valor_venda: number;
   data_venda: string;

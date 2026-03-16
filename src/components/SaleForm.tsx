@@ -18,9 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, Phone, UserPlus, ScanLine, ArrowLeft } from "lucide-react";
-import { useProducts } from "@/hooks/useProducts";
-import { useClientes } from "@/hooks/useClientes";
 import { useProdutos } from "@/hooks/useProdutos";
+import { useClientesDB } from "@/hooks/useClientesDB";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
 import { MercadoPagoPaymentModal } from "@/components/MercadoPagoPaymentModal";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -64,9 +63,8 @@ const NEW_CLIENT_VALUE = "__new_client__";
 
 export function SaleForm({ onSubmit }: SaleFormProps) {
   const { toast } = useToast();
-  const { products, isLoading: loadingProducts } = useProducts();
-  const { clientes, isLoading: loadingClientes } = useClientes();
-  const { produtos, findByBarcode } = useProdutos();
+  const { produtos, isLoading: loadingProducts, findByBarcode } = useProdutos();
+  const { clientes, isLoading: loadingClientes } = useClientesDB();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"scanner" | "manual">("manual");
   const [hasInitialized, setHasInitialized] = useState(false);
@@ -87,9 +85,9 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
   const [newClientData, setNewClientData] = useState({ nome: "", telefone: "" });
   const [localClientes, setLocalClientes] = useState<{ nome: string; telefone: string }[]>([]);
 
-  const allClientes = [...clientes, ...localClientes];
+  const allClientes = [...clientes.map(c => ({ nome: c.nome, telefone: c.telefone || "" })), ...localClientes];
 
-  const selectedProduct = products.find((p) => p.cod === formData.produto);
+  const selectedProduct = produtos.find((p) => p.id === formData.produto);
   const selectedCliente = allClientes.find((c) => c.nome === formData.cliente);
 
   const formatPhone = (value: string) => {
@@ -188,17 +186,16 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
     setShowScanner(false);
     const produto = findByBarcode(code);
     if (produto) {
-      const sheetProduct = products.find((p) => p.nome.toLowerCase() === produto.nome.toLowerCase());
       setFormData((prev) => ({
         ...prev,
-        produto: sheetProduct?.cod || produto.nome,
-        tamanho: sheetProduct?.tamanho || produto.tamanho || "",
+        produto: produto.id,
+        tamanho: produto.tamanho || "",
       }));
       toast({ title: "Produto identificado!", description: produto.nome });
     } else {
       toast({ title: "Produto não encontrado", description: `Código: ${code}`, variant: "destructive" });
     }
-  }, [findByBarcode, products, toast]);
+  }, [findByBarcode, produtos, toast]);
 
   // On mobile, auto-switch to scanner mode
   useEffect(() => {
@@ -359,7 +356,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
             <Select
               value={formData.produto}
               onValueChange={(value) => {
-                const product = products.find((p) => p.cod === value);
+                const product = produtos.find((p) => p.id === value);
                 setFormData({ 
                   ...formData, 
                   produto: value,
@@ -376,8 +373,8 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
-                  products.map((produto) => (
-                    <SelectItem key={produto.cod} value={produto.cod}>
+                  produtos.filter(p => p.ativo).map((produto) => (
+                    <SelectItem key={produto.id} value={produto.id}>
                       {produto.nome}
                     </SelectItem>
                   ))
