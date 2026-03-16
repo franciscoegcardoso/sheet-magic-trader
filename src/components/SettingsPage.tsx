@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { SettingsCadastro } from "./settings/SettingsCadastro";
 import { SettingsSeguranca } from "./settings/SettingsSeguranca";
 import { SettingsPreferencias } from "./settings/SettingsPreferencias";
@@ -7,6 +9,7 @@ import { SettingsFinanceiro } from "./settings/SettingsFinanceiro";
 import { SettingsLegal } from "./settings/SettingsLegal";
 import { SheetsConfig } from "./SheetsConfig";
 import { PaymentGatewaysConfig } from "./settings/PaymentGatewaysConfig";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Settings,
   User,
@@ -16,45 +19,133 @@ import {
   DollarSign,
   Scale,
   FileSpreadsheet,
+  ChevronRight,
+  ArrowLeft,
 } from "lucide-react";
 
 type SettingsTab = "cadastro" | "seguranca" | "preferencias" | "assinatura" | "financeiro" | "legal" | "integracoes";
 
-const tabs: { id: SettingsTab; label: string; icon: typeof User }[] = [
-  { id: "cadastro", label: "Cadastro", icon: User },
-  { id: "seguranca", label: "Segurança", icon: Shield },
-  { id: "preferencias", label: "Preferências", icon: Palette },
-  { id: "assinatura", label: "Assinatura", icon: Crown },
-  { id: "financeiro", label: "Financeiro", icon: DollarSign },
-  { id: "legal", label: "Legal", icon: Scale },
-  { id: "integracoes", label: "Integrações", icon: FileSpreadsheet },
+interface SettingsGroup {
+  label: string;
+  items: { id: SettingsTab; label: string; icon: typeof User; description: string }[];
+}
+
+const settingsGroups: SettingsGroup[] = [
+  {
+    label: "Conta",
+    items: [
+      { id: "cadastro", label: "Cadastro", icon: User, description: "Nome, email e dados pessoais" },
+      { id: "seguranca", label: "Segurança", icon: Shield, description: "Senha e autenticação" },
+      { id: "preferencias", label: "Preferências", icon: Palette, description: "Tema e personalização" },
+    ],
+  },
+  {
+    label: "Negócio",
+    items: [
+      { id: "assinatura", label: "Assinatura", icon: Crown, description: "Plano e cobrança" },
+      { id: "financeiro", label: "Financeiro", icon: DollarSign, description: "Moeda e configurações" },
+    ],
+  },
+  {
+    label: "Avançado",
+    items: [
+      { id: "legal", label: "Legal", icon: Scale, description: "Termos e privacidade" },
+      { id: "integracoes", label: "Integrações", icon: FileSpreadsheet, description: "Planilhas e pagamentos" },
+    ],
+  },
 ];
 
-export function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("cadastro");
+const allTabs = settingsGroups.flatMap((g) => g.items);
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "cadastro": return <SettingsCadastro />;
-      case "seguranca": return <SettingsSeguranca />;
-      case "preferencias": return <SettingsPreferencias />;
-      case "assinatura": return <SettingsAssinatura />;
-      case "financeiro": return <SettingsFinanceiro />;
-      case "legal": return <SettingsLegal />;
-      case "integracoes": return (
-        <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl p-5">
-            <SheetsConfig />
-          </div>
-          <PaymentGatewaysConfig />
+function SettingsContent({ tab }: { tab: SettingsTab }) {
+  switch (tab) {
+    case "cadastro": return <SettingsCadastro />;
+    case "seguranca": return <SettingsSeguranca />;
+    case "preferencias": return <SettingsPreferencias />;
+    case "assinatura": return <SettingsAssinatura />;
+    case "financeiro": return <SettingsFinanceiro />;
+    case "legal": return <SettingsLegal />;
+    case "integracoes": return (
+      <div className="space-y-6">
+        <div className="bg-card border border-border rounded-xl p-5">
+          <SheetsConfig />
         </div>
-      );
-    }
-  };
+        <PaymentGatewaysConfig />
+      </div>
+    );
+  }
+}
 
+export function SettingsPage() {
+  const [activeTab, setActiveTab] = useState<SettingsTab | null>(null);
+  const isMobile = useIsMobile();
+  const isCompact = isMobile || window.innerWidth < 1024;
+
+  // Apple-style list menu for mobile/tablet
+  if (isCompact && activeTab === null) {
+    return (
+      <div className="animate-fade-in">
+        {/* Header */}
+        <div className="px-1 pb-4">
+          <h2 className="text-2xl font-display font-bold text-foreground">Configurações</h2>
+        </div>
+
+        {/* Grouped list */}
+        <div className="space-y-6">
+          {settingsGroups.map((group) => (
+            <div key={group.label}>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1 mb-2">
+                {group.label}
+              </p>
+              <div className="rounded-xl border border-border bg-card overflow-hidden divide-y divide-border">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left hover:bg-secondary/50 active:bg-secondary transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-4 h-4 text-accent-foreground" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground">{item.label}</p>
+                        <p className="text-xs text-muted-foreground truncate">{item.description}</p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Compact with active tab → show content with back button
+  if (isCompact && activeTab !== null) {
+    const currentItem = allTabs.find((t) => t.id === activeTab)!;
+    return (
+      <div className="animate-fade-in">
+        <button
+          onClick={() => setActiveTab(null)}
+          className="flex items-center gap-1.5 text-primary text-sm font-medium mb-4 hover:opacity-80 transition-opacity"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Configurações
+        </button>
+        <h3 className="text-lg font-display font-semibold text-foreground mb-4">{currentItem.label}</h3>
+        <SettingsContent tab={activeTab} />
+      </div>
+    );
+  }
+
+  // Desktop: original tab layout
   return (
     <div className="space-y-5 animate-fade-in">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <div className="p-2.5 rounded-lg bg-accent">
           <Settings className="w-5 h-5 text-accent-foreground" />
@@ -65,10 +156,9 @@ export function SettingsPage() {
         </div>
       </div>
 
-      {/* Tab bar */}
       <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
         <div className="flex gap-1 min-w-max bg-muted p-1 rounded-xl">
-          {tabs.map((tab) => {
+          {allTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
@@ -89,8 +179,7 @@ export function SettingsPage() {
         </div>
       </div>
 
-      {/* Content */}
-      {renderContent()}
+      <SettingsContent tab={activeTab ?? "cadastro"} />
     </div>
   );
 }
