@@ -89,8 +89,27 @@ export function OnboardingFlow({ userName, onComplete }: OnboardingFlowProps) {
   const [tipoNegocio, setTipoNegocio] = useState("");
   const [tempoAtuacao, setTempoAtuacao] = useState("");
 
+  const [direction, setDirection] = useState(1);
+
   const firstName = userName?.split(" ")[0] || "Empreendedor(a)";
   const totalSteps = 4;
+
+  const variants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? 80 : -80,
+      opacity: 0,
+    }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({
+      x: dir > 0 ? -80 : 80,
+      opacity: 0,
+    }),
+  };
+
+  const goTo = (next: number) => {
+    setDirection(next > step ? 1 : -1);
+    setStep(next);
+  };
 
   const canAdvance = () => {
     if (step === 1) return nomeEmpresa.trim().length > 0 && tipoNegocio && tempoAtuacao;
