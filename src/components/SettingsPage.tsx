@@ -6,7 +6,7 @@ import { SettingsAssinatura } from "./settings/SettingsAssinatura";
 import { SettingsFinanceiro } from "./settings/SettingsFinanceiro";
 import { SettingsLegal } from "./settings/SettingsLegal";
 import { SheetsConfig } from "./SheetsConfig";
-import { MercadoPagoConfig } from "./settings/MercadoPagoConfig";
+import { PaymentGatewaysConfig } from "./settings/PaymentGatewaysConfig";
 import {
   Settings,
   User,
