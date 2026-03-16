@@ -121,17 +121,40 @@ export default function Index() {
 
   const handleSaleSubmit = async (data: SaleData) => {
     try {
+      // Resolve product name from ID
+      const selectedProduct = data.produto;
+      let produtoNome = selectedProduct;
+      try {
+        const { data: prodData } = await supabase
+          .from("produtos")
+          .select("nome")
+          .eq("id", selectedProduct)
+          .single();
+        if (prodData) produtoNome = prodData.nome;
+      } catch {}
+
+      // Resolve cliente_id if client exists in DB
+      let clienteId: string | null = null;
+      try {
+        const { data: clienteData } = await supabase
+          .from("clientes")
+          .select("id")
+          .eq("nome", data.cliente)
+          .maybeSingle();
+        if (clienteData) clienteId = clienteData.id;
+      } catch {}
+
       await addVenda({
         cliente: data.cliente,
         telefone_cliente: data.telefoneCliente,
-        produto: data.produto,
+        produto: produtoNome,
         tamanho: data.tamanho,
         embalagem: data.embalagem,
         valor_frete: Number(data.valorFrete) || 0,
         forma_pagamento: data.formaPagamento,
         valor_venda: Number(data.valorVenda),
         data_venda: new Date().toISOString().split("T")[0],
-        cliente_id: null,
+        cliente_id: clienteId,
       });
       await supabase.functions.invoke('add-venda-sheets', { body: data }).catch(() => {});
       toast({ title: "Venda registrada!", description: "Dados salvos com sucesso." });

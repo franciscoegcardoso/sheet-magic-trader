@@ -13,6 +13,7 @@ export interface Profile {
   cpf_cnpj: string | null;
   nome_empresa: string | null;
   avatar_url: string | null;
+  termos_aceitos_em: string | null;
   created_at: string;
   updated_at: string;
 }
