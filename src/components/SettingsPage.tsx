@@ -25,32 +25,41 @@ import {
 
 type SettingsTab = "cadastro" | "seguranca" | "preferencias" | "assinatura" | "financeiro" | "legal" | "integracoes";
 
+interface SettingsItem {
+  id: SettingsTab;
+  label: string;
+  icon: typeof User;
+  description: string;
+  iconBg: string;
+  iconColor: string;
+}
+
 interface SettingsGroup {
   label: string;
-  items: { id: SettingsTab; label: string; icon: typeof User; description: string }[];
+  items: SettingsItem[];
 }
 
 const settingsGroups: SettingsGroup[] = [
   {
     label: "Conta",
     items: [
-      { id: "cadastro", label: "Cadastro", icon: User, description: "Nome, email e dados pessoais" },
-      { id: "seguranca", label: "Segurança", icon: Shield, description: "Senha e autenticação" },
-      { id: "preferencias", label: "Preferências", icon: Palette, description: "Tema e personalização" },
+      { id: "cadastro", label: "Cadastro", icon: User, description: "Nome, email e dados pessoais", iconBg: "bg-blue-500", iconColor: "text-white" },
+      { id: "seguranca", label: "Segurança", icon: Shield, description: "Senha e autenticação", iconBg: "bg-blue-600", iconColor: "text-white" },
+      { id: "preferencias", label: "Preferências", icon: Palette, description: "Tema e personalização", iconBg: "bg-indigo-500", iconColor: "text-white" },
     ],
   },
   {
     label: "Negócio",
     items: [
-      { id: "assinatura", label: "Assinatura", icon: Crown, description: "Plano e cobrança" },
-      { id: "financeiro", label: "Financeiro", icon: DollarSign, description: "Moeda e configurações" },
+      { id: "assinatura", label: "Assinatura", icon: Crown, description: "Plano e cobrança", iconBg: "bg-amber-500", iconColor: "text-white" },
+      { id: "financeiro", label: "Financeiro", icon: DollarSign, description: "Moeda e configurações", iconBg: "bg-emerald-500", iconColor: "text-white" },
     ],
   },
   {
     label: "Avançado",
     items: [
-      { id: "legal", label: "Legal", icon: Scale, description: "Termos e privacidade" },
-      { id: "integracoes", label: "Integrações", icon: FileSpreadsheet, description: "Planilhas e pagamentos" },
+      { id: "legal", label: "Legal", icon: Scale, description: "Termos e privacidade", iconBg: "bg-gray-500", iconColor: "text-white" },
+      { id: "integracoes", label: "Integrações", icon: FileSpreadsheet, description: "Planilhas e pagamentos", iconBg: "bg-gray-600", iconColor: "text-white" },
     ],
   },
 ];
@@ -106,8 +115,8 @@ export function SettingsPage() {
                       onClick={() => setActiveTab(item.id)}
                       className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left hover:bg-secondary/50 active:bg-secondary transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-4 h-4 text-accent-foreground" />
+                      <div className={`w-8 h-8 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-4 h-4 ${item.iconColor}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground">{item.label}</p>
