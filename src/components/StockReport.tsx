@@ -273,7 +273,7 @@ export function StockReport() {
         produto_nome: prod.nome,
         quantidade: Number(adjustQtd),
         data_producao: new Date().toISOString().split("T")[0],
-        observacao: adjustObs || "Ajuste de estoque",
+        observacao: `Ajuste: ${adjustMotivo || "não identificado"}${adjustObs ? ` – ${adjustObs}` : ""}`,
       });
       toast({ title: "Ajuste registrado!", description: `${adjustQtd}x ${prod.nome}` });
       setAdjustOpen(false);
