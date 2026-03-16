@@ -437,6 +437,24 @@ function MobileBottomNav({
             </div>
             <span className="text-sm font-semibold text-foreground">Registrar venda</span>
           </button>
+          <button
+            onClick={() => { onTabChange("pedidos"); setFabOpen(false); }}
+            className="flex items-center gap-3 bg-card border border-border rounded-full pl-4 pr-5 py-3 shadow-xl active:scale-95 transition-transform"
+          >
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+              <CalendarDays className="w-4.5 h-4.5 text-primary" />
+            </div>
+            <span className="text-sm font-semibold text-foreground">Nova encomenda</span>
+          </button>
+          <button
+            onClick={() => { onTabChange("estoque"); setFabOpen(false); }}
+            className="flex items-center gap-3 bg-card border border-border rounded-full pl-4 pr-5 py-3 shadow-xl active:scale-95 transition-transform"
+          >
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+              <Warehouse className="w-4.5 h-4.5 text-primary" />
+            </div>
+            <span className="text-sm font-semibold text-foreground">Registrar produção</span>
+          </button>
         </div>
       )}
 
