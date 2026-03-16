@@ -73,6 +73,13 @@ export function StockReport() {
   const [obsProducao, setObsProducao] = useState("");
   const [savingProducao, setSavingProducao] = useState(false);
 
+  // Adjust stock dialog state
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [adjustProduto, setAdjustProduto] = useState<{ nome: string; deficit: number } | null>(null);
+  const [adjustQtd, setAdjustQtd] = useState("");
+  const [adjustObs, setAdjustObs] = useState("");
+  const [savingAdjust, setSavingAdjust] = useState(false);
+
   const isLoading = loadingCompras || loadingVendas || loadingReceitas || loadingProdutos || loadingProducao;
 
   // Fetch past reviews
