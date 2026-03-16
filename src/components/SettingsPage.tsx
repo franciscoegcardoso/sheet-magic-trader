@@ -115,8 +115,8 @@ export function SettingsPage() {
                       onClick={() => setActiveTab(item.id)}
                       className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left hover:bg-secondary/50 active:bg-secondary transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-4 h-4 text-accent-foreground" />
+                      <div className={`w-8 h-8 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-4 h-4 ${item.iconColor}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground">{item.label}</p>
