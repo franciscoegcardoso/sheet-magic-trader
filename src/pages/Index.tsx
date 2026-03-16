@@ -254,6 +254,15 @@ export default function Index() {
     return null;
   };
 
+  if (showOnboarding) {
+    return (
+      <OnboardingFlow
+        userName={profile.nome}
+        onComplete={handleOnboardingComplete}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {activeTab !== "docs" && <HelpButton onClick={() => setActiveTab("docs")} />}
