@@ -204,6 +204,18 @@ export default function Auth() {
             </div>
           </div>
 
+          {mode === "login" && (
+            <div className="text-right -mt-2">
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="text-xs text-primary hover:underline"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+          )}
+
           {mode === "signup" && (
             <div className="flex items-start gap-2">
               <Checkbox
