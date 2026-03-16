@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, type Easing } from "framer-motion";
 import {
   ShoppingCart, ChefHat, BarChart3, Users, Package, TrendingUp,
   Star, ArrowRight, CheckCircle2, Sparkles, Shield, Zap
