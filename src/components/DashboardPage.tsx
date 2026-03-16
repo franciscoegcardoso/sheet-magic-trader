@@ -4,6 +4,9 @@ import { useCompras } from "@/hooks/useCompras";
 import { useDespesasFixas } from "@/hooks/useDespesasFixas";
 import { useClientesDB } from "@/hooks/useClientesDB";
 import { usePedidos } from "@/hooks/usePedidos";
+import { useProdutos } from "@/hooks/useProdutos";
+import { useReceitas } from "@/hooks/useReceitas";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BarChart3, TrendingUp, TrendingDown, ShoppingBag, Users, DollarSign,
