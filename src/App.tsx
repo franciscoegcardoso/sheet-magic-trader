@@ -39,6 +39,7 @@ const App = () => (
         <Routes>
           <Route path="/catalogo/:userId" element={<CatalogoPublico />} />
           <Route path="/termos" element={<TermosPage />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route
             path="/"
