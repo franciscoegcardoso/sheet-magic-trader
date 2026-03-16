@@ -85,7 +85,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
   const [newClientData, setNewClientData] = useState({ nome: "", telefone: "" });
   const [localClientes, setLocalClientes] = useState<{ nome: string; telefone: string }[]>([]);
 
-  const allClientes = [...clientes, ...localClientes];
+  const allClientes = [...clientes.map(c => ({ nome: c.nome, telefone: c.telefone || "" })), ...localClientes];
 
   const selectedProduct = products.find((p) => p.cod === formData.produto);
   const selectedCliente = allClientes.find((c) => c.nome === formData.cliente);
