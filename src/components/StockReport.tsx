@@ -51,7 +51,7 @@ export function StockReport() {
   const { produtos, isLoading: loadingProdutos } = useProdutos();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { producoes, addProducao, deleteProducao, estoqueProdutos, isLoading: loadingProducao } = useProducao();
+  const { producoes, addProducao, deleteProducao, estoqueProdutos, produzido, vendido, isLoading: loadingProducao } = useProducao();
 
   const [diasSugestao, setDiasSugestao] = useState(30);
   const [savingReview, setSavingReview] = useState(false);
