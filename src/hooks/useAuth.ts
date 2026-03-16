@@ -14,6 +14,9 @@ export interface Profile {
   nome_empresa: string | null;
   avatar_url: string | null;
   termos_aceitos_em: string | null;
+  onboarding_completo: boolean;
+  tipo_negocio: string | null;
+  tempo_atuacao: string | null;
   created_at: string;
   updated_at: string;
 }
