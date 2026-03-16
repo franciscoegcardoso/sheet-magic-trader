@@ -188,6 +188,19 @@ export function DashboardPage() {
         </div>
       </div>
 
+      {/* Onboarding Checklist */}
+      {!checklistDismissed && (
+        <OnboardingChecklist
+          totalProdutos={produtos.length}
+          totalVendas={vendas.length}
+          totalReceitas={receitas.length}
+          onDismiss={() => {
+            setChecklistDismissed(true);
+            localStorage.setItem("rxfin_checklist_dismissed", "true");
+          }}
+        />
+      )}
+
       {/* Competitor Price Alerts */}
       {priceAlerts.length > 0 && (
         <div className="space-y-3">
