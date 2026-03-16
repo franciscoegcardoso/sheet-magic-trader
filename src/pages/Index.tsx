@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
+import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { RecipeForm } from "@/components/RecipeForm";
 import { RecipeList } from "@/components/RecipeList";
 import { ReportsPage } from "@/components/ReportsPage";
@@ -90,8 +91,27 @@ export default function Index() {
   const { toast } = useToast();
   const { addCompra } = useCompras();
   const { addVenda } = useVendas();
-  const { profile } = useAuth();
+  const { profile, updateProfile } = useAuth();
   const userPlan: PlanId = (profile?.plano as PlanId) || "free";
+  const showOnboarding = profile && !profile.onboarding_completo;
+
+  const handleOnboardingComplete = async (data: {
+    nome_empresa: string;
+    tipo_negocio: string;
+    tempo_atuacao: string;
+  }) => {
+    try {
+      await updateProfile({
+        nome_empresa: data.nome_empresa,
+        tipo_negocio: data.tipo_negocio as any,
+        tempo_atuacao: data.tempo_atuacao as any,
+        onboarding_completo: true as any,
+      });
+      toast({ title: "Bem-vindo ao RXFin! 🎉", description: "Seu espaço está pronto." });
+    } catch {
+      toast({ title: "Erro ao salvar", variant: "destructive" });
+    }
+  };
   const navigate = useNavigate();
   const { tab } = useParams<{ tab?: string }>();
 
@@ -233,6 +253,15 @@ export default function Index() {
     if (activeTab === "configuracoes") return <SettingsPage />;
     return null;
   };
+
+  if (showOnboarding) {
+    return (
+      <OnboardingFlow
+        userName={profile.nome}
+        onComplete={handleOnboardingComplete}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

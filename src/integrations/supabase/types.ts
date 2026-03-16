@@ -570,10 +570,13 @@ export type Database = {
           id: string
           nome: string
           nome_empresa: string | null
+          onboarding_completo: boolean
           plano: Database["public"]["Enums"]["account_plan"]
           telefone: string | null
+          tempo_atuacao: string | null
           termos_aceitos_em: string | null
           tipo_conta: Database["public"]["Enums"]["account_type"]
+          tipo_negocio: string | null
           updated_at: string
           user_id: string
         }
@@ -585,10 +588,13 @@ export type Database = {
           id?: string
           nome?: string
           nome_empresa?: string | null
+          onboarding_completo?: boolean
           plano?: Database["public"]["Enums"]["account_plan"]
           telefone?: string | null
+          tempo_atuacao?: string | null
           termos_aceitos_em?: string | null
           tipo_conta?: Database["public"]["Enums"]["account_type"]
+          tipo_negocio?: string | null
           updated_at?: string
           user_id: string
         }
@@ -600,10 +606,13 @@ export type Database = {
           id?: string
           nome?: string
           nome_empresa?: string | null
+          onboarding_completo?: boolean
           plano?: Database["public"]["Enums"]["account_plan"]
           telefone?: string | null
+          tempo_atuacao?: string | null
           termos_aceitos_em?: string | null
           tipo_conta?: Database["public"]["Enums"]["account_type"]
+          tipo_negocio?: string | null
           updated_at?: string
           user_id?: string
         }
