@@ -356,7 +356,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
             <Select
               value={formData.produto}
               onValueChange={(value) => {
-                const product = products.find((p) => p.cod === value);
+                const product = produtos.find((p) => p.id === value);
                 setFormData({ 
                   ...formData, 
                   produto: value,
@@ -373,8 +373,8 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 ) : (
-                  products.map((produto) => (
-                    <SelectItem key={produto.cod} value={produto.cod}>
+                  produtos.filter(p => p.ativo).map((produto) => (
+                    <SelectItem key={produto.id} value={produto.id}>
                       {produto.nome}
                     </SelectItem>
                   ))
