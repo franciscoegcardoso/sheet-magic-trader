@@ -57,7 +57,7 @@ import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
-  "home", "dashboard", "compra", "venda", "produto", "receita", "crm", "pedidos", "catalogo",
+  "home", "dashboard", "compra", "venda", "produto", "receita", "insumos", "crm", "pedidos", "catalogo",
   "estoque", "planejamento", "simulador", "concorrencia", "marketing", "relatorios", "despesas", "contas", "docs", "configuracoes",
 ] as const;
 
