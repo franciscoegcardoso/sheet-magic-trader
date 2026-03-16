@@ -4,6 +4,9 @@ import { useCompras } from "@/hooks/useCompras";
 import { useDespesasFixas } from "@/hooks/useDespesasFixas";
 import { useClientesDB } from "@/hooks/useClientesDB";
 import { usePedidos } from "@/hooks/usePedidos";
+import { useProdutos } from "@/hooks/useProdutos";
+import { useReceitas } from "@/hooks/useReceitas";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BarChart3, TrendingUp, TrendingDown, ShoppingBag, Users, DollarSign,
@@ -18,6 +21,11 @@ export function DashboardPage() {
   const { despesas } = useDespesasFixas();
   const { clientes } = useClientesDB();
   const { pedidos } = usePedidos();
+  const { produtos } = useProdutos();
+  const { receitas } = useReceitas();
+  const [checklistDismissed, setChecklistDismissed] = useState(() =>
+    localStorage.getItem("rxfin_checklist_dismissed") === "true"
+  );
 
   // Competitor price alerts
   const [priceAlerts, setPriceAlerts] = useState<{
@@ -155,11 +163,12 @@ export function DashboardPage() {
     return ((current - previous) / previous) * 100;
   };
 
+  const navigate = useNavigate();
+
   if (loadingVendas) {
     return <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
   }
 
-  const navigate = useNavigate();
   const faturamentoPct = pctChange(metrics.faturamentoMes, metrics.faturamentoAnterior);
   const faturamentoMTDPct = pctChange(metrics.faturamentoMes, metrics.faturamentoMTDAnterior);
   const vendasPct = pctChange(metrics.vendasMes, metrics.vendasAnterior);
@@ -179,6 +188,19 @@ export function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* Onboarding Checklist */}
+      {!checklistDismissed && (
+        <OnboardingChecklist
+          totalProdutos={produtos.length}
+          totalVendas={vendas.length}
+          totalReceitas={receitas.length}
+          onDismiss={() => {
+            setChecklistDismissed(true);
+            localStorage.setItem("rxfin_checklist_dismissed", "true");
+          }}
+        />
+      )}
 
       {/* Competitor Price Alerts */}
       {priceAlerts.length > 0 && (
