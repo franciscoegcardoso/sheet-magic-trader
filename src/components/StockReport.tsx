@@ -463,18 +463,19 @@ export function StockReport() {
               )}
               
               <div className="divide-y divide-border">
-                <div className="grid grid-cols-4 gap-2 px-4 py-2 bg-muted/50 text-[11px] font-medium text-muted-foreground">
+                <div className="grid grid-cols-5 gap-2 px-4 py-2 bg-muted/50 text-[11px] font-medium text-muted-foreground">
                   <span>Produto</span>
                   <span className="text-right">Produzido</span>
                   <span className="text-right">Vendido</span>
                   <span className="text-right">Saldo</span>
+                  <span className="text-right">Ação</span>
                 </div>
                 {Object.entries(estoqueProdutos).sort(([,a], [,b]) => b - a).map(([nome, saldo]) => {
                   const qtdProduzido = produzido[nome] || 0;
                   const qtdVendido = vendido[nome] || 0;
                   const isNegative = saldo < 0;
                   return (
-                    <div key={nome} className={`grid grid-cols-4 gap-2 px-4 py-3 items-center ${isNegative ? 'bg-destructive/5' : ''}`}>
+                    <div key={nome} className={`grid grid-cols-5 gap-2 px-4 py-3 items-center ${isNegative ? 'bg-destructive/5' : ''}`}>
                       <div className="flex items-center gap-1.5">
                         {isNegative && <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0" />}
                         <span className={`text-sm font-medium truncate ${isNegative ? 'text-destructive' : 'text-foreground'}`}>{nome}</span>
@@ -484,6 +485,19 @@ export function StockReport() {
                       <span className={`text-sm font-bold text-right ${isNegative ? 'text-destructive' : saldo < 5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
                         {saldo}
                       </span>
+                      <div className="flex justify-end">
+                        {isNegative && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-[10px] px-2 border-destructive/30 text-destructive hover:bg-destructive/10"
+                            onClick={() => openAdjustDialog(nome, saldo)}
+                          >
+                            <Wrench className="w-3 h-3 mr-1" />
+                            Ajustar
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
