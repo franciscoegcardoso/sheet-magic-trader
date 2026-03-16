@@ -448,7 +448,7 @@ function MobileBottomNav({
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => onTabChange(tab.id)}
                 className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition-colors ${
                   isActive ? "text-primary" : "text-muted-foreground"
                 }`}
