@@ -195,6 +195,9 @@ export function DashboardPage() {
           totalProdutos={produtos.length}
           totalVendas={vendas.length}
           totalReceitas={receitas.length}
+          totalClientes={clientes.length}
+          totalCompras={compras.length}
+          totalDespesas={despesas.length}
           onDismiss={() => {
             setChecklistDismissed(true);
             localStorage.setItem("rxfin_checklist_dismissed", "true");

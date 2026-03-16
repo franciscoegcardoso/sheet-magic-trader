@@ -1,13 +1,21 @@
 import { useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, Circle, ArrowRight, Sparkles, Package, Receipt, ChefHat, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  CheckCircle2, Circle, ArrowRight, Sparkles,
+  Package, Receipt, ChefHat, Users, ShoppingCart, Wallet, X
+} from "lucide-react";
 
-interface OnboardingChecklistProps {
+interface ChecklistCounts {
   totalProdutos: number;
   totalVendas: number;
   totalReceitas: number;
+  totalClientes: number;
+  totalCompras: number;
+  totalDespesas: number;
+}
+
+interface OnboardingChecklistProps extends ChecklistCounts {
   onDismiss: () => void;
 }
 
@@ -17,24 +25,48 @@ const TASKS = [
     label: "Cadastre seu primeiro produto",
     description: "Adicione um produto com nome e preço de venda",
     icon: Package,
-    route: "/produtos",
-    checkKey: "totalProdutos" as const,
+    route: "/produto",
+    checkKey: "totalProdutos" as keyof ChecklistCounts,
   },
   {
     id: "receita",
     label: "Crie sua primeira receita",
     description: "Monte uma receita com ingredientes e custos",
     icon: ChefHat,
-    route: "/receitas",
-    checkKey: "totalReceitas" as const,
+    route: "/receita",
+    checkKey: "totalReceitas" as keyof ChecklistCounts,
   },
   {
     id: "venda",
     label: "Registre sua primeira venda",
     description: "Anote uma venda com cliente e valor",
     icon: Receipt,
-    route: "/vendas",
-    checkKey: "totalVendas" as const,
+    route: "/venda",
+    checkKey: "totalVendas" as keyof ChecklistCounts,
+  },
+  {
+    id: "cliente",
+    label: "Cadastre seu primeiro cliente",
+    description: "Adicione um cliente com nome e contato",
+    icon: Users,
+    route: "/crm",
+    checkKey: "totalClientes" as keyof ChecklistCounts,
+  },
+  {
+    id: "compra",
+    label: "Registre sua primeira compra",
+    description: "Lance a compra de um insumo com valor e quantidade",
+    icon: ShoppingCart,
+    route: "/compra",
+    checkKey: "totalCompras" as keyof ChecklistCounts,
+  },
+  {
+    id: "despesa",
+    label: "Configure uma despesa fixa",
+    description: "Cadastre um gasto recorrente como aluguel ou energia",
+    icon: Wallet,
+    route: "/despesas",
+    checkKey: "totalDespesas" as keyof ChecklistCounts,
   },
 ];
 
@@ -42,19 +74,24 @@ export function OnboardingChecklist({
   totalProdutos,
   totalVendas,
   totalReceitas,
+  totalClientes,
+  totalCompras,
+  totalDespesas,
   onDismiss,
 }: OnboardingChecklistProps) {
   const navigate = useNavigate();
 
-  const counts = { totalProdutos, totalVendas, totalReceitas };
+  const counts: ChecklistCounts = {
+    totalProdutos, totalVendas, totalReceitas,
+    totalClientes, totalCompras, totalDespesas,
+  };
 
   const completedCount = useMemo(
     () => TASKS.filter((t) => counts[t.checkKey] > 0).length,
-    [totalProdutos, totalVendas, totalReceitas]
+    [totalProdutos, totalVendas, totalReceitas, totalClientes, totalCompras, totalDespesas]
   );
 
   const allDone = completedCount === TASKS.length;
-
   if (allDone) return null;
 
   const progress = (completedCount / TASKS.length) * 100;
@@ -109,7 +146,7 @@ export function OnboardingChecklist({
               key={task.id}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * i }}
+              transition={{ delay: 0.05 * i }}
               className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
                 done
                   ? "border-primary/20 bg-accent/50"
