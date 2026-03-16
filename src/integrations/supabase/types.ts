@@ -268,6 +268,36 @@ export type Database = {
         }
         Relationships: []
       }
+      insumos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          unidade: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          unidade?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          unidade?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       inventario_revisoes: {
         Row: {
           created_at: string
