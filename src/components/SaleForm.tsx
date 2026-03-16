@@ -87,7 +87,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
 
   const allClientes = [...clientes.map(c => ({ nome: c.nome, telefone: c.telefone || "" })), ...localClientes];
 
-  const selectedProduct = products.find((p) => p.cod === formData.produto);
+  const selectedProduct = produtos.find((p) => p.id === formData.produto);
   const selectedCliente = allClientes.find((c) => c.nome === formData.cliente);
 
   const formatPhone = (value: string) => {
