@@ -13,6 +13,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
   Loader2,
   Warehouse,
   ShoppingCart,
@@ -24,6 +32,7 @@ import {
   Factory,
   Plus,
   Trash2,
+  Wrench,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -63,6 +72,13 @@ export function StockReport() {
   const [dataProducao, setDataProducao] = useState(() => new Date().toISOString().split("T")[0]);
   const [obsProducao, setObsProducao] = useState("");
   const [savingProducao, setSavingProducao] = useState(false);
+
+  // Adjust stock dialog state
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [adjustProduto, setAdjustProduto] = useState<{ nome: string; deficit: number } | null>(null);
+  const [adjustQtd, setAdjustQtd] = useState("");
+  const [adjustObs, setAdjustObs] = useState("");
+  const [savingAdjust, setSavingAdjust] = useState(false);
 
   const isLoading = loadingCompras || loadingVendas || loadingReceitas || loadingProdutos || loadingProducao;
 
@@ -229,6 +245,41 @@ export function StockReport() {
       toast({ title: "Erro ao salvar revisão", variant: "destructive" });
     } finally {
       setSavingReview(false);
+    }
+  };
+
+  const openAdjustDialog = (nome: string, saldo: number) => {
+    const prod = produtos.find((p) => p.nome === nome);
+    if (!prod) {
+      toast({ title: "Produto não encontrado no cadastro", variant: "destructive" });
+      return;
+    }
+    setAdjustProduto({ nome, deficit: Math.abs(saldo) });
+    setAdjustQtd(String(Math.abs(saldo)));
+    setAdjustObs("Ajuste de estoque – saldo negativo corrigido");
+    setAdjustOpen(true);
+  };
+
+  const handleAdjust = async () => {
+    if (!adjustProduto) return;
+    const prod = produtos.find((p) => p.nome === adjustProduto.nome);
+    if (!prod) return;
+    setSavingAdjust(true);
+    try {
+      await addProducao({
+        produto_id: prod.id,
+        produto_nome: prod.nome,
+        quantidade: Number(adjustQtd),
+        data_producao: new Date().toISOString().split("T")[0],
+        observacao: adjustObs || "Ajuste de estoque",
+      });
+      toast({ title: "Ajuste registrado!", description: `${adjustQtd}x ${prod.nome}` });
+      setAdjustOpen(false);
+      setAdjustProduto(null);
+    } catch {
+      toast({ title: "Erro ao registrar ajuste", variant: "destructive" });
+    } finally {
+      setSavingAdjust(false);
     }
   };
 
@@ -412,18 +463,19 @@ export function StockReport() {
               )}
               
               <div className="divide-y divide-border">
-                <div className="grid grid-cols-4 gap-2 px-4 py-2 bg-muted/50 text-[11px] font-medium text-muted-foreground">
+                <div className="grid grid-cols-5 gap-2 px-4 py-2 bg-muted/50 text-[11px] font-medium text-muted-foreground">
                   <span>Produto</span>
                   <span className="text-right">Produzido</span>
                   <span className="text-right">Vendido</span>
                   <span className="text-right">Saldo</span>
+                  <span className="text-right">Ação</span>
                 </div>
                 {Object.entries(estoqueProdutos).sort(([,a], [,b]) => b - a).map(([nome, saldo]) => {
                   const qtdProduzido = produzido[nome] || 0;
                   const qtdVendido = vendido[nome] || 0;
                   const isNegative = saldo < 0;
                   return (
-                    <div key={nome} className={`grid grid-cols-4 gap-2 px-4 py-3 items-center ${isNegative ? 'bg-destructive/5' : ''}`}>
+                    <div key={nome} className={`grid grid-cols-5 gap-2 px-4 py-3 items-center ${isNegative ? 'bg-destructive/5' : ''}`}>
                       <div className="flex items-center gap-1.5">
                         {isNegative && <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0" />}
                         <span className={`text-sm font-medium truncate ${isNegative ? 'text-destructive' : 'text-foreground'}`}>{nome}</span>
@@ -433,6 +485,19 @@ export function StockReport() {
                       <span className={`text-sm font-bold text-right ${isNegative ? 'text-destructive' : saldo < 5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
                         {saldo}
                       </span>
+                      <div className="flex justify-end">
+                        {isNegative && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-[10px] px-2 border-destructive/30 text-destructive hover:bg-destructive/10"
+                            onClick={() => openAdjustDialog(nome, saldo)}
+                          >
+                            <Wrench className="w-3 h-3 mr-1" />
+                            Ajustar
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -640,6 +705,54 @@ export function StockReport() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Adjust Stock Dialog */}
+      <Dialog open={adjustOpen} onOpenChange={setAdjustOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wrench className="w-4 h-4 text-destructive" />
+              Ajuste de Estoque
+            </DialogTitle>
+            <DialogDescription>
+              Registre uma produção para corrigir o saldo negativo de <strong>{adjustProduto?.nome}</strong>.
+              Déficit atual: <strong className="text-destructive">{adjustProduto?.deficit} un</strong>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs text-muted-foreground">Quantidade a ajustar</Label>
+              <Input
+                type="number"
+                min="1"
+                value={adjustQtd}
+                onChange={(e) => setAdjustQtd(e.target.value)}
+                className="h-9"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Observação</Label>
+              <Input
+                value={adjustObs}
+                onChange={(e) => setAdjustObs(e.target.value)}
+                placeholder="Motivo do ajuste"
+                className="h-9"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setAdjustOpen(false)}>Cancelar</Button>
+            <Button
+              size="sm"
+              disabled={savingAdjust || !adjustQtd || Number(adjustQtd) <= 0}
+              onClick={handleAdjust}
+            >
+              {savingAdjust ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+              Registrar Ajuste
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
