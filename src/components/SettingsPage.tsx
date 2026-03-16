@@ -46,9 +46,7 @@ export function SettingsPage() {
           <div className="bg-card border border-border rounded-xl p-5">
             <SheetsConfig />
           </div>
-          <div className="bg-card border border-border rounded-xl p-5">
-            <MercadoPagoConfig />
-          </div>
+          <PaymentGatewaysConfig />
         </div>
       );
     }
