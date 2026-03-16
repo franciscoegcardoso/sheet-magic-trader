@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+const PAGE_SIZE = 50;
+
 export interface Compra {
   id: string;
   insumo_nome: string;
@@ -23,53 +25,75 @@ export interface CustoMedioInsumo {
 export function useCompras() {
   const [compras, setCompras] = useState<Compra[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+  const [custoMedioPorInsumo, setCustoMedioPorInsumo] = useState<CustoMedioInsumo[]>([]);
 
-  const fetchCompras = useCallback(async () => {
+  const fetchCompras = useCallback(async (reset = true) => {
     try {
       setIsLoading(true);
+      const currentPage = reset ? 0 : page;
+      const from = currentPage * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
       const { data, error } = await supabase
         .from("compras")
         .select("*")
-        .order("data_compra", { ascending: false });
+        .order("data_compra", { ascending: false })
+        .range(from, to);
 
       if (error) throw error;
-      setCompras(data || []);
+
+      if (reset) {
+        setCompras(data || []);
+        setPage(1);
+      } else {
+        setCompras((prev) => [...prev, ...(data || [])]);
+        setPage((p) => p + 1);
+      }
+      setHasMore((data?.length || 0) === PAGE_SIZE);
     } catch (err) {
       console.error("Erro ao carregar compras:", err);
     } finally {
       setIsLoading(false);
     }
+  }, [page]);
+
+  const fetchMore = useCallback(() => {
+    if (!isLoading && hasMore) fetchCompras(false);
+  }, [isLoading, hasMore, fetchCompras]);
+
+  // Server-side aggregation
+  const fetchCustoMedio = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_custo_medio_insumos");
+      if (error) throw error;
+      setCustoMedioPorInsumo(
+        (data || []).map((d: any) => ({
+          insumo_nome: d.insumo_nome,
+          total_comprado: Number(d.total_comprado),
+          total_gasto: Number(d.total_gasto),
+          custo_medio: Number(d.custo_medio),
+          ultima_compra: d.ultima_compra,
+          num_compras: Number(d.num_compras),
+        }))
+      );
+    } catch (err) {
+      console.error("Erro ao carregar custo médio:", err);
+    }
   }, []);
 
   useEffect(() => {
-    fetchCompras();
-  }, [fetchCompras]);
+    fetchCompras(true);
+    fetchCustoMedio();
+  }, []);
 
   const addCompra = async (compra: Omit<Compra, "id" | "created_at">) => {
     const { error } = await supabase.from("compras").insert(compra);
     if (error) throw error;
-    await fetchCompras();
+    await fetchCompras(true);
+    await fetchCustoMedio();
   };
 
-  const custoMedioPorInsumo: CustoMedioInsumo[] = (() => {
-    const map = new Map<string, { total_qty: number; total_val: number; ultima: string; count: number }>();
-    compras.forEach((c) => {
-      const existing = map.get(c.insumo_nome) || { total_qty: 0, total_val: 0, ultima: "", count: 0 };
-      existing.total_qty += Number(c.quantidade);
-      existing.total_val += Number(c.valor_compra);
-      existing.count += 1;
-      if (!existing.ultima || c.data_compra > existing.ultima) existing.ultima = c.data_compra;
-      map.set(c.insumo_nome, existing);
-    });
-    return Array.from(map.entries()).map(([nome, d]) => ({
-      insumo_nome: nome,
-      total_comprado: d.total_qty,
-      total_gasto: d.total_val,
-      custo_medio: d.total_qty > 0 ? d.total_val / d.total_qty : 0,
-      ultima_compra: d.ultima,
-      num_compras: d.count,
-    })).sort((a, b) => a.insumo_nome.localeCompare(b.insumo_nome));
-  })();
-
-  return { compras, isLoading, addCompra, custoMedioPorInsumo, refetch: fetchCompras };
+  return { compras, isLoading, addCompra, custoMedioPorInsumo, refetch: fetchCompras, hasMore, fetchMore };
 }
