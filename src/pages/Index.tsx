@@ -39,6 +39,7 @@ import {
   Package,
   Users,
   Warehouse,
+  Boxes,
   Home,
   Target,
   Settings,
