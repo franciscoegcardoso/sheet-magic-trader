@@ -150,6 +150,7 @@ export default function Index() {
     { id: "catalogo" as TabType, label: "Vitrine Online", icon: Store, mobile: false, desktop: true, group: "vendas" },
     { id: "produto" as TabType, label: "Meus Produtos", icon: Package, mobile: false, desktop: true, group: "producao" },
     { id: "receita" as TabType, label: "Minhas Receitas", icon: ChefHat, mobile: false, desktop: true, group: "producao" },
+    { id: "insumos" as TabType, label: "Insumos", icon: Warehouse, mobile: false, desktop: true, group: "producao" },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true, group: "producao" },
     { id: "relatorios" as TabType, label: "Resultados", icon: BarChart3, mobile: false, desktop: true, group: "financeiro" },
     { id: "despesas" as TabType, label: "Gastos Fixos", icon: Wallet, mobile: false, desktop: true, group: "financeiro" },
