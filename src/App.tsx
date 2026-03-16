@@ -27,7 +27,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user) return <Auth />;
+  if (!user) return <LandingPage />;
   return <>{children}</>;
 }
 
