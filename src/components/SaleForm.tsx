@@ -186,11 +186,10 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
     setShowScanner(false);
     const produto = findByBarcode(code);
     if (produto) {
-      const sheetProduct = products.find((p) => p.nome.toLowerCase() === produto.nome.toLowerCase());
       setFormData((prev) => ({
         ...prev,
-        produto: sheetProduct?.cod || produto.nome,
-        tamanho: sheetProduct?.tamanho || produto.tamanho || "",
+        produto: produto.id,
+        tamanho: produto.tamanho || "",
       }));
       toast({ title: "Produto identificado!", description: produto.nome });
     } else {
