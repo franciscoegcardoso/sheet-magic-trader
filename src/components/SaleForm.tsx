@@ -544,10 +544,10 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
         </DialogContent>
       </Dialog>
 
-      <MercadoPagoPaymentModal
+      <PaymentModal
         open={showPaymentModal}
         onOpenChange={setShowPaymentModal}
-        productName={formData.produto}
+        productName={selectedProduct?.nome || formData.produto}
         amount={Number(formData.valorVenda) || 0}
         clientName={formData.cliente}
       />
