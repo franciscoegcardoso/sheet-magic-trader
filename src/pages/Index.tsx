@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PurchaseForm } from "@/components/PurchaseForm";
 import { SaleForm } from "@/components/SaleForm";
