@@ -21,7 +21,7 @@ import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, 
 import { useProdutos } from "@/hooks/useProdutos";
 import { useClientesDB } from "@/hooks/useClientesDB";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
-import { MercadoPagoPaymentModal } from "@/components/MercadoPagoPaymentModal";
+import { PaymentModal } from "@/components/PaymentModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const EMBALAGENS = [
@@ -492,7 +492,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
               onClick={() => setShowPaymentModal(true)}
             >
               <CreditCard className="w-4 h-4" />
-              <span className="hidden sm:inline ml-1">Mercado Pago</span>
+              <span className="hidden sm:inline ml-1">Cobrar</span>
             </Button>
           </div>
         </div>
@@ -544,10 +544,10 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
         </DialogContent>
       </Dialog>
 
-      <MercadoPagoPaymentModal
+      <PaymentModal
         open={showPaymentModal}
         onOpenChange={setShowPaymentModal}
-        productName={formData.produto}
+        productName={selectedProduct?.nome || formData.produto}
         amount={Number(formData.valorVenda) || 0}
         clientName={formData.cliente}
       />

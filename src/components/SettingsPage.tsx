@@ -6,7 +6,7 @@ import { SettingsAssinatura } from "./settings/SettingsAssinatura";
 import { SettingsFinanceiro } from "./settings/SettingsFinanceiro";
 import { SettingsLegal } from "./settings/SettingsLegal";
 import { SheetsConfig } from "./SheetsConfig";
-import { MercadoPagoConfig } from "./settings/MercadoPagoConfig";
+import { PaymentGatewaysConfig } from "./settings/PaymentGatewaysConfig";
 import {
   Settings,
   User,
@@ -46,9 +46,7 @@ export function SettingsPage() {
           <div className="bg-card border border-border rounded-xl p-5">
             <SheetsConfig />
           </div>
-          <div className="bg-card border border-border rounded-xl p-5">
-            <MercadoPagoConfig />
-          </div>
+          <PaymentGatewaysConfig />
         </div>
       );
     }

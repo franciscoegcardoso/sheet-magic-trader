@@ -334,6 +334,36 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_gateways: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          credenciais: Json
+          gateway: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          credenciais?: Json
+          gateway: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          credenciais?: Json
+          gateway?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pedidos: {
         Row: {
           cliente_id: string | null
