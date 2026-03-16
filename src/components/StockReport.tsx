@@ -248,6 +248,41 @@ export function StockReport() {
     }
   };
 
+  const openAdjustDialog = (nome: string, saldo: number) => {
+    const prod = produtos.find((p) => p.nome === nome);
+    if (!prod) {
+      toast({ title: "Produto não encontrado no cadastro", variant: "destructive" });
+      return;
+    }
+    setAdjustProduto({ nome, deficit: Math.abs(saldo) });
+    setAdjustQtd(String(Math.abs(saldo)));
+    setAdjustObs("Ajuste de estoque – saldo negativo corrigido");
+    setAdjustOpen(true);
+  };
+
+  const handleAdjust = async () => {
+    if (!adjustProduto) return;
+    const prod = produtos.find((p) => p.nome === adjustProduto.nome);
+    if (!prod) return;
+    setSavingAdjust(true);
+    try {
+      await addProducao({
+        produto_id: prod.id,
+        produto_nome: prod.nome,
+        quantidade: Number(adjustQtd),
+        data_producao: new Date().toISOString().split("T")[0],
+        observacao: adjustObs || "Ajuste de estoque",
+      });
+      toast({ title: "Ajuste registrado!", description: `${adjustQtd}x ${prod.nome}` });
+      setAdjustOpen(false);
+      setAdjustProduto(null);
+    } catch {
+      toast({ title: "Erro ao registrar ajuste", variant: "destructive" });
+    } finally {
+      setSavingAdjust(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
