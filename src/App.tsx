@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import AdminPanel from "./pages/AdminPanel";
 import CatalogoPublico from "./pages/CatalogoPublico";
 import TermosPage from "./pages/TermosPage";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
