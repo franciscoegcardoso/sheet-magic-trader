@@ -21,6 +21,11 @@ export function DashboardPage() {
   const { despesas } = useDespesasFixas();
   const { clientes } = useClientesDB();
   const { pedidos } = usePedidos();
+  const { produtos } = useProdutos();
+  const { receitas } = useReceitas();
+  const [checklistDismissed, setChecklistDismissed] = useState(() =>
+    localStorage.getItem("rxfin_checklist_dismissed") === "true"
+  );
 
   // Competitor price alerts
   const [priceAlerts, setPriceAlerts] = useState<{
