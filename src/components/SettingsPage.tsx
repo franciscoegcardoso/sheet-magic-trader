@@ -87,68 +87,87 @@ function SettingsContent({ tab }: { tab: SettingsTab }) {
 
 export function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab | null>(null);
+  const [direction, setDirection] = useState<"forward" | "back">("forward");
   const isMobile = useIsMobile();
   const isCompact = isMobile || window.innerWidth < 1024;
 
-  // Apple-style list menu for mobile/tablet
-  if (isCompact && activeTab === null) {
-    return (
-      <div className="animate-fade-in">
-        {/* Header */}
-        <div className="px-1 pb-4">
-          <h2 className="text-2xl font-display font-bold text-foreground">Configurações</h2>
-        </div>
+  const goTo = (tab: SettingsTab) => {
+    setDirection("forward");
+    setActiveTab(tab);
+  };
 
-        {/* Grouped list */}
-        <div className="space-y-6">
-          {settingsGroups.map((group) => (
-            <div key={group.label}>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1 mb-2">
-                {group.label}
-              </p>
-              <div className="rounded-xl border border-border bg-card overflow-hidden divide-y divide-border">
-                {group.items.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveTab(item.id)}
-                      className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left hover:bg-secondary/50 active:bg-secondary transition-colors"
-                    >
-                      <div className={`w-8 h-8 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className={`w-4 h-4 ${item.iconColor}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground">{item.label}</p>
-                        <p className="text-xs text-muted-foreground truncate">{item.description}</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                    </button>
-                  );
-                })}
-              </div>
+  const goBack = () => {
+    setDirection("back");
+    setActiveTab(null);
+  };
+
+  if (isCompact) {
+    return (
+      <AnimatePresence mode="wait" initial={false}>
+        {activeTab === null ? (
+          <motion.div
+            key="menu"
+            initial={{ x: direction === "back" ? -60 : 0, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -60, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <div className="px-1 pb-4">
+              <h2 className="text-2xl font-display font-bold text-foreground">Configurações</h2>
             </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // Compact with active tab → show content with back button
-  if (isCompact && activeTab !== null) {
-    const currentItem = allTabs.find((t) => t.id === activeTab)!;
-    return (
-      <div className="animate-fade-in">
-        <button
-          onClick={() => setActiveTab(null)}
-          className="flex items-center gap-1.5 text-primary text-sm font-medium mb-4 hover:opacity-80 transition-opacity"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Configurações
-        </button>
-        <h3 className="text-lg font-display font-semibold text-foreground mb-4">{currentItem.label}</h3>
-        <SettingsContent tab={activeTab} />
-      </div>
+            <div className="space-y-6">
+              {settingsGroups.map((group) => (
+                <div key={group.label}>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1 mb-2">
+                    {group.label}
+                  </p>
+                  <div className="rounded-xl border border-border bg-card overflow-hidden divide-y divide-border">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => goTo(item.id)}
+                          className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left hover:bg-secondary/50 active:bg-secondary transition-colors"
+                        >
+                          <div className={`w-8 h-8 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}>
+                            <Icon className={`w-4 h-4 ${item.iconColor}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground">{item.label}</p>
+                            <p className="text-xs text-muted-foreground truncate">{item.description}</p>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key={activeTab}
+            initial={{ x: 60, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 60, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <button
+              onClick={goBack}
+              className="flex items-center gap-1.5 text-primary text-sm font-medium mb-4 hover:opacity-80 transition-opacity"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Configurações
+            </button>
+            <h3 className="text-lg font-display font-semibold text-foreground mb-4">
+              {allTabs.find((t) => t.id === activeTab)!.label}
+            </h3>
+            <SettingsContent tab={activeTab} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   }
 
