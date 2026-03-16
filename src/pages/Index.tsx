@@ -388,3 +388,109 @@ function MobileHome({ onNavigate, userPlan }: { onNavigate: (tab: TabType) => vo
     </div>
   );
 }
+
+/* ===== Mobile Bottom Navigation with FAB ===== */
+function MobileBottomNav({
+  tabs,
+  activeTab,
+  onTabChange,
+}: {
+  tabs: { id: TabType; label: string; icon: any }[];
+  activeTab: TabType;
+  onTabChange: (t: TabType) => void;
+}) {
+  const [fabOpen, setFabOpen] = useState(false);
+
+  // Split tabs: first half, FAB, second half
+  const midIdx = Math.floor(tabs.length / 2);
+  const leftTabs = tabs.slice(0, midIdx);
+  const rightTabs = tabs.slice(midIdx);
+
+  return (
+    <>
+      {/* Backdrop */}
+      {fabOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 animate-in fade-in-0 duration-200"
+          onClick={() => setFabOpen(false)}
+        />
+      )}
+
+      {/* FAB quick actions */}
+      {fabOpen && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 animate-in slide-in-from-bottom-4 fade-in-0 duration-200">
+          <button
+            onClick={() => { onTabChange("compra"); setFabOpen(false); }}
+            className="flex items-center gap-3 bg-card border border-border rounded-full pl-4 pr-5 py-3 shadow-xl active:scale-95 transition-transform"
+          >
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+              <ShoppingCart className="w-4.5 h-4.5 text-primary" />
+            </div>
+            <span className="text-sm font-semibold text-foreground">Registrar compra</span>
+          </button>
+          <button
+            onClick={() => { onTabChange("venda"); setFabOpen(false); }}
+            className="flex items-center gap-3 bg-card border border-border rounded-full pl-4 pr-5 py-3 shadow-xl active:scale-95 transition-transform"
+          >
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+              <Receipt className="w-4.5 h-4.5 text-primary" />
+            </div>
+            <span className="text-sm font-semibold text-foreground">Registrar venda</span>
+          </button>
+        </div>
+      )}
+
+      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 safe-area-bottom">
+        <div className="flex items-stretch">
+          {leftTabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition-colors ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
+                <span className="text-[10px] font-medium">{tab.label}</span>
+              </button>
+            );
+          })}
+
+          {/* FAB center button */}
+          <div className="flex items-center justify-center px-1">
+            <button
+              onClick={() => setFabOpen((prev) => !prev)}
+              className={`w-12 h-12 -mt-5 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
+                fabOpen
+                  ? "bg-muted text-muted-foreground rotate-45"
+                  : "bg-primary text-primary-foreground"
+              }`}
+            >
+              <Plus className="w-6 h-6" />
+            </button>
+          </div>
+
+          {rightTabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => onTabChange(tab.id)}
+                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition-colors ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
+                <span className="text-[10px] font-medium">{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+    </>
+  );
+}
