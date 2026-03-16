@@ -705,6 +705,54 @@ export function StockReport() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Adjust Stock Dialog */}
+      <Dialog open={adjustOpen} onOpenChange={setAdjustOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wrench className="w-4 h-4 text-destructive" />
+              Ajuste de Estoque
+            </DialogTitle>
+            <DialogDescription>
+              Registre uma produção para corrigir o saldo negativo de <strong>{adjustProduto?.nome}</strong>.
+              Déficit atual: <strong className="text-destructive">{adjustProduto?.deficit} un</strong>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs text-muted-foreground">Quantidade a ajustar</Label>
+              <Input
+                type="number"
+                min="1"
+                value={adjustQtd}
+                onChange={(e) => setAdjustQtd(e.target.value)}
+                className="h-9"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Observação</Label>
+              <Input
+                value={adjustObs}
+                onChange={(e) => setAdjustObs(e.target.value)}
+                placeholder="Motivo do ajuste"
+                className="h-9"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setAdjustOpen(false)}>Cancelar</Button>
+            <Button
+              size="sm"
+              disabled={savingAdjust || !adjustQtd || Number(adjustQtd) <= 0}
+              onClick={handleAdjust}
+            >
+              {savingAdjust ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+              Registrar Ajuste
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
