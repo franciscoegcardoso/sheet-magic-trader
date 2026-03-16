@@ -18,9 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Receipt, User, Package, Truck, CreditCard, DollarSign, Loader2, Ruler, Phone, UserPlus, ScanLine, ArrowLeft } from "lucide-react";
-import { useProducts } from "@/hooks/useProducts";
-import { useClientes } from "@/hooks/useClientes";
 import { useProdutos } from "@/hooks/useProdutos";
+import { useClientesDB } from "@/hooks/useClientesDB";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
 import { MercadoPagoPaymentModal } from "@/components/MercadoPagoPaymentModal";
 import { useIsMobile } from "@/hooks/use-mobile";
