@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 export default function Auth() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nome, setNome] = useState("");
@@ -20,6 +20,30 @@ export default function Auth() {
   const [aceitouTermos, setAceitouTermos] = useState(false);
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast({
+        title: "Email enviado!",
+        description: "Verifique sua caixa de entrada para redefinir sua senha.",
+      });
+      setMode("login");
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Algo deu errado",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +91,56 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  if (mode === "forgot") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="w-full max-w-sm space-y-6 animate-fade-in">
+          <div className="text-center">
+            <img src={logo} alt="Logo" className="h-10 mx-auto mb-3" />
+            <h1 className="text-xl font-display font-bold text-foreground">
+              Recuperar senha
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Enviaremos um link para redefinir sua senha
+            </p>
+          </div>
+
+          <form onSubmit={handleForgotPassword} className="bg-card border border-border rounded-xl p-5 space-y-4">
+            <div>
+              <Label className="text-xs text-muted-foreground">Email</Label>
+              <div className="relative mt-1">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  className="pl-9"
+                  required
+                />
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              Enviar link de recuperação
+            </Button>
+          </form>
+
+          <p className="text-center text-sm text-muted-foreground">
+            Lembrou a senha?{" "}
+            <button
+              onClick={() => setMode("login")}
+              className="text-primary font-medium hover:underline"
+            >
+              Fazer login
+            </button>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
@@ -129,6 +203,18 @@ export default function Auth() {
               />
             </div>
           </div>
+
+          {mode === "login" && (
+            <div className="text-right -mt-2">
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="text-xs text-primary hover:underline"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+          )}
 
           {mode === "signup" && (
             <div className="flex items-start gap-2">
