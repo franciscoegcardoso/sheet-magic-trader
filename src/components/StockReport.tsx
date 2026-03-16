@@ -257,7 +257,8 @@ export function StockReport() {
     }
     setAdjustProduto({ nome, deficit: Math.abs(saldo) });
     setAdjustQtd(String(Math.abs(saldo)));
-    setAdjustObs("Ajuste de estoque – saldo negativo corrigido");
+    setAdjustMotivo("");
+    setAdjustObs("");
     setAdjustOpen(true);
   };
 
