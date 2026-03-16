@@ -194,6 +194,7 @@ export default function Index() {
     if (activeTab === "catalogo") return <CatalogoPage />;
     if (activeTab === "receita") return <div className="space-y-6"><RecipeForm /><RecipeList /></div>;
     if (activeTab === "crm") return <CRMPage />;
+    if (activeTab === "insumos") return <InsumoManager />;
     if (activeTab === "estoque") return <StockReport />;
     if (activeTab === "planejamento") return <SalesPlanning />;
     if (activeTab === "simulador") return <PriceSimulator />;
