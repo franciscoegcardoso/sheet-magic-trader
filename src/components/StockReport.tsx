@@ -51,7 +51,7 @@ export function StockReport() {
   const { produtos, isLoading: loadingProdutos } = useProdutos();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { producoes, addProducao, deleteProducao, estoqueProdutos, isLoading: loadingProducao } = useProducao();
+  const { producoes, addProducao, deleteProducao, estoqueProdutos, produzido, vendido, isLoading: loadingProducao } = useProducao();
 
   const [diasSugestao, setDiasSugestao] = useState(30);
   const [savingReview, setSavingReview] = useState(false);
@@ -393,14 +393,29 @@ export function StockReport() {
             <div className="bg-card border border-border rounded-xl overflow-hidden">
               <div className="px-4 py-3 border-b border-border">
                 <h3 className="font-display font-semibold text-sm text-foreground">Produtos prontos em estoque</h3>
+                <p className="text-[11px] text-muted-foreground">Produzido − Vendido = Saldo</p>
               </div>
               <div className="divide-y divide-border">
-                {Object.entries(estoqueProdutos).sort(([,a], [,b]) => b - a).map(([nome, qtd]) => (
-                  <div key={nome} className="flex items-center justify-between px-4 py-3">
-                    <span className="text-sm font-medium text-foreground">{nome}</span>
-                    <span className="text-sm font-bold text-primary">{qtd} un</span>
-                  </div>
-                ))}
+                <div className="grid grid-cols-4 gap-2 px-4 py-2 bg-muted/50 text-[11px] font-medium text-muted-foreground">
+                  <span>Produto</span>
+                  <span className="text-right">Produzido</span>
+                  <span className="text-right">Vendido</span>
+                  <span className="text-right">Saldo</span>
+                </div>
+                {Object.entries(estoqueProdutos).sort(([,a], [,b]) => b - a).map(([nome, saldo]) => {
+                  const qtdProduzido = produzido[nome] || 0;
+                  const qtdVendido = vendido[nome] || 0;
+                  return (
+                    <div key={nome} className="grid grid-cols-4 gap-2 px-4 py-3 items-center">
+                      <span className="text-sm font-medium text-foreground truncate">{nome}</span>
+                      <span className="text-sm text-right text-muted-foreground">{qtdProduzido}</span>
+                      <span className="text-sm text-right text-muted-foreground">{qtdVendido}</span>
+                      <span className={`text-sm font-bold text-right ${saldo <= 0 ? 'text-destructive' : saldo < 5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
+                        {saldo}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
