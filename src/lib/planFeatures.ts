@@ -15,7 +15,7 @@ export interface PlanConfig {
 
 // Which tabs each plan can access
 const STARTER_TABS = [
-  "home", "compra", "venda", "configuracoes", "docs",
+  "home", "compra", "venda", "insumos", "configuracoes", "docs",
 ] as const;
 
 const CRESCIMENTO_TABS = [

@@ -10,6 +10,7 @@ import { ProductManager } from "@/components/ProductManager";
 import { CRMPage } from "@/components/CRMPage";
 import { ConcorrenciaPage } from "@/components/ConcorrenciaPage";
 import { StockReport } from "@/components/StockReport";
+import { InsumoManager } from "@/components/InsumoManager";
 import { SalesPlanning } from "@/components/SalesPlanning";
 import { DocsPage } from "@/components/DocsPage";
 import { PriceSimulator } from "@/components/PriceSimulator";
@@ -38,6 +39,7 @@ import {
   Package,
   Users,
   Warehouse,
+  Boxes,
   Home,
   Target,
   Settings,
@@ -57,7 +59,7 @@ import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
 const VALID_TABS = [
-  "home", "dashboard", "compra", "venda", "produto", "receita", "crm", "pedidos", "catalogo",
+  "home", "dashboard", "compra", "venda", "produto", "receita", "insumos", "crm", "pedidos", "catalogo",
   "estoque", "planejamento", "simulador", "concorrencia", "marketing", "relatorios", "despesas", "contas", "docs", "configuracoes",
 ] as const;
 
@@ -149,6 +151,7 @@ export default function Index() {
     { id: "catalogo" as TabType, label: "Vitrine Online", icon: Store, mobile: false, desktop: true, group: "vendas" },
     { id: "produto" as TabType, label: "Meus Produtos", icon: Package, mobile: false, desktop: true, group: "producao" },
     { id: "receita" as TabType, label: "Minhas Receitas", icon: ChefHat, mobile: false, desktop: true, group: "producao" },
+    { id: "insumos" as TabType, label: "Insumos", icon: Boxes, mobile: false, desktop: true, group: "producao" },
     { id: "estoque" as TabType, label: "Estoque", icon: Warehouse, mobile: false, desktop: true, group: "producao" },
     { id: "relatorios" as TabType, label: "Resultados", icon: BarChart3, mobile: false, desktop: true, group: "financeiro" },
     { id: "despesas" as TabType, label: "Gastos Fixos", icon: Wallet, mobile: false, desktop: true, group: "financeiro" },
@@ -192,6 +195,7 @@ export default function Index() {
     if (activeTab === "catalogo") return <CatalogoPage />;
     if (activeTab === "receita") return <div className="space-y-6"><RecipeForm /><RecipeList /></div>;
     if (activeTab === "crm") return <CRMPage />;
+    if (activeTab === "insumos") return <InsumoManager />;
     if (activeTab === "estoque") return <StockReport />;
     if (activeTab === "planejamento") return <SalesPlanning />;
     if (activeTab === "simulador") return <PriceSimulator />;
@@ -286,6 +290,7 @@ function MobileHome({ onNavigate, userPlan }: { onNavigate: (tab: TabType) => vo
       items: [
         { id: "produto" as TabType, label: "Meus Produtos", icon: Package },
         { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
+        { id: "insumos" as TabType, label: "Insumos", icon: Boxes },
         { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
       ],
     },
