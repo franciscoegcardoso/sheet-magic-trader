@@ -195,7 +195,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
     } else {
       toast({ title: "Produto não encontrado", description: `Código: ${code}`, variant: "destructive" });
     }
-  }, [findByBarcode, products, toast]);
+  }, [findByBarcode, produtos, toast]);
 
   // On mobile, auto-switch to scanner mode
   useEffect(() => {
