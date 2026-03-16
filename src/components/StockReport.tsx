@@ -77,6 +77,7 @@ export function StockReport() {
   const [adjustOpen, setAdjustOpen] = useState(false);
   const [adjustProduto, setAdjustProduto] = useState<{ nome: string; deficit: number } | null>(null);
   const [adjustQtd, setAdjustQtd] = useState("");
+  const [adjustMotivo, setAdjustMotivo] = useState("");
   const [adjustObs, setAdjustObs] = useState("");
   const [savingAdjust, setSavingAdjust] = useState(false);
 
@@ -256,7 +257,8 @@ export function StockReport() {
     }
     setAdjustProduto({ nome, deficit: Math.abs(saldo) });
     setAdjustQtd(String(Math.abs(saldo)));
-    setAdjustObs("Ajuste de estoque – saldo negativo corrigido");
+    setAdjustMotivo("");
+    setAdjustObs("");
     setAdjustOpen(true);
   };
 
@@ -271,7 +273,7 @@ export function StockReport() {
         produto_nome: prod.nome,
         quantidade: Number(adjustQtd),
         data_producao: new Date().toISOString().split("T")[0],
-        observacao: adjustObs || "Ajuste de estoque",
+        observacao: `Ajuste: ${adjustMotivo || "não identificado"}${adjustObs ? ` – ${adjustObs}` : ""}`,
       });
       toast({ title: "Ajuste registrado!", description: `${adjustQtd}x ${prod.nome}` });
       setAdjustOpen(false);
@@ -721,6 +723,21 @@ export function StockReport() {
           </DialogHeader>
           <div className="space-y-3">
             <div>
+              <Label className="text-xs text-muted-foreground">Motivo do ajuste</Label>
+              <Select value={adjustMotivo} onValueChange={setAdjustMotivo}>
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Selecione o motivo..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="perda">Perda</SelectItem>
+                  <SelectItem value="roubo">Roubo</SelectItem>
+                  <SelectItem value="erro_registro">Erro de registro</SelectItem>
+                  <SelectItem value="doacao">Doação</SelectItem>
+                  <SelectItem value="nao_identificado">Não identificado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label className="text-xs text-muted-foreground">Quantidade a ajustar</Label>
               <Input
                 type="number"
@@ -731,11 +748,11 @@ export function StockReport() {
               />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">Observação</Label>
+              <Label className="text-xs text-muted-foreground">Observação adicional (opcional)</Label>
               <Input
                 value={adjustObs}
                 onChange={(e) => setAdjustObs(e.target.value)}
-                placeholder="Motivo do ajuste"
+                placeholder="Detalhes extras..."
                 className="h-9"
               />
             </div>
