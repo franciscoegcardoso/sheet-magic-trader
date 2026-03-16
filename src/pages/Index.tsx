@@ -290,6 +290,7 @@ function MobileHome({ onNavigate, userPlan }: { onNavigate: (tab: TabType) => vo
       items: [
         { id: "produto" as TabType, label: "Meus Produtos", icon: Package },
         { id: "receita" as TabType, label: "Receitas", icon: ChefHat },
+        { id: "insumos" as TabType, label: "Insumos", icon: Boxes },
         { id: "estoque" as TabType, label: "Estoque", icon: Warehouse },
       ],
     },
