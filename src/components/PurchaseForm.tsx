@@ -275,7 +275,7 @@ export function PurchaseForm({ onSubmit }: PurchaseFormProps) {
               </SelectTrigger>
               <SelectContent>
                 {insumos.map((insumo) => (
-                  <SelectItem key={insumo.codigo} value={insumo.nome}>
+                  <SelectItem key={insumo.id} value={insumo.nome}>
                     {insumo.nome}
                   </SelectItem>
                 ))}

@@ -258,7 +258,7 @@ export function RecipeForm() {
                       </SelectTrigger>
                       <SelectContent>
                         {insumos.map((i) => (
-                          <SelectItem key={i.codigo} value={i.nome}>
+                          <SelectItem key={i.id} value={i.nome}>
                             {i.nome}
                           </SelectItem>
                         ))}

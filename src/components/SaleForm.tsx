@@ -63,9 +63,8 @@ const NEW_CLIENT_VALUE = "__new_client__";
 
 export function SaleForm({ onSubmit }: SaleFormProps) {
   const { toast } = useToast();
-  const { products, isLoading: loadingProducts } = useProducts();
-  const { clientes, isLoading: loadingClientes } = useClientes();
-  const { produtos, findByBarcode } = useProdutos();
+  const { produtos, isLoading: loadingProducts, findByBarcode } = useProdutos();
+  const { clientes, isLoading: loadingClientes } = useClientesDB();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"scanner" | "manual">("manual");
   const [hasInitialized, setHasInitialized] = useState(false);
