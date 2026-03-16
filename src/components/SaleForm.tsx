@@ -492,7 +492,7 @@ export function SaleForm({ onSubmit }: SaleFormProps) {
               onClick={() => setShowPaymentModal(true)}
             >
               <CreditCard className="w-4 h-4" />
-              <span className="hidden sm:inline ml-1">Mercado Pago</span>
+              <span className="hidden sm:inline ml-1">Cobrar</span>
             </Button>
           </div>
         </div>
