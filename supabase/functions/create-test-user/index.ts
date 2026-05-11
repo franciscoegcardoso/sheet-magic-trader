@@ -28,7 +28,10 @@ Deno.serve(async (req) => {
       email_confirm: true,
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Create user error:", JSON.stringify(error));
+      throw error;
+    }
 
     return new Response(
       JSON.stringify({ success: true, user: data.user }),
@@ -38,8 +41,9 @@ Deno.serve(async (req) => {
       }
     );
   } catch (error: any) {
+    console.error("Caught error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: error.message, details: error }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
