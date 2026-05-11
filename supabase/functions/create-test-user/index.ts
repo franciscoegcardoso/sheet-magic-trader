@@ -22,18 +22,30 @@ Deno.serve(async (req) => {
       }
     );
 
-    const { data, error } = await supabaseAdmin.auth.admin.createUser({
-      email: "teste@teste.com",
-      password: "Teste@123",
+    // List users with email teste@teste.com
+    const { data: users, error: usersError } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000,
     });
 
-    if (error) {
-      console.error("Create user error:", JSON.stringify(error));
-      throw error;
+    if (usersError) {
+      console.error("List users error:", usersError);
     }
 
+    const testUsers = users?.users?.filter((u: any) => u.email?.includes("teste")) || [];
+
+    // Try to create user again with full error details
+    const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+      email: "teste@teste.com",
+      password: "Teste@123",
+      email_confirm: true,
+    });
+
     return new Response(
-      JSON.stringify({ success: true, user: data.user }),
+      JSON.stringify({
+        existingTestUsers: testUsers.map((u: any) => ({ id: u.id, email: u.email, created_at: u.created_at })),
+        createResult: { newUser, createError },
+      }, null, 2),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -42,7 +54,7 @@ Deno.serve(async (req) => {
   } catch (error: any) {
     console.error("Caught error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message, details: error }),
+      JSON.stringify({ success: false, error: error.message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
